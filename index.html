@@ -36,6 +36,24 @@
               </div>
               <code>PER = 10 log10(Pmax / Pmin)</code>
             </div>
+            <figure class="schematic" aria-label="PER measurement with analyzer">
+              <svg viewBox="0 0 720 190" role="img">
+                <defs>
+                  <marker id="arrow-per" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <line class="beam" x1="48" y1="95" x2="235" y2="95" marker-end="url(#arrow-per)"></line>
+                <rect class="optic" x="262" y="48" width="54" height="94" rx="6"></rect>
+                <line class="axis" x1="289" y1="56" x2="289" y2="134"></line>
+                <line class="beam" x1="316" y1="95" x2="510" y2="95" marker-end="url(#arrow-per)"></line>
+                <rect class="detector" x="548" y="66" width="86" height="58" rx="8"></rect>
+                <text x="50" y="72">polarized input</text>
+                <text x="242" y="36">rotating analyzer</text>
+                <text x="540" y="54">power meter</text>
+                <text class="accent-label" x="390" y="80">Pmax / Pmin</text>
+              </svg>
+            </figure>
             <div class="calc-grid">
               <div class="input-column">
                 <label class="field-label" for="perPmax">Transmitted max power</label>
@@ -61,6 +79,26 @@
               </div>
               <code>wc = f lambda / (pi w0)</code>
             </div>
+            <figure class="schematic" aria-label="Fiber collimation geometry">
+              <svg viewBox="0 0 720 210" role="img">
+                <defs>
+                  <marker id="arrow-col" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <rect class="fiber" x="54" y="89" width="145" height="32" rx="16"></rect>
+                <line class="beam soft" x1="199" y1="105" x2="340" y2="56"></line>
+                <line class="beam soft" x1="199" y1="105" x2="340" y2="154"></line>
+                <path class="lens" d="M385 36 C430 72 430 138 385 174 C350 138 350 72 385 36 Z"></path>
+                <line class="beam" x1="430" y1="70" x2="660" y2="70" marker-end="url(#arrow-col)"></line>
+                <line class="beam" x1="430" y1="140" x2="660" y2="140" marker-end="url(#arrow-col)"></line>
+                <line class="axis" x1="36" y1="105" x2="675" y2="105"></line>
+                <line class="measure" x1="438" y1="70" x2="438" y2="140"></line>
+                <text x="78" y="78">fiber mode</text>
+                <text x="348" y="28">collimator lens</text>
+                <text class="accent-label" x="476" y="104">collimated diameter</text>
+              </svg>
+            </figure>
             <div class="calc-grid">
               <div class="input-column">
                 <label class="field-label" for="colWavelength">Wavelength (nm)</label>
@@ -89,6 +127,30 @@
               </div>
               <code>M = f2 / f1</code>
             </div>
+            <figure class="schematic" aria-label="Afocal telescope beam expansion">
+              <svg viewBox="0 0 720 220" role="img">
+                <defs>
+                  <marker id="arrow-tel" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <line class="axis" x1="34" y1="110" x2="686" y2="110"></line>
+                <line class="beam" x1="42" y1="94" x2="174" y2="94" marker-end="url(#arrow-tel)"></line>
+                <line class="beam" x1="42" y1="126" x2="174" y2="126" marker-end="url(#arrow-tel)"></line>
+                <path class="lens" d="M220 38 C265 76 265 144 220 182 C185 144 185 76 220 38 Z"></path>
+                <line class="beam soft" x1="246" y1="94" x2="472" y2="58"></line>
+                <line class="beam soft" x1="246" y1="126" x2="472" y2="162"></line>
+                <path class="lens" d="M510 28 C570 74 570 146 510 192 C466 146 466 74 510 28 Z"></path>
+                <line class="beam" x1="548" y1="58" x2="678" y2="58" marker-end="url(#arrow-tel)"></line>
+                <line class="beam" x1="548" y1="162" x2="678" y2="162" marker-end="url(#arrow-tel)"></line>
+                <line class="measure" x1="220" y1="196" x2="510" y2="196"></line>
+                <text x="200" y="28">L1</text>
+                <text x="494" y="24">L2</text>
+                <text class="accent-label" x="330" y="213">spacing</text>
+                <text x="44" y="77">Din</text>
+                <text x="626" y="44">Dout</text>
+              </svg>
+            </figure>
             <div class="calc-grid">
               <div class="input-column">
                 <label class="field-label" for="telType">Configuration</label>
@@ -123,6 +185,28 @@
               </div>
               <code>wf = 2 f lambda / (pi D)</code>
             </div>
+            <figure class="schematic" aria-label="Focusing a Gaussian beam into fiber">
+              <svg viewBox="0 0 720 220" role="img">
+                <defs>
+                  <marker id="arrow-foc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <line class="axis" x1="36" y1="110" x2="680" y2="110"></line>
+                <line class="beam" x1="44" y1="68" x2="240" y2="68" marker-end="url(#arrow-foc)"></line>
+                <line class="beam" x1="44" y1="152" x2="240" y2="152" marker-end="url(#arrow-foc)"></line>
+                <path class="lens" d="M286 34 C332 74 332 146 286 186 C250 146 250 74 286 34 Z"></path>
+                <line class="beam soft" x1="314" y1="68" x2="510" y2="110"></line>
+                <line class="beam soft" x1="314" y1="152" x2="510" y2="110"></line>
+                <rect class="fiber" x="538" y="88" width="122" height="44" rx="22"></rect>
+                <circle class="core" cx="548" cy="110" r="14"></circle>
+                <line class="measure" x1="58" y1="68" x2="58" y2="152"></line>
+                <text x="72" y="116">D</text>
+                <text x="262" y="27">focus lens</text>
+                <text class="accent-label" x="462" y="92">waist</text>
+                <text x="560" y="78">fiber</text>
+              </svg>
+            </figure>
             <div class="calc-grid">
               <div class="input-column">
                 <label class="field-label" for="focWavelength">Wavelength (nm)</label>
@@ -158,6 +242,37 @@
               </div>
               <code>m lambda = d (sin alpha + sin beta)</code>
             </div>
+            <figure class="schematic" aria-label="Reflective grating angles">
+              <svg viewBox="0 0 720 220" role="img">
+                <defs>
+                  <marker id="arrow-gra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <line class="grating" x1="168" y1="168" x2="560" y2="168"></line>
+                <g class="grooves">
+                  <line x1="188" y1="168" x2="212" y2="126"></line>
+                  <line x1="226" y1="168" x2="250" y2="126"></line>
+                  <line x1="264" y1="168" x2="288" y2="126"></line>
+                  <line x1="302" y1="168" x2="326" y2="126"></line>
+                  <line x1="340" y1="168" x2="364" y2="126"></line>
+                  <line x1="378" y1="168" x2="402" y2="126"></line>
+                  <line x1="416" y1="168" x2="440" y2="126"></line>
+                  <line x1="454" y1="168" x2="478" y2="126"></line>
+                  <line x1="492" y1="168" x2="516" y2="126"></line>
+                </g>
+                <line class="normal" x1="364" y1="38" x2="364" y2="184"></line>
+                <line class="beam" x1="158" y1="48" x2="344" y2="150" marker-end="url(#arrow-gra)"></line>
+                <line class="beam" x1="384" y1="150" x2="574" y2="55" marker-end="url(#arrow-gra)"></line>
+                <path class="angle" d="M335 144 A56 56 0 0 1 364 112"></path>
+                <path class="angle" d="M364 112 A62 62 0 0 1 417 140"></path>
+                <text x="166" y="39">incident</text>
+                <text x="512" y="45">diffracted</text>
+                <text class="accent-label" x="310" y="109">alpha</text>
+                <text class="accent-label" x="408" y="116">beta</text>
+                <text x="270" y="199">groove period d</text>
+              </svg>
+            </figure>
             <div class="calc-grid">
               <div class="input-column">
                 <label class="field-label" for="graDensity">Line density (lines/mm)</label>

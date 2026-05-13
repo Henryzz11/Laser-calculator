@@ -167,6 +167,107 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+
+.schematic {
+  margin: 0;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #fffdf9 0%, #f8fbfb 100%);
+}
+
+.schematic svg {
+  display: block;
+  width: 100%;
+  max-height: 240px;
+}
+
+.schematic text {
+  fill: var(--ink);
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.schematic .accent-label {
+  fill: var(--teal-dark);
+}
+
+.schematic .beam {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.schematic .beam.soft {
+  stroke: #58aeb6;
+  stroke-width: 5;
+  opacity: 0.82;
+}
+
+.schematic .axis,
+.schematic .normal {
+  stroke: #9aa3a8;
+  stroke-width: 2;
+  stroke-dasharray: 7 8;
+}
+
+.schematic .optic,
+.schematic .detector,
+.schematic .fiber,
+.schematic .core {
+  fill: #ffffff;
+  stroke: #6f7a80;
+  stroke-width: 3;
+}
+
+.schematic .detector {
+  fill: #f2f7f8;
+}
+
+.schematic .fiber {
+  fill: #edf3f4;
+}
+
+.schematic .core {
+  fill: #d7eef0;
+}
+
+.schematic .lens {
+  fill: rgba(8, 127, 140, 0.12);
+  stroke: var(--teal-dark);
+  stroke-width: 3;
+}
+
+.schematic .measure {
+  stroke: var(--gold);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.schematic .grating {
+  stroke: #5b6368;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.schematic .grooves line {
+  stroke: var(--gold);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.schematic .angle {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.schematic marker path {
+  fill: var(--teal);
+}
+
 .calc-grid {
   display: grid;
   grid-template-columns: minmax(260px, 0.72fr) minmax(320px, 1fr);
@@ -253,6 +354,10 @@ h2 {
     align-items: stretch;
     flex-direction: column;
   }
+
+  .schematic {
+    padding: 12px 14px;
+  }
 }
 
 @media (max-width: 560px) {
@@ -274,5 +379,13 @@ h2 {
   .calc-grid,
   .calc-heading {
     padding: 14px;
+  }
+
+  .schematic svg {
+    max-height: 190px;
+  }
+
+  .schematic text {
+    font-size: 16px;
   }
 }
