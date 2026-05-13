@@ -1,11 +1,5 @@
-# Local/private runtime files
-.laser-lab-private.env
-private_lan_server.py
-__pycache__/
-*.pyc
-.DS_Store
-
 # macOS / editor noise
+.DS_Store
 .AppleDouble
 .LSOverride
 .vscode/

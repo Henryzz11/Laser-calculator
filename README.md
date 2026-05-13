@@ -2,6 +2,12 @@
 
 A static optics and fiber-laser calculator page.
 
+Public site:
+
+```text
+https://henryzz11.github.io/Laser-calculator/
+```
+
 ## Calculators
 
 - PER
@@ -10,4 +16,4 @@ A static optics and fiber-laser calculator page.
 - Focus to fiber
 - Reflective grating equation
 
-This site is plain HTML, CSS, and JavaScript, so it can be hosted directly on GitHub Pages.
+This site is plain HTML, CSS, and JavaScript hosted by GitHub Pages.
