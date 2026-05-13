@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lab Calculators</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">LC</div>
+          <div>
+            <p class="eyebrow">Fiber laser quick tools</p>
+            <h1>Lab Calculators</h1>
+          </div>
+        </div>
+      </header>
+
+      <section class="calculator-shell" aria-label="Optics calculators">
+        <aside class="calculator-tabs" aria-label="Calculators">
+          <button class="calc-tab active" data-calculator="per" type="button">PER</button>
+          <button class="calc-tab" data-calculator="collimation" type="button">Fiber Collimation</button>
+          <button class="calc-tab" data-calculator="telescope" type="button">Telescope</button>
+          <button class="calc-tab" data-calculator="focus" type="button">Focus to Fiber</button>
+          <button class="calc-tab" data-calculator="grating" type="button">Grating</button>
+        </aside>
+
+        <div class="calculator-stack">
+          <article class="calc-panel active" id="calc-per">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Polarization extinction ratio</p>
+                <h2>PER Calculator</h2>
+              </div>
+              <code>PER = 10 log10(Pmax / Pmin)</code>
+            </div>
+            <div class="calc-grid">
+              <div class="input-column">
+                <label class="field-label" for="perPmax">Transmitted max power</label>
+                <input id="perPmax" class="text-input calc-input" type="number" min="0" step="any" value="10">
+
+                <label class="field-label" for="perPmin">Leakage min power</label>
+                <input id="perPmin" class="text-input calc-input" type="number" min="0" step="any" value="0.01">
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>PER</span><strong id="perDb">-- dB</strong></div>
+                <div class="result-tile"><span>Leakage</span><strong id="perLeakage">-- %</strong></div>
+                <div class="result-tile"><span>Purity</span><strong id="perPurity">-- %</strong></div>
+                <div class="result-tile"><span>Power ratio</span><strong id="perRatio">--</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="calc-panel" id="calc-collimation">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Gaussian fiber output</p>
+                <h2>Fiber Collimation</h2>
+              </div>
+              <code>wc = f lambda / (pi w0)</code>
+            </div>
+            <div class="calc-grid">
+              <div class="input-column">
+                <label class="field-label" for="colWavelength">Wavelength (nm)</label>
+                <input id="colWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+
+                <label class="field-label" for="colMfd">Fiber MFD (um)</label>
+                <input id="colMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="10.4">
+
+                <label class="field-label" for="colFocal">Collimator focal length (mm)</label>
+                <input id="colFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="11">
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>1/e2 diameter</span><strong id="colDiameter">-- mm</strong></div>
+                <div class="result-tile"><span>Mode half-angle</span><strong id="colNa">-- mrad</strong></div>
+                <div class="result-tile"><span>Beam Rayleigh range</span><strong id="colZr">-- m</strong></div>
+                <div class="result-tile"><span>Collimated divergence</span><strong id="colDiv">-- mrad</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="calc-panel" id="calc-telescope">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Afocal beam relay</p>
+                <h2>Telescope</h2>
+              </div>
+              <code>M = f2 / f1</code>
+            </div>
+            <div class="calc-grid">
+              <div class="input-column">
+                <label class="field-label" for="telType">Configuration</label>
+                <select id="telType" class="text-input calc-input">
+                  <option value="keplerian">Keplerian</option>
+                  <option value="galilean">Galilean</option>
+                </select>
+
+                <label class="field-label" for="telDin">Input 1/e2 diameter (mm)</label>
+                <input id="telDin" class="text-input calc-input" type="number" min="0.01" step="any" value="2.0">
+
+                <label class="field-label" for="telF1">Lens 1 focal length (mm)</label>
+                <input id="telF1" class="text-input calc-input" type="number" min="0.01" step="any" value="50">
+
+                <label class="field-label" for="telF2">Lens 2 focal length magnitude (mm)</label>
+                <input id="telF2" class="text-input calc-input" type="number" min="0.01" step="any" value="150">
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>Beam magnification</span><strong id="telMag">-- x</strong></div>
+                <div class="result-tile"><span>Output diameter</span><strong id="telDout">-- mm</strong></div>
+                <div class="result-tile"><span>Lens spacing</span><strong id="telLength">-- mm</strong></div>
+                <div class="result-tile"><span>Angular scale</span><strong id="telAngular">-- x</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="calc-panel" id="calc-focus">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Gaussian mode matching</p>
+                <h2>Focus to Fiber</h2>
+              </div>
+              <code>wf = 2 f lambda / (pi D)</code>
+            </div>
+            <div class="calc-grid">
+              <div class="input-column">
+                <label class="field-label" for="focWavelength">Wavelength (nm)</label>
+                <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+
+                <label class="field-label" for="focMfd">Fiber MFD (um)</label>
+                <input id="focMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="10.4">
+
+                <label class="field-label" for="focFocal">Lens focal length (mm)</label>
+                <input id="focFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="8">
+
+                <label class="field-label" for="focBeam">Input beam diameter (mm)</label>
+                <input id="focBeam" class="text-input calc-input" type="number" min="0.01" step="any" value="1.0">
+
+                <label class="field-label" for="focNa">Fiber NA (optional)</label>
+                <input id="focNa" class="text-input calc-input" type="number" min="0" step="any" value="0.12">
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>Focused waist</span><strong id="focWaist">-- um</strong></div>
+                <div class="result-tile"><span>Mode overlap</span><strong id="focOverlap">-- %</strong></div>
+                <div class="result-tile"><span>Optimal beam diameter</span><strong id="focOptimalD">-- mm</strong></div>
+                <div class="result-tile"><span>Focused NA</span><strong id="focNaOut">--</strong></div>
+                <div class="result-tile wide-result"><span>Mode waist ratio</span><strong id="focRatio">--</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="calc-panel" id="calc-grating">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Reflective grating equation</p>
+                <h2>Grating</h2>
+              </div>
+              <code>m lambda = d (sin alpha + sin beta)</code>
+            </div>
+            <div class="calc-grid">
+              <div class="input-column">
+                <label class="field-label" for="graDensity">Line density (lines/mm)</label>
+                <input id="graDensity" class="text-input calc-input" type="number" min="1" step="any" value="1200">
+
+                <label class="field-label" for="graWavelength">Wavelength (nm)</label>
+                <input id="graWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+
+                <label class="field-label" for="graOrder">Diffraction order</label>
+                <input id="graOrder" class="text-input calc-input" type="number" min="1" step="1" value="1">
+
+                <label class="field-label" for="graAlpha">Incidence angle alpha (deg)</label>
+                <input id="graAlpha" class="text-input calc-input" type="number" step="any" value="35">
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>Diffraction beta</span><strong id="graBeta">-- deg</strong></div>
+                <div class="result-tile"><span>Littrow angle</span><strong id="graLittrow">-- deg</strong></div>
+                <div class="result-tile"><span>Groove period</span><strong id="graPeriod">-- nm</strong></div>
+                <div class="result-tile"><span>Angular dispersion</span><strong id="graDispersion">-- mrad/nm</strong></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
