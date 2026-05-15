@@ -10,8 +10,8 @@
       <path d="M100 0H0V100" fill="none" stroke="#c6c6c6" stroke-width="1.6" opacity="0.85"/>
     </pattern>
     <filter id="beam-glow" x="-8%" y="-18%" width="116%" height="136%">
-      <feGaussianBlur stdDeviation="10" result="blur"/>
-      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.95  0 0.2 0 0 0.02  0 0 0.2 0 0.02  0 0 0 0.8 0"/>
+      <feGaussianBlur stdDeviation="9" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.95  0 0.15 0 0 0.02  0 0 0.15 0 0.02  0 0 0 0.75 0"/>
       <feMerge>
         <feMergeNode/>
         <feMergeNode in="SourceGraphic"/>
@@ -25,13 +25,13 @@
   <rect width="900" height="520" fill="#ffffff"/>
   <rect width="900" height="520" fill="url(#major-grid)" opacity="0.95"/>
 
-  <line x1="0" y1="260" x2="840" y2="260" stroke="#6c747c" stroke-width="2.2" stroke-dasharray="10 12" opacity="0.8"/>
+  <line x1="0" y1="260" x2="820" y2="260" stroke="#6c747c" stroke-width="2.2" stroke-dasharray="10 12" opacity="0.8"/>
 
-  <path d="M0 156 C96 156 190 156 280 164 C386 184 540 226 688 253 C758 243 824 218 885 197 L885 235 C824 260 758 286 688 273 C540 300 386 340 280 356 C190 364 96 364 0 364Z" fill="#ff2a2a" opacity="0.32" filter="url(#beam-glow)"/>
-  <path d="M0 156 C96 156 190 156 280 164 C386 184 540 226 688 253 C758 243 824 218 885 197" fill="none" stroke="#cc1f1f" stroke-width="5" stroke-linecap="round" opacity="0.9"/>
-  <path d="M0 364 C96 364 190 364 280 356 C386 340 540 300 688 273 C758 286 824 260 885 235" fill="none" stroke="#cc1f1f" stroke-width="5" stroke-linecap="round" opacity="0.9"/>
-  <path d="M0 170 H275" fill="none" stroke="#e43a3a" stroke-width="16" stroke-linecap="round" opacity="0.45"/>
-  <path d="M0 350 H275" fill="none" stroke="#e43a3a" stroke-width="16" stroke-linecap="round" opacity="0.45"/>
+  <path d="M0 158 H280 L690 252 L690 268 L280 362 H0Z" fill="#ff2a2a" opacity="0.3" filter="url(#beam-glow)"/>
+  <path d="M0 158 H280 L690 252" fill="none" stroke="#cc1f1f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+  <path d="M0 362 H280 L690 268" fill="none" stroke="#cc1f1f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+  <path d="M0 172 H275" fill="none" stroke="#e43a3a" stroke-width="16" stroke-linecap="round" opacity="0.45"/>
+  <path d="M0 348 H275" fill="none" stroke="#e43a3a" stroke-width="16" stroke-linecap="round" opacity="0.45"/>
 
   <path d="M306 75 C350 138 350 382 306 445 C262 382 262 138 306 75Z" fill="#b9def4" fill-opacity="0.8" stroke="#0b3550" stroke-width="4"/>
   <line x1="306" y1="75" x2="306" y2="445" stroke="#5c6570" stroke-width="2" stroke-dasharray="11 11" opacity="0.75"/>
@@ -43,7 +43,7 @@
 
   <text x="32" y="52" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="700">Input Beam</text>
   <text x="32" y="90" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="700">Diameter D</text>
-  <text x="575" y="126" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="700">spot diameter S</text>
+  <text x="570" y="126" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="700">spot diameter S</text>
   <text x="492" y="444" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="32" font-weight="700">f</text>
   <text x="418" y="500" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="21" font-weight="700">Focal Length</text>
 </svg>
