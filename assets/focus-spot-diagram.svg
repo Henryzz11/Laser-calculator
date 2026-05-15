@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+  <title id="title">Focus spot size diagram</title>
+  <desc id="desc">A collimated input beam passes through a lens and focuses to a spot diameter S at focal length f.</desc>
+  <defs>
+    <pattern id="minor-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M20 0H0V20" fill="none" stroke="#d8d8d8" stroke-width="1" opacity="0.85"/>
+    </pattern>
+    <pattern id="major-grid" width="100" height="100" patternUnits="userSpaceOnUse">
+      <rect width="100" height="100" fill="url(#minor-grid)"/>
+      <path d="M100 0H0V100" fill="none" stroke="#c6c6c6" stroke-width="1.6" opacity="0.85"/>
+    </pattern>
+    <filter id="beam-glow" x="-8%" y="-18%" width="116%" height="136%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.95  0 0.2 0 0 0.02  0 0 0.2 0 0.02  0 0 0 0.8 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10Z" fill="#182334"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="520" fill="#ffffff"/>
+  <rect width="900" height="520" fill="url(#major-grid)" opacity="0.95"/>
+
+  <line x1="0" y1="260" x2="840" y2="260" stroke="#6c747c" stroke-width="2.2" stroke-dasharray="10 12" opacity="0.8"/>
+
+  <path d="M0 156 C96 156 190 156 280 164 C386 184 540 226 688 253 C758 243 824 218 885 197 L885 235 C824 260 758 286 688 273 C540 300 386 340 280 356 C190 364 96 364 0 364Z" fill="#ff2a2a" opacity="0.32" filter="url(#beam-glow)"/>
+  <path d="M0 156 C96 156 190 156 280 164 C386 184 540 226 688 253 C758 243 824 218 885 197" fill="none" stroke="#cc1f1f" stroke-width="5" stroke-linecap="round" opacity="0.9"/>
+  <path d="M0 364 C96 364 190 364 280 356 C386 340 540 300 688 273 C758 286 824 260 885 235" fill="none" stroke="#cc1f1f" stroke-width="5" stroke-linecap="round" opacity="0.9"/>
+  <path d="M0 170 H275" fill="none" stroke="#e43a3a" stroke-width="16" stroke-linecap="round" opacity="0.45"/>
+  <path d="M0 350 H275" fill="none" stroke="#e43a3a" stroke-width="16" stroke-linecap="round" opacity="0.45"/>
+
+  <path d="M306 75 C350 138 350 382 306 445 C262 382 262 138 306 75Z" fill="#b9def4" fill-opacity="0.8" stroke="#0b3550" stroke-width="4"/>
+  <line x1="306" y1="75" x2="306" y2="445" stroke="#5c6570" stroke-width="2" stroke-dasharray="11 11" opacity="0.75"/>
+
+  <line x1="690" y1="222" x2="690" y2="298" stroke="#182334" stroke-width="3" marker-start="url(#arrow-blue)" marker-end="url(#arrow-blue)"/>
+  <line x1="690" y1="300" x2="690" y2="448" stroke="#6c747c" stroke-width="2" stroke-dasharray="10 12" opacity="0.8"/>
+  <line x1="306" y1="445" x2="306" y2="462" stroke="#6c747c" stroke-width="2" stroke-dasharray="10 12" opacity="0.8"/>
+  <line x1="306" y1="456" x2="690" y2="456" stroke="#182334" stroke-width="3" marker-start="url(#arrow-blue)" marker-end="url(#arrow-blue)"/>
+
+  <text x="32" y="52" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="700">Input Beam</text>
+  <text x="32" y="90" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="700">Diameter D</text>
+  <text x="575" y="126" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="700">spot diameter S</text>
+  <text x="492" y="444" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="32" font-weight="700">f</text>
+  <text x="418" y="500" fill="#182334" font-family="Georgia, 'Times New Roman', serif" font-size="21" font-weight="700">Focal Length</text>
+</svg>

@@ -286,43 +286,72 @@ h2 {
   gap: 8px;
 }
 
-.focus-schematic svg {
-  max-height: 300px;
+.math-pill {
+  border: 1px solid #d8d0c5;
+  border-radius: 6px;
+  background: #fbf7ef;
+  color: #3f474d;
+  padding: 8px 12px;
 }
 
-.focus-schematic .focus-beam {
-  fill: none;
-  stroke: #cf2e2e;
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.math-formula {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  line-height: 1.1;
 }
 
-.focus-schematic .focus-measure {
-  stroke: #2d7fab;
-  stroke-width: 3;
-  stroke-linecap: round;
+.math-formula-compact {
+  font-size: 1.05rem;
 }
 
-.focus-schematic .focus-label {
-  fill: #2d7fab;
-  font-size: 16px;
-  font-weight: 800;
-  text-transform: none;
+.math-formula-large {
+  margin-top: 14px;
+  font-size: 2.15rem;
 }
 
-.focus-schematic #arrow-foc path {
-  fill: #cf2e2e;
+.math-var,
+.math-equals {
+  display: inline-block;
 }
 
-.focus-schematic #measure-foc path {
-  fill: #2d7fab;
+.math-fraction {
+  display: inline-grid;
+  grid-template-rows: auto auto;
+  justify-items: center;
+  align-items: center;
+}
+
+.math-numerator {
+  display: block;
+  border-bottom: 2px solid currentColor;
+  padding: 0 7px 4px;
+}
+
+.math-denominator {
+  display: block;
+  padding-top: 4px;
+}
+
+.focus-schematic {
+  background: #ffffff;
+}
+
+.focus-schematic img {
+  display: block;
+  width: 100%;
+  max-height: 430px;
+  object-fit: contain;
 }
 
 .focus-result-area {
   display: grid;
-  grid-template-columns: minmax(300px, 0.95fr) minmax(320px, 1fr);
+  grid-template-columns: minmax(300px, 1fr) minmax(240px, 0.58fr);
   gap: 18px;
+  align-items: stretch;
   padding: 18px;
 }
 
@@ -333,20 +362,11 @@ h2 {
   padding: 16px;
 }
 
-.display-formula {
-  margin-top: 12px;
-  color: var(--ink);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: clamp(1.1rem, 2vw, 1.45rem);
-  font-weight: 800;
-  line-height: 1.35;
-}
-
 .variable-list {
   display: grid;
   grid-template-columns: minmax(54px, auto) 1fr;
   gap: 8px 12px;
-  margin: 16px 0 0;
+  margin: 18px 0 0;
 }
 
 .variable-list dt {
@@ -359,25 +379,21 @@ h2 {
   color: var(--ink);
 }
 
-.unit-note {
-  margin: 16px 0 0;
-  color: var(--muted);
-  font-size: 0.92rem;
-  line-height: 1.45;
-}
-
 .focus-result-grid {
   grid-template-columns: 1fr;
+  align-content: stretch;
+  height: 100%;
 }
 
 .focus-result-main {
-  min-height: 132px;
+  min-height: 180px;
+  height: 100%;
   border-color: rgba(8, 127, 140, 0.28);
   background: #fffdf9;
 }
 
 .focus-result-main strong {
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: 3rem;
 }
 
 .calc-grid {

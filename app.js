@@ -106,18 +106,14 @@ function updateFocus() {
   const fMm = numberValue("focFocal");
 
   if (beamDiameter <= 0 || m2 <= 0 || wavelengthNm <= 0 || fMm <= 0) {
-    ["focSpotSize", "focSubstitution"].forEach((id) => setText(id, null));
+    setText("focSpotSize", null);
     return;
   }
 
-  const spotSizeUm = (1.27 * m2 * wavelengthNm * fMm) / (1000 * beamDiameter);
-  const substitution = `1.27 x ${fmt(m2, 5)} x ${fmt(wavelengthNm, 6)} x ${fmt(fMm, 5)} / (1000 x ${fmt(
-    beamDiameter,
-    5,
-  )})`;
+  const wavelengthUm = wavelengthNm / 1000;
+  const spotSizeUm = (1.27 * m2 * wavelengthUm * fMm) / beamDiameter;
 
   setText("focSpotSize", fmt(spotSizeUm, 4), " um");
-  setText("focSubstitution", `${substitution} = ${fmt(spotSizeUm, 4)} um`);
 }
 
 function updateGrating() {
