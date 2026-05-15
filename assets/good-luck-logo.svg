@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 128" role="img" aria-labelledby="title desc">
+  <title id="title">Good Luck text logo</title>
+  <desc id="desc">Red Chinese text Hao Yun Lai with English words Good Luck.</desc>
+  <rect width="280" height="128" fill="none"/>
+  <text x="140" y="70" text-anchor="middle" fill="#e7192b" font-family="STKaiti, Kaiti SC, KaiTi, Songti SC, serif" font-size="64" font-weight="700" letter-spacing="6">好运来</text>
+  <text x="140" y="110" text-anchor="middle" fill="#e7192b" font-family="Georgia, Times New Roman, serif" font-size="26" font-weight="700" letter-spacing="8">GOOD LUCK</text>
+</svg>

@@ -14,6 +14,7 @@ https://henryzz11.github.io/Laser-calculator/
 - Fiber collimation
 - Telescope
 - Focus spot size
+- Detector safety
 - Reflective grating equation
 
 This site is plain HTML, CSS, and JavaScript hosted by GitHub Pages.

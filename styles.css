@@ -51,16 +51,12 @@ button {
   gap: 14px;
 }
 
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius);
-  background: var(--teal);
-  color: #ffffff;
-  font-weight: 850;
-  letter-spacing: 0;
+.brand-logo {
+  display: block;
+  width: 112px;
+  height: 58px;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
 
 .eyebrow,
@@ -268,6 +264,130 @@ h2 {
   fill: var(--teal);
 }
 
+.collimation-formula-stack {
+  display: grid;
+  gap: 6px;
+}
+
+.collimation-formula-stack code {
+  max-width: none;
+}
+
+.collimation-input-area {
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.collimation-method-row {
+  max-width: 420px;
+  margin-bottom: 14px;
+}
+
+.collimation-input-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.collimation-input-grid[hidden],
+.formula-panel[hidden] {
+  display: none;
+}
+
+.collimation-schematic {
+  background: #ffffff;
+}
+
+.collimation-schematic svg {
+  max-height: 330px;
+}
+
+.collimation-schematic img {
+  display: block;
+  width: 100%;
+  max-height: 430px;
+  object-fit: contain;
+}
+
+.collimation-schematic .collimation-beam {
+  fill: none;
+  stroke: #d72b2b;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.collimation-schematic .col-measure {
+  stroke: #2d7fab;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.collimation-schematic .col-label {
+  fill: #2d7fab;
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.collimation-schematic #arrow-col path {
+  fill: #d72b2b;
+}
+
+.collimation-schematic #measure-col path {
+  fill: #2d7fab;
+}
+
+.collimation-result-area {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(320px, 1fr);
+  gap: 18px;
+  padding: 18px;
+}
+
+.formula-lines {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.38rem;
+  font-weight: 700;
+}
+
+.math-display-lines .formula-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.math-display-lines .math-var {
+  min-width: 1.2em;
+}
+
+.math-display-lines .math-fraction {
+  font-size: 1.05em;
+}
+
+.collimation-result-grid {
+  grid-template-columns: 1fr;
+}
+
+.collimation-result-main {
+  border-color: rgba(8, 127, 140, 0.28);
+  background: #fffdf9;
+}
+
+.formula-line {
+  line-height: 1.28;
+}
+
+.collimation-result-main strong {
+  font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+}
+
+
 .focus-input-area {
   padding: 18px;
   border-bottom: 1px solid var(--line);
@@ -306,6 +426,16 @@ h2 {
 
 .math-formula-compact {
   font-size: 1.05rem;
+}
+
+.formula-note {
+  display: inline-block;
+  margin-left: 10px;
+  color: var(--muted);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
 .math-formula-large {
@@ -396,6 +526,152 @@ h2 {
   font-size: 3rem;
 }
 
+.detector-model-select {
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.detector-model-panel[hidden] {
+  display: none;
+}
+
+.detector-formula-pill {
+  padding: 18px 18px 0;
+  background: #ffffff;
+}
+
+.detector-formula-pill span {
+  display: inline-block;
+  min-width: min(100%, 380px);
+  border: 1px solid #d8d0c5;
+  border-radius: var(--radius);
+  background: #fbf7ef;
+  color: #4b5358;
+  padding: 11px 13px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.detector-spec-band {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.detector-spec {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  padding: 14px;
+}
+
+.detector-spec span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.detector-spec strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--ink);
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+.detector-chart svg {
+  max-height: 320px;
+}
+
+.det-chart-bg {
+  fill: #ffffff;
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.det-chart-grid line {
+  stroke: #d9d2c7;
+  stroke-width: 1.2;
+}
+
+.det-axis {
+  stroke: #5f6970;
+  stroke-width: 2.5;
+}
+
+.det-curve {
+  fill: none;
+  stroke: #101010;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.det-point {
+  fill: var(--gold);
+  stroke: #ffffff;
+  stroke-width: 3;
+  opacity: 0;
+}
+
+.det-chart-label,
+.det-chart-title,
+.det-chart-axis-label,
+.detector-chart text {
+  fill: var(--ink);
+  font-weight: 800;
+}
+
+.det-chart-label {
+  fill: var(--teal-dark);
+  font-size: 18px;
+}
+
+.det-chart-title {
+  font-size: 19px;
+}
+
+.det-chart-axis-label {
+  font-size: 16px;
+}
+
+.det-chart-y-label {
+  writing-mode: tb;
+}
+
+.detector-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(320px, 1fr);
+  gap: 18px;
+  padding: 18px;
+}
+
+.detector-calc-layout {
+  border-top: 1px solid var(--line);
+}
+
+.detector-result-grid {
+  grid-template-columns: 1fr;
+}
+
+.detector-result-main {
+  min-height: 142px;
+  border-color: rgba(8, 127, 140, 0.28);
+  background: #fffdf9;
+}
+
+.detector-result-main strong {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
 .calc-grid {
   display: grid;
   grid-template-columns: minmax(260px, 0.72fr) minmax(320px, 1fr);
@@ -470,11 +746,18 @@ h2 {
 @media (max-width: 900px) {
   .calculator-shell,
   .calc-grid,
-  .focus-result-area {
+  .focus-result-area,
+  .collimation-result-area,
+  .detector-layout {
     grid-template-columns: 1fr;
   }
 
-  .focus-input-grid {
+  .detector-spec-band {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .focus-input-grid,
+  .collimation-input-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -501,18 +784,26 @@ h2 {
 
   .calculator-tabs,
   .result-grid,
-  .focus-input-grid {
+  .focus-input-grid,
+  .collimation-input-grid,
+  .detector-spec-band {
     grid-template-columns: 1fr;
   }
 
-  .brand-mark {
-    width: 42px;
-    height: 42px;
+  .brand-logo {
+    width: 96px;
+    height: 50px;
   }
 
   .calc-grid,
   .focus-input-area,
   .focus-result-area,
+  .collimation-input-area,
+  .collimation-result-area,
+  .detector-layout,
+  .detector-spec-band,
+  .detector-model-select,
+  .detector-formula-pill,
   .calc-heading {
     padding: 14px;
   }

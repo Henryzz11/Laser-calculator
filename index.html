@@ -7,13 +7,13 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=focus-polish-3">
+    <link rel="stylesheet" href="styles.css?v=lab-update-1">
   </head>
   <body>
     <main class="app-shell">
       <header class="app-header">
         <div class="brand-block">
-          <div class="brand-mark" aria-hidden="true">LC</div>
+          <img class="brand-logo" src="assets/good-luck-logo.svg?v=lab-update-1" alt="Good Luck logo">
           <div>
             <p class="eyebrow">Fiber laser quick tools</p>
             <h1>Lab Calculators</h1>
@@ -27,6 +27,7 @@
           <button class="calc-tab" data-calculator="collimation" type="button">Fiber Collimation</button>
           <button class="calc-tab" data-calculator="telescope" type="button">Telescope</button>
           <button class="calc-tab" data-calculator="focus" type="button">Focus Spot Size</button>
+          <button class="calc-tab" data-calculator="detector" type="button">Detector Safety</button>
           <button class="calc-tab" data-calculator="grating" type="button">Grating</button>
         </aside>
 
@@ -77,47 +78,101 @@
           <article class="calc-panel" id="calc-collimation">
             <div class="calc-heading">
               <div>
-                <p class="panel-kicker">Gaussian fiber output</p>
+                <p class="panel-kicker">Fiber output collimation</p>
                 <h2>Fiber Collimation</h2>
               </div>
-              <code>wc = f lambda / (pi w0)</code>
-            </div>
-            <figure class="schematic" aria-label="Fiber collimation geometry">
-              <svg viewBox="0 0 720 210" role="img">
-                <defs>
-                  <marker id="arrow-col" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
-                  </marker>
-                </defs>
-                <rect class="fiber" x="54" y="89" width="145" height="32" rx="16"></rect>
-                <line class="beam soft" x1="199" y1="105" x2="340" y2="56"></line>
-                <line class="beam soft" x1="199" y1="105" x2="340" y2="154"></line>
-                <path class="lens" d="M385 36 C430 72 430 138 385 174 C350 138 350 72 385 36 Z"></path>
-                <line class="beam" x1="430" y1="70" x2="660" y2="70" marker-end="url(#arrow-col)"></line>
-                <line class="beam" x1="430" y1="140" x2="660" y2="140" marker-end="url(#arrow-col)"></line>
-                <line class="axis" x1="36" y1="105" x2="675" y2="105"></line>
-                <line class="measure" x1="438" y1="70" x2="438" y2="140"></line>
-                <text x="78" y="78">fiber mode</text>
-                <text x="348" y="28">collimator lens</text>
-                <text class="accent-label" x="476" y="104">collimated diameter</text>
-              </svg>
-            </figure>
-            <div class="calc-grid">
-              <div class="input-column">
-                <label class="field-label" for="colWavelength">Wavelength (nm)</label>
-                <input id="colWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
-
-                <label class="field-label" for="colMfd">Fiber MFD (um)</label>
-                <input id="colMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="10.4">
-
-                <label class="field-label" for="colFocal">Collimator focal length (mm)</label>
-                <input id="colFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="11">
+              <div class="collimation-formula-stack" aria-label="Available collimation formulas">
+                <div class="math-pill"><span class="math-formula math-formula-compact"><span class="math-var">D</span><span class="math-equals">=</span><span>2&nbsp;f&nbsp;NA</span></span><span class="formula-note">(for multimode fiber estimate)</span></div>
+                <div class="math-pill"><span class="math-formula math-formula-compact"><span class="math-var">D</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">4&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">&pi;&nbsp;MFD</span></span></span></div>
               </div>
-              <div class="result-grid">
-                <div class="result-tile"><span>1/e2 diameter</span><strong id="colDiameter">-- mm</strong></div>
-                <div class="result-tile"><span>Mode half-angle</span><strong id="colNa">-- mrad</strong></div>
-                <div class="result-tile"><span>Beam Rayleigh range</span><strong id="colZr">-- m</strong></div>
-                <div class="result-tile"><span>Collimated divergence</span><strong id="colDiv">-- mrad</strong></div>
+            </div>
+
+            <div class="collimation-input-area">
+              <div class="collimation-method-row">
+                <div class="field-group">
+                  <label class="field-label" for="colMethod">Calculation method</label>
+                  <select id="colMethod" class="text-input calc-input">
+                    <option value="mfd">MFD Gaussian mode</option>
+                    <option value="na">NA geometric approximation</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="collimation-input-grid" data-col-method="na" hidden>
+                <div class="field-group">
+                  <label class="field-label" for="colWavelengthNa">Wavelength lambda (nm)</label>
+                  <input id="colWavelengthNa" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="colNaInput">Numerical aperture (NA)</label>
+                  <input id="colNaInput" class="text-input calc-input" type="number" min="0.001" step="any" value="0.12">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="colCore">Fiber core diameter d (um)</label>
+                  <input id="colCore" class="text-input calc-input" type="number" min="0.01" step="any" value="10.0">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="colFocalNa">Collimating focal length f (mm)</label>
+                  <input id="colFocalNa" class="text-input calc-input" type="number" min="0.1" step="any" value="11.0">
+                </div>
+              </div>
+
+              <div class="collimation-input-grid" data-col-method="mfd">
+                <div class="field-group">
+                  <label class="field-label" for="colWavelength">Wavelength lambda (nm)</label>
+                  <input id="colWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="colMfd">Mode field diameter MFD (um)</label>
+                  <input id="colMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="10.4">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="colFocalMfd">Collimating focal length f (mm)</label>
+                  <input id="colFocalMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="11.0">
+                </div>
+              </div>
+            </div>
+
+            <figure class="schematic collimation-schematic" aria-label="Fiber collimation geometry">
+              <img src="assets/fiber-collimation.png?v=lab-update-1" alt="Fiber collimation geometry showing MFD, NA, collimating lens, focal length, and collimated beam diameter">
+            </figure>
+
+            <div class="collimation-result-area">
+              <section class="formula-panel" data-col-formula="na" aria-label="NA collimation formula" hidden>
+                <p class="panel-kicker">NA Method</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line"><span class="math-var">D</span><span class="math-equals">=</span><span>2&nbsp;f&nbsp;NA</span><span class="formula-note">(for multimode fiber estimate)</span></div>
+                  <div class="formula-line"><span class="math-var">&theta;</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">d</span><span class="math-denominator">f</span></span></div>
+                </div>
+                <dl class="variable-list">
+                  <dt>D</dt><dd>Collimated beam diameter (mm)</dd>
+                  <dt>f</dt><dd>Collimating focal length (mm)</dd>
+                  <dt>NA</dt><dd>Numerical aperture</dd>
+                  <dt>d</dt><dd>Fiber core diameter (um)</dd>
+                  <dt>&lambda;</dt><dd>Wavelength, used for Rayleigh length only</dd>
+                  <dt>&theta;</dt><dd>Full-angle divergence after collimation (mrad)</dd>
+                </dl>
+              </section>
+
+              <section class="formula-panel" data-col-formula="mfd" aria-label="MFD collimation formula">
+                <p class="panel-kicker">MFD Method</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line"><span class="math-var">D</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">4&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">&pi;&nbsp;MFD</span></span></div>
+                  <div class="formula-line"><span class="math-var">&theta;</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">MFD</span><span class="math-denominator">f</span></span></div>
+                </div>
+                <dl class="variable-list">
+                  <dt>D</dt><dd>1/e2 collimated beam diameter (mm)</dd>
+                  <dt>&lambda;</dt><dd>Center wavelength, converted from nm to um</dd>
+                  <dt>f</dt><dd>Collimating focal length (mm)</dd>
+                  <dt>MFD</dt><dd>Mode field diameter (um)</dd>
+                  <dt>&theta;</dt><dd>Full-angle divergence after collimation (mrad)</dd>
+                </dl>
+              </section>
+
+              <div class="result-grid collimation-result-grid">
+                <div class="result-tile collimation-result-main"><span>Collimated beam diameter</span><strong id="colDiameter">-- mm</strong></div>
+                <div class="result-tile"><span>Full-angle divergence</span><strong id="colDivergence">-- mrad</strong></div>
+                <div class="result-tile"><span>Rayleigh length</span><strong id="colRayleigh">-- m</strong></div>
               </div>
             </div>
           </article>
@@ -257,6 +312,89 @@
             </div>
           </article>
 
+          <article class="calc-panel" id="calc-detector">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">CMOS camera saturation limit</p>
+                <h2>Detector Safety</h2>
+              </div>
+            </div>
+
+            <div class="detector-model-select">
+              <label class="field-label" for="detModel">CCD / CMOS model</label>
+              <select id="detModel" class="text-input calc-input">
+                <option value="dataray_cmos">WinCamD / BladeCam / TaperCamD CMOS</option>
+              </select>
+            </div>
+
+            <section id="detModelDetails" class="detector-model-panel" aria-label="Selected detector model details">
+              <div class="detector-formula-pill"><span>P_limit = 127.63 D^2</span></div>
+
+              <div class="detector-spec-band" aria-label="Detector model specifications">
+                <div class="detector-spec"><span>Sensor</span><strong id="detSensorSpec">1 inch CMOS, 11.3 x 11.3 mm active area</strong></div>
+                <div class="detector-spec"><span>Resolution</span><strong id="detResolutionSpec">2048 x 2048, 5.5 x 5.5 um pixels</strong></div>
+                <div class="detector-spec"><span>Spectral response</span><strong id="detSpectralSpec">355 - 1150 nm</strong></div>
+                <div class="detector-spec"><span>Condition</span><strong id="detConditionSpec">ND-4, 40 us exposure, 85% ADC</strong></div>
+              </div>
+
+              <figure class="schematic detector-chart" aria-label="Detector saturation power limit curve">
+                <svg viewBox="0 0 760 280" role="img">
+                  <defs>
+                    <marker id="arrow-det" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                      <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                    </marker>
+                  </defs>
+                  <rect class="det-chart-bg" x="76" y="28" width="590" height="196" rx="4"></rect>
+                  <g class="det-chart-grid">
+                    <line x1="76" y1="67" x2="666" y2="67"></line>
+                    <line x1="76" y1="106" x2="666" y2="106"></line>
+                    <line x1="76" y1="145" x2="666" y2="145"></line>
+                    <line x1="76" y1="184" x2="666" y2="184"></line>
+                    <line x1="194" y1="28" x2="194" y2="224"></line>
+                    <line x1="312" y1="28" x2="312" y2="224"></line>
+                    <line x1="430" y1="28" x2="430" y2="224"></line>
+                    <line x1="548" y1="28" x2="548" y2="224"></line>
+                  </g>
+                  <line class="det-axis" x1="76" y1="224" x2="682" y2="224" marker-end="url(#arrow-det)"></line>
+                  <line class="det-axis" x1="76" y1="224" x2="76" y2="14" marker-end="url(#arrow-det)"></line>
+                  <polyline id="detChartCurve" class="det-curve" points=""></polyline>
+                  <circle id="detChartPoint" class="det-point" cx="0" cy="0" r="6"></circle>
+                  <text id="detChartLabel" class="det-chart-label" x="0" y="0">--</text>
+                  <text class="det-chart-title" x="104" y="50">1064 nm CW saturation limit</text>
+                  <text class="det-chart-axis-label" x="306" y="265">13.5% beam diameter D (mm)</text>
+                  <text class="det-chart-axis-label det-chart-y-label" x="28" y="138">mW</text>
+                  <text x="66" y="244">0.05</text>
+                  <text x="188" y="244">0.1</text>
+                  <text x="305" y="244">0.2</text>
+                  <text x="423" y="244">0.4</text>
+                  <text x="542" y="244">1.0</text>
+                  <text x="35" y="221">0.01</text>
+                  <text x="48" y="182">0.1</text>
+                  <text x="59" y="143">1</text>
+                  <text x="49" y="104">10</text>
+                  <text x="39" y="65">100</text>
+                  <text x="26" y="34">1000</text>
+                </svg>
+              </figure>
+            </section>
+
+            <div class="detector-layout detector-calc-layout">
+              <div class="input-column">
+                <label class="field-label" for="detBeam">13.5% beam diameter D (mm)</label>
+                <input id="detBeam" class="text-input calc-input" type="number" min="0.01" step="any" value="0.10">
+
+                <label class="field-label" for="detWavelength">Wavelength</label>
+                <select id="detWavelength" class="text-input calc-input">
+                  <option value="1064">1064 nm</option>
+                </select>
+              </div>
+
+              <div class="result-grid detector-result-grid">
+                <div class="result-tile detector-result-main"><span>CW saturation power limit</span><strong id="detLimit">-- mW</strong></div>
+              </div>
+            </div>
+          </article>
+
           <article class="calc-panel" id="calc-grating">
             <div class="calc-heading">
               <div>
@@ -322,6 +460,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=focus-polish-3"></script>
+    <script src="app.js?v=lab-update-1"></script>
   </body>
 </html>

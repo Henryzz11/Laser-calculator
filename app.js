@@ -59,26 +59,56 @@ function updatePer() {
   setText("perRatio", `${fmt(ratio, 4)}:1`);
 }
 
+function setCollimationMethod(method) {
+  document.querySelectorAll("[data-col-method]").forEach((panel) => {
+    panel.hidden = panel.dataset.colMethod !== method;
+  });
+  document.querySelectorAll("[data-col-formula]").forEach((panel) => {
+    panel.hidden = panel.dataset.colFormula !== method;
+  });
+}
+
 function updateCollimation() {
-  const wavelengthMm = numberValue("colWavelength") * 1e-6;
-  const mfdMm = numberValue("colMfd") * 1e-3;
-  const fMm = numberValue("colFocal");
-  const w0 = mfdMm / 2;
-  if (wavelengthMm <= 0 || w0 <= 0 || fMm <= 0) {
-    ["colDiameter", "colNa", "colZr", "colDiv"].forEach((id) => setText(id, null));
-    return;
+  const method = document.querySelector("#colMethod")?.value || "mfd";
+  setCollimationMethod(method);
+
+  let diameter;
+  let divergenceMrad;
+  let wavelengthNm;
+
+  if (method === "na") {
+    wavelengthNm = numberValue("colWavelengthNa");
+    const na = numberValue("colNaInput");
+    const coreUm = numberValue("colCore");
+    const fMm = numberValue("colFocalNa");
+    if (wavelengthNm <= 0 || na <= 0 || coreUm <= 0 || fMm <= 0) {
+      ["colDiameter", "colDivergence", "colRayleigh"].forEach((id) => setText(id, null));
+      return;
+    }
+
+    diameter = 2 * fMm * na;
+    divergenceMrad = coreUm / fMm;
+  } else {
+    wavelengthNm = numberValue("colWavelength");
+    const wavelengthUm = wavelengthNm / 1000;
+    const mfdUm = numberValue("colMfd");
+    const fMm = numberValue("colFocalMfd");
+    if (wavelengthNm <= 0 || wavelengthUm <= 0 || mfdUm <= 0 || fMm <= 0) {
+      ["colDiameter", "colDivergence", "colRayleigh"].forEach((id) => setText(id, null));
+      return;
+    }
+
+    diameter = (4 * wavelengthUm * fMm) / (Math.PI * mfdUm);
+    divergenceMrad = mfdUm / fMm;
   }
 
-  const modeHalfAngle = wavelengthMm / (Math.PI * w0);
-  const wCol = fMm * modeHalfAngle;
-  const diameter = 2 * wCol;
-  const zrM = (Math.PI * wCol * wCol) / wavelengthMm / 1000;
-  const div = wavelengthMm / (Math.PI * wCol);
+  const wavelengthMm = wavelengthNm * 1e-6;
+  const collimatedRadiusMm = diameter / 2;
+  const rayleighLengthM = (Math.PI * collimatedRadiusMm * collimatedRadiusMm) / wavelengthMm / 1000;
 
   setText("colDiameter", fmt(diameter, 4), " mm");
-  setText("colNa", fmt(modeHalfAngle * 1000, 4), " mrad");
-  setText("colZr", fmt(zrM, 4), " m");
-  setText("colDiv", fmt(div * 1000, 4), " mrad");
+  setText("colDivergence", fmt(divergenceMrad, 4), " mrad");
+  setText("colRayleigh", fmt(rayleighLengthM, 4), " m");
 }
 
 function updateTelescope() {
@@ -114,6 +144,94 @@ function updateFocus() {
   const spotSizeUm = (1.27 * m2 * wavelengthUm * fMm) / beamDiameter;
 
   setText("focSpotSize", fmt(spotSizeUm, 4), " um");
+}
+
+const detectorProfiles = {
+  dataray_cmos: {
+    coefficient: 127.63,
+    sensor: "1 inch CMOS, 11.3 x 11.3 mm active area",
+    resolution: "2048 x 2048, 5.5 x 5.5 um pixels",
+    spectral: "355 - 1150 nm",
+    condition: "ND-4, 40 us exposure, 85% ADC",
+  },
+};
+
+function fmtPower(value) {
+  return Number.isFinite(value) ? value.toFixed(2) : "--";
+}
+
+function chartCoord(value, minValue, maxValue, lowPixel, highPixel) {
+  const logValue = Math.log10(value);
+  const logMin = Math.log10(minValue);
+  const logMax = Math.log10(maxValue);
+  return lowPixel + ((logValue - logMin) / (logMax - logMin)) * (highPixel - lowPixel);
+}
+
+function updateDetectorChart(beamDiameter, powerLimit, coefficient) {
+  const curve = document.querySelector("#detChartCurve");
+  const point = document.querySelector("#detChartPoint");
+  const label = document.querySelector("#detChartLabel");
+  if (!curve || !point || !label) return;
+
+  const chart = { left: 76, right: 666, top: 28, bottom: 224, minD: 0.05, maxD: 2, minP: 0.01, maxP: 1000 };
+  const diameters = [0.05, 0.07, 0.1, 0.15, 0.2, 0.3, 0.4, 0.7, 1.0, 1.5, 2.0];
+  const points = diameters
+    .map((diameter) => {
+      const power = coefficient * diameter * diameter;
+      const x = chartCoord(diameter, chart.minD, chart.maxD, chart.left, chart.right);
+      const y = chartCoord(power, chart.minP, chart.maxP, chart.bottom, chart.top);
+      return `${fmt(x, 6)},${fmt(y, 6)}`;
+    })
+    .join(" ");
+  curve.setAttribute("points", points);
+
+  if (beamDiameter <= 0 || powerLimit <= 0) {
+    point.style.opacity = "0";
+    label.style.opacity = "0";
+    return;
+  }
+
+  const clampedD = Math.min(Math.max(beamDiameter, chart.minD), chart.maxD);
+  const clampedP = Math.min(Math.max(powerLimit, chart.minP), chart.maxP);
+  const x = chartCoord(clampedD, chart.minD, chart.maxD, chart.left, chart.right);
+  const y = chartCoord(clampedP, chart.minP, chart.maxP, chart.bottom, chart.top);
+  point.setAttribute("cx", x);
+  point.setAttribute("cy", y);
+  point.style.opacity = "1";
+  label.setAttribute("x", Math.min(x + 12, chart.right - 88));
+  label.setAttribute("y", Math.max(y - 12, chart.top + 18));
+  label.textContent = `${fmtPower(powerLimit)} mW`;
+  label.style.opacity = "1";
+}
+
+function updateDetectorModelDetails(profile) {
+  const details = document.querySelector("#detModelDetails");
+  if (!details) return;
+  details.hidden = !profile;
+  if (!profile) return;
+
+  setText("detSensorSpec", profile.sensor);
+  setText("detResolutionSpec", profile.resolution);
+  setText("detSpectralSpec", profile.spectral);
+  setText("detConditionSpec", profile.condition);
+}
+
+function updateDetector() {
+  const model = document.querySelector("#detModel")?.value || "dataray_cmos";
+  const profile = detectorProfiles[model];
+  const beamDiameter = numberValue("detBeam");
+
+  updateDetectorModelDetails(profile);
+
+  if (!profile || beamDiameter <= 0) {
+    setText("detLimit", null);
+    updateDetectorChart(0, 0, profile?.coefficient || 1);
+    return;
+  }
+
+  const limit = profile.coefficient * beamDiameter * beamDiameter;
+  setText("detLimit", fmtPower(limit), " mW");
+  updateDetectorChart(beamDiameter, limit, profile.coefficient);
 }
 
 function updateGrating() {
@@ -156,6 +274,7 @@ function updateCalculators() {
   updateCollimation();
   updateTelescope();
   updateFocus();
+  updateDetector();
   updateGrating();
 }
 
