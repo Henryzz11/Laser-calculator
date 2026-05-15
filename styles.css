@@ -268,6 +268,118 @@ h2 {
   fill: var(--teal);
 }
 
+.focus-input-area {
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.focus-input-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.field-group {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.focus-schematic svg {
+  max-height: 300px;
+}
+
+.focus-schematic .focus-beam {
+  fill: none;
+  stroke: #cf2e2e;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.focus-schematic .focus-measure {
+  stroke: #2d7fab;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.focus-schematic .focus-label {
+  fill: #2d7fab;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: none;
+}
+
+.focus-schematic #arrow-foc path {
+  fill: #cf2e2e;
+}
+
+.focus-schematic #measure-foc path {
+  fill: #2d7fab;
+}
+
+.focus-result-area {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.95fr) minmax(320px, 1fr);
+  gap: 18px;
+  padding: 18px;
+}
+
+.formula-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  padding: 16px;
+}
+
+.display-formula {
+  margin-top: 12px;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.variable-list {
+  display: grid;
+  grid-template-columns: minmax(54px, auto) 1fr;
+  gap: 8px 12px;
+  margin: 16px 0 0;
+}
+
+.variable-list dt {
+  color: var(--teal-dark);
+  font-weight: 850;
+}
+
+.variable-list dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.unit-note {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.focus-result-grid {
+  grid-template-columns: 1fr;
+}
+
+.focus-result-main {
+  min-height: 132px;
+  border-color: rgba(8, 127, 140, 0.28);
+  background: #fffdf9;
+}
+
+.focus-result-main strong {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+}
+
 .calc-grid {
   display: grid;
   grid-template-columns: minmax(260px, 0.72fr) minmax(320px, 1fr);
@@ -341,8 +453,13 @@ h2 {
 
 @media (max-width: 900px) {
   .calculator-shell,
-  .calc-grid {
+  .calc-grid,
+  .focus-result-area {
     grid-template-columns: 1fr;
+  }
+
+  .focus-input-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .calculator-tabs {
@@ -367,7 +484,8 @@ h2 {
   }
 
   .calculator-tabs,
-  .result-grid {
+  .result-grid,
+  .focus-input-grid {
     grid-template-columns: 1fr;
   }
 
@@ -377,6 +495,8 @@ h2 {
   }
 
   .calc-grid,
+  .focus-input-area,
+  .focus-result-area,
   .calc-heading {
     padding: 14px;
   }

@@ -13,7 +13,7 @@ https://henryzz11.github.io/Laser-calculator/
 - PER
 - Fiber collimation
 - Telescope
-- Focus to fiber
+- Focus spot size
 - Reflective grating equation
 
 This site is plain HTML, CSS, and JavaScript hosted by GitHub Pages.

@@ -23,7 +23,7 @@
           <button class="calc-tab active" data-calculator="per" type="button">PER</button>
           <button class="calc-tab" data-calculator="collimation" type="button">Fiber Collimation</button>
           <button class="calc-tab" data-calculator="telescope" type="button">Telescope</button>
-          <button class="calc-tab" data-calculator="focus" type="button">Focus to Fiber</button>
+          <button class="calc-tab" data-calculator="focus" type="button">Focus Spot Size</button>
           <button class="calc-tab" data-calculator="grating" type="button">Grating</button>
         </aside>
 
@@ -180,56 +180,91 @@
           <article class="calc-panel" id="calc-focus">
             <div class="calc-heading">
               <div>
-                <p class="panel-kicker">Gaussian mode matching</p>
-                <h2>Focus to Fiber</h2>
+                <p class="panel-kicker">Focused Gaussian beam</p>
+                <h2>Calculate Focus Spot Size</h2>
               </div>
-              <code>wf = 2 f lambda / (pi D)</code>
+              <code>s = 1.27 M^2 lambda f / (1000 d)</code>
             </div>
-            <figure class="schematic" aria-label="Focusing a Gaussian beam into fiber">
-              <svg viewBox="0 0 720 220" role="img">
+
+            <div class="focus-input-area">
+              <div class="focus-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="focBeamDiameter">Beam Diameter (mm)</label>
+                  <input id="focBeamDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="10.00">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="focM2">Laser Beam Parameter (M^2)</label>
+                  <input id="focM2" class="text-input calc-input" type="number" min="0.01" step="any" value="1">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="focWavelength">Wavelength (nm)</label>
+                  <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1064">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="focFocal">Lens Focal Length (mm)</label>
+                  <input id="focFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="100.00">
+                </div>
+              </div>
+            </div>
+
+            <figure class="schematic focus-schematic" aria-label="Focus spot size geometry">
+              <svg viewBox="0 0 760 280" role="img">
                 <defs>
                   <marker id="arrow-foc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                     <path d="M 0 0 L 10 5 L 0 10 z"></path>
                   </marker>
+                  <marker id="measure-foc" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
                 </defs>
-                <line class="axis" x1="36" y1="110" x2="680" y2="110"></line>
-                <line class="beam" x1="44" y1="68" x2="240" y2="68" marker-end="url(#arrow-foc)"></line>
-                <line class="beam" x1="44" y1="152" x2="240" y2="152" marker-end="url(#arrow-foc)"></line>
-                <path class="lens" d="M286 34 C332 74 332 146 286 186 C250 146 250 74 286 34 Z"></path>
-                <line class="beam soft" x1="314" y1="68" x2="510" y2="110"></line>
-                <line class="beam soft" x1="314" y1="152" x2="510" y2="110"></line>
-                <rect class="fiber" x="538" y="88" width="122" height="44" rx="22"></rect>
-                <circle class="core" cx="548" cy="110" r="14"></circle>
-                <line class="measure" x1="58" y1="68" x2="58" y2="152"></line>
-                <text x="72" y="116">D</text>
-                <text x="262" y="27">focus lens</text>
-                <text class="accent-label" x="462" y="92">waist</text>
-                <text x="560" y="78">fiber</text>
+                <line class="axis" x1="44" y1="138" x2="718" y2="138"></line>
+                <line class="focus-beam" x1="56" y1="82" x2="318" y2="82" marker-end="url(#arrow-foc)"></line>
+                <line class="focus-beam" x1="56" y1="194" x2="318" y2="194" marker-end="url(#arrow-foc)"></line>
+                <path class="lens" d="M356 36 C408 78 408 198 356 240 C314 198 314 78 356 36 Z"></path>
+                <line class="focus-beam" x1="386" y1="82" x2="616" y2="138"></line>
+                <line class="focus-beam" x1="386" y1="194" x2="616" y2="138"></line>
+                <path class="focus-beam" d="M616 138 C646 128 674 126 704 116"></path>
+                <path class="focus-beam" d="M616 138 C646 148 674 150 704 160"></path>
+                <rect class="fiber" x="704" y="114" width="36" height="48" rx="10"></rect>
+                <line class="measure focus-measure" x1="96" y1="82" x2="96" y2="194" marker-start="url(#measure-foc)" marker-end="url(#measure-foc)"></line>
+                <line class="measure focus-measure" x1="616" y1="116" x2="616" y2="160" marker-start="url(#measure-foc)" marker-end="url(#measure-foc)"></line>
+                <line class="measure focus-measure" x1="356" y1="244" x2="616" y2="244" marker-start="url(#measure-foc)" marker-end="url(#measure-foc)"></line>
+                <line class="axis" x1="356" y1="36" x2="356" y2="252"></line>
+                <line class="axis" x1="616" y1="96" x2="616" y2="252"></line>
+                <text class="focus-label" x="70" y="143">d</text>
+                <text class="focus-label" x="108" y="77">input beam diameter</text>
+                <text x="322" y="28">lens</text>
+                <text class="focus-label" x="476" y="266">focal length f</text>
+                <text class="focus-label" x="628" y="139">s</text>
+                <text class="focus-label" x="637" y="108">spot diameter</text>
               </svg>
             </figure>
-            <div class="calc-grid">
-              <div class="input-column">
-                <label class="field-label" for="focWavelength">Wavelength (nm)</label>
-                <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
 
-                <label class="field-label" for="focMfd">Fiber MFD (um)</label>
-                <input id="focMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="10.4">
+            <div class="focus-result-area">
+              <section class="formula-panel" aria-label="Focus spot size formula">
+                <p class="panel-kicker">Formula</p>
+                <div class="display-formula">s = 1.27 M^2 lambda f / (1000 d)</div>
+                <dl class="variable-list">
+                  <dt>s</dt>
+                  <dd>Focus spot size (um)</dd>
+                  <dt>M^2</dt>
+                  <dd>Laser beam parameter</dd>
+                  <dt>lambda</dt>
+                  <dd>Wavelength (nm)</dd>
+                  <dt>f</dt>
+                  <dd>Lens focal length (mm)</dd>
+                  <dt>d</dt>
+                  <dd>Input beam diameter (mm)</dd>
+                </dl>
+                <p class="unit-note">The 1000 factor converts nm-mm/mm into um, matching the default example result.</p>
+              </section>
 
-                <label class="field-label" for="focFocal">Lens focal length (mm)</label>
-                <input id="focFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="8">
-
-                <label class="field-label" for="focBeam">Input beam diameter (mm)</label>
-                <input id="focBeam" class="text-input calc-input" type="number" min="0.01" step="any" value="1.0">
-
-                <label class="field-label" for="focNa">Fiber NA (optional)</label>
-                <input id="focNa" class="text-input calc-input" type="number" min="0" step="any" value="0.12">
-              </div>
-              <div class="result-grid">
-                <div class="result-tile"><span>Focused waist</span><strong id="focWaist">-- um</strong></div>
-                <div class="result-tile"><span>Mode overlap</span><strong id="focOverlap">-- %</strong></div>
-                <div class="result-tile"><span>Optimal beam diameter</span><strong id="focOptimalD">-- mm</strong></div>
-                <div class="result-tile"><span>Focused NA</span><strong id="focNaOut">--</strong></div>
-                <div class="result-tile wide-result"><span>Mode waist ratio</span><strong id="focRatio">--</strong></div>
+              <div class="result-grid focus-result-grid">
+                <div class="result-tile focus-result-main"><span>Spot Size</span><strong id="focSpotSize">-- um</strong></div>
+                <div class="result-tile wide-result"><span>Substitution</span><strong id="focSubstitution">--</strong></div>
               </div>
             </div>
           </article>

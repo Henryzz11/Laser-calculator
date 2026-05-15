@@ -100,33 +100,24 @@ function updateTelescope() {
 }
 
 function updateFocus() {
-  const wavelengthMm = numberValue("focWavelength") * 1e-6;
-  const mfdMm = numberValue("focMfd") * 1e-3;
+  const beamDiameter = numberValue("focBeamDiameter");
+  const m2 = numberValue("focM2");
+  const wavelengthNm = numberValue("focWavelength");
   const fMm = numberValue("focFocal");
-  const beamDiameter = numberValue("focBeam");
-  const fiberNa = numberValue("focNa");
-  const fiberWaist = mfdMm / 2;
 
-  if (wavelengthMm <= 0 || fiberWaist <= 0 || fMm <= 0 || beamDiameter <= 0) {
-    ["focWaist", "focOverlap", "focOptimalD", "focNaOut", "focRatio"].forEach((id) => setText(id, null));
+  if (beamDiameter <= 0 || m2 <= 0 || wavelengthNm <= 0 || fMm <= 0) {
+    ["focSpotSize", "focSubstitution"].forEach((id) => setText(id, null));
     return;
   }
 
-  const focusedWaist = (2 * fMm * wavelengthMm) / (Math.PI * beamDiameter);
-  const overlap =
-    Math.pow((2 * focusedWaist * fiberWaist) / (focusedWaist * focusedWaist + fiberWaist * fiberWaist), 2) *
-    100;
-  const optimalDiameter = (2 * fMm * wavelengthMm) / (Math.PI * fiberWaist);
-  const focusedNa = beamDiameter / (2 * fMm);
-  const ratio = focusedWaist / fiberWaist;
-  const naText =
-    Number.isFinite(fiberNa) && fiberNa > 0 ? `${fmt(focusedNa, 4)} / ${fmt(fiberNa, 4)} fiber` : fmt(focusedNa, 4);
+  const spotSizeUm = (1.27 * m2 * wavelengthNm * fMm) / (1000 * beamDiameter);
+  const substitution = `1.27 x ${fmt(m2, 5)} x ${fmt(wavelengthNm, 6)} x ${fmt(fMm, 5)} / (1000 x ${fmt(
+    beamDiameter,
+    5,
+  )})`;
 
-  setText("focWaist", fmt(focusedWaist * 1000, 4), " um");
-  setText("focOverlap", fmt(overlap, 4), " %");
-  setText("focOptimalD", fmt(optimalDiameter, 4), " mm");
-  setText("focNaOut", naText);
-  setText("focRatio", `${fmt(ratio, 4)} x fiber mode waist`);
+  setText("focSpotSize", fmt(spotSizeUm, 4), " um");
+  setText("focSubstitution", `${substitution} = ${fmt(spotSizeUm, 4)} um`);
 }
 
 function updateGrating() {
