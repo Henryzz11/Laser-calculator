@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=lab-update-1">
+    <link rel="stylesheet" href="styles.css?v=detector-no-formula-1">
   </head>
   <body>
     <main class="app-shell">
@@ -23,7 +23,7 @@
 
       <section class="calculator-shell" aria-label="Optics calculators">
         <aside class="calculator-tabs" aria-label="Calculators">
-          <button class="calc-tab active" data-calculator="per" type="button">PER</button>
+          <button class="calc-tab active" data-calculator="per" type="button">Max/Min to dB</button>
           <button class="calc-tab" data-calculator="collimation" type="button">Fiber Collimation</button>
           <button class="calc-tab" data-calculator="telescope" type="button">Telescope</button>
           <button class="calc-tab" data-calculator="focus" type="button">Focus Spot Size</button>
@@ -35,43 +35,83 @@
           <article class="calc-panel active" id="calc-per">
             <div class="calc-heading">
               <div>
-                <p class="panel-kicker">Polarization extinction ratio</p>
-                <h2>PER Calculator</h2>
+                <p class="panel-kicker">Max to min power ratio</p>
+                <h2>Max / Min Power to dB</h2>
               </div>
-              <code>PER = 10 log10(Pmax / Pmin)</code>
+              <div class="math-pill" aria-label="dB equals 10 log base 10 of P max over P min">
+                <span class="math-formula math-formula-compact">
+                  <span class="math-var">dB</span>
+                  <span class="math-equals">=</span>
+                  <span>10&nbsp;log<sub>10</sub></span>
+                  <span class="formula-paren">(</span>
+                  <span class="math-fraction">
+                    <span class="math-numerator">P<sub>max</sub></span>
+                    <span class="math-denominator">P<sub>min</sub></span>
+                  </span>
+                  <span class="formula-paren">)</span>
+                </span>
+              </div>
             </div>
-            <figure class="schematic" aria-label="PER measurement with analyzer">
-              <svg viewBox="0 0 720 190" role="img">
-                <defs>
-                  <marker id="arrow-per" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
-                  </marker>
-                </defs>
-                <line class="beam" x1="48" y1="95" x2="235" y2="95" marker-end="url(#arrow-per)"></line>
-                <rect class="optic" x="262" y="48" width="54" height="94" rx="6"></rect>
-                <line class="axis" x1="289" y1="56" x2="289" y2="134"></line>
-                <line class="beam" x1="316" y1="95" x2="510" y2="95" marker-end="url(#arrow-per)"></line>
-                <rect class="detector" x="548" y="66" width="86" height="58" rx="8"></rect>
-                <text x="50" y="72">polarized input</text>
-                <text x="242" y="36">rotating analyzer</text>
-                <text x="540" y="54">power meter</text>
-                <text class="accent-label" x="390" y="80">Pmax / Pmin</text>
-              </svg>
-            </figure>
-            <div class="calc-grid">
-              <div class="input-column">
-                <label class="field-label" for="perPmax">Transmitted max power</label>
-                <input id="perPmax" class="text-input calc-input" type="number" min="0" step="any" value="10">
 
-                <label class="field-label" for="perPmin">Leakage min power</label>
-                <input id="perPmin" class="text-input calc-input" type="number" min="0" step="any" value="0.01">
+            <div class="calc-grid">
+              <div class="input-column power-ratio-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="powMax">Max power</label>
+                  <input id="powMax" class="text-input calc-input" type="number" min="0" step="any" value="10">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="powMaxUnit">Max unit</label>
+                  <select id="powMaxUnit" class="text-input calc-input">
+                    <option value="uw">uW</option>
+                    <option value="mw" selected>mW</option>
+                    <option value="w">W</option>
+                  </select>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="powMin">Min power</label>
+                  <input id="powMin" class="text-input calc-input" type="number" min="0" step="any" value="0.01">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="powMinUnit">Min unit</label>
+                  <select id="powMinUnit" class="text-input calc-input">
+                    <option value="uw">uW</option>
+                    <option value="mw" selected>mW</option>
+                    <option value="w">W</option>
+                  </select>
+                </div>
               </div>
               <div class="result-grid">
-                <div class="result-tile"><span>PER</span><strong id="perDb">-- dB</strong></div>
-                <div class="result-tile"><span>Leakage</span><strong id="perLeakage">-- %</strong></div>
-                <div class="result-tile"><span>Purity</span><strong id="perPurity">-- %</strong></div>
-                <div class="result-tile"><span>Power ratio</span><strong id="perRatio">--</strong></div>
+                <div class="result-tile"><span>Ratio in dB</span><strong id="powRatioDb">-- dB</strong></div>
+                <div class="result-tile"><span>Power ratio</span><strong id="powRatioLinear">--</strong></div>
+                <div class="result-tile"><span>Min / Max</span><strong id="powMinMax">-- %</strong></div>
+                <div class="result-tile"><span>Max - Min</span><strong id="powDelta">-- mW</strong></div>
               </div>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="Max to min power dB formula">
+                <p class="panel-kicker">Formula</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line">
+                    <span class="math-var">dB</span>
+                    <span class="math-equals">=</span>
+                    <span>10&nbsp;log<sub>10</sub></span>
+                    <span class="formula-paren">(</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">P<sub>max</sub></span>
+                      <span class="math-denominator">P<sub>min</sub></span>
+                    </span>
+                    <span class="formula-paren">)</span>
+                  </div>
+                </div>
+                <dl class="variable-list">
+                  <dt>P<sub>max</sub></dt><dd>Maximum measured power, converted to W internally</dd>
+                  <dt>P<sub>min</sub></dt><dd>Minimum measured power, converted to W internally</dd>
+                </dl>
+              </section>
             </div>
           </article>
 
@@ -131,6 +171,12 @@
                   <input id="colFocalMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="11.0">
                 </div>
               </div>
+
+              <div class="result-grid collimation-result-grid inline-result-grid">
+                <div class="result-tile collimation-result-main"><span>Collimated beam diameter</span><strong id="colDiameter">-- mm</strong></div>
+                <div class="result-tile"><span>Full-angle divergence</span><strong id="colDivergence">-- mrad</strong></div>
+                <div class="result-tile"><span>Rayleigh length</span><strong id="colRayleigh">-- m</strong></div>
+              </div>
             </div>
 
             <figure class="schematic collimation-schematic" aria-label="Fiber collimation geometry">
@@ -169,11 +215,7 @@
                 </dl>
               </section>
 
-              <div class="result-grid collimation-result-grid">
-                <div class="result-tile collimation-result-main"><span>Collimated beam diameter</span><strong id="colDiameter">-- mm</strong></div>
-                <div class="result-tile"><span>Full-angle divergence</span><strong id="colDivergence">-- mrad</strong></div>
-                <div class="result-tile"><span>Rayleigh length</span><strong id="colRayleigh">-- m</strong></div>
-              </div>
+
             </div>
           </article>
 
@@ -183,32 +225,18 @@
                 <p class="panel-kicker">Afocal beam relay</p>
                 <h2>Telescope</h2>
               </div>
-              <code>M = f2 / f1</code>
+              <div class="math-pill" aria-label="M equals f2 over f1">
+                <span class="math-formula math-formula-compact">
+                  <span class="math-var">M</span>
+                  <span class="math-equals">=</span>
+                  <span class="math-fraction">
+                    <span class="math-numerator">f<sub>2</sub></span>
+                    <span class="math-denominator">f<sub>1</sub></span>
+                  </span>
+                </span>
+              </div>
             </div>
-            <figure class="schematic" aria-label="Afocal telescope beam expansion">
-              <svg viewBox="0 0 720 220" role="img">
-                <defs>
-                  <marker id="arrow-tel" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
-                  </marker>
-                </defs>
-                <line class="axis" x1="34" y1="110" x2="686" y2="110"></line>
-                <line class="beam" x1="42" y1="94" x2="174" y2="94" marker-end="url(#arrow-tel)"></line>
-                <line class="beam" x1="42" y1="126" x2="174" y2="126" marker-end="url(#arrow-tel)"></line>
-                <path class="lens" d="M220 38 C265 76 265 144 220 182 C185 144 185 76 220 38 Z"></path>
-                <line class="beam soft" x1="246" y1="94" x2="472" y2="58"></line>
-                <line class="beam soft" x1="246" y1="126" x2="472" y2="162"></line>
-                <path class="lens" d="M510 28 C570 74 570 146 510 192 C466 146 466 74 510 28 Z"></path>
-                <line class="beam" x1="548" y1="58" x2="678" y2="58" marker-end="url(#arrow-tel)"></line>
-                <line class="beam" x1="548" y1="162" x2="678" y2="162" marker-end="url(#arrow-tel)"></line>
-                <line class="measure" x1="220" y1="196" x2="510" y2="196"></line>
-                <text x="200" y="28">L1</text>
-                <text x="494" y="24">L2</text>
-                <text class="accent-label" x="330" y="213">spacing</text>
-                <text x="44" y="77">Din</text>
-                <text x="626" y="44">Dout</text>
-              </svg>
-            </figure>
+
             <div class="calc-grid">
               <div class="input-column">
                 <label class="field-label" for="telType">Configuration</label>
@@ -229,10 +257,67 @@
               <div class="result-grid">
                 <div class="result-tile"><span>Beam magnification</span><strong id="telMag">-- x</strong></div>
                 <div class="result-tile"><span>Output diameter</span><strong id="telDout">-- mm</strong></div>
-                <div class="result-tile"><span>Lens spacing</span><strong id="telLength">-- mm</strong></div>
+                <div class="result-tile"><span>Ideal lens spacing</span><strong id="telLength">-- mm</strong></div>
                 <div class="result-tile"><span>Angular scale</span><strong id="telAngular">-- x</strong></div>
               </div>
             </div>
+            <figure class="schematic telescope-dynamic-schematic" aria-label="Dynamic telescope beam expander diagram driven by focal length inputs">
+              <svg id="telDynamicSvg" class="telescope-dynamic-svg" viewBox="0 0 900 640" role="img">
+                <rect class="tel-bg" width="900" height="640" rx="16"></rect>
+                <text id="telSvgTitle" class="tel-title" x="40" y="56">Keplerian Beam Expander</text>
+
+                <g class="tel-metric-labels">
+                  <text x="600" y="44">Spacing d</text>
+                  <text x="690" y="44">Condition</text>
+                  <text x="822" y="44">Mag.</text>
+                </g>
+                <g class="tel-metric-values">
+                  <text id="telMetricSpacing" x="600" y="76">--</text>
+                  <text id="telMetricCondition" x="690" y="76">--</text>
+                  <text id="telMetricMagnification" x="822" y="76">--</text>
+                </g>
+
+                <rect class="tel-stage" x="40" y="104" width="820" height="430" rx="16"></rect>
+                <g id="telSimulation">
+                  <line class="tel-axis" x1="62" y1="320" x2="838" y2="320"></line>
+                  <polygon id="telBeamFill" class="tel-beam-fill" points=""></polygon>
+                  <polyline id="telBeamTop" class="tel-beam-edge" points=""></polyline>
+                  <polyline id="telBeamBottom" class="tel-beam-edge" points=""></polyline>
+                  <line class="tel-center-ray" x1="62" y1="320" x2="838" y2="320"></line>
+
+                  <line id="telVirtualTop" class="tel-virtual-ray" x1="0" y1="0" x2="0" y2="0"></line>
+                  <line id="telVirtualBottom" class="tel-virtual-ray" x1="0" y1="0" x2="0" y2="0"></line>
+                  <circle id="telFocusDot" class="tel-focus-dot" cx="0" cy="0" r="4"></circle>
+                  <text id="telFocusLabel" class="tel-focus-label" x="0" y="0">F1</text>
+
+                  <path id="telLens1" class="tel-lens tel-positive-lens" d=""></path>
+                  <path id="telLens2" class="tel-lens tel-positive-lens" d=""></path>
+                  <text id="telLens1Label" class="tel-label" x="0" y="0" text-anchor="middle">L1</text>
+                  <text id="telLens2Label" class="tel-label" x="0" y="0" text-anchor="middle">L2</text>
+                  <text id="telLens1F" class="tel-small-label" x="0" y="0" text-anchor="middle">f1</text>
+                  <text id="telLens2F" class="tel-small-label" x="0" y="0" text-anchor="middle">f2</text>
+
+                  <line id="telSpacingLine" class="tel-measure" x1="0" y1="508" x2="0" y2="508"></line>
+                  <text id="telSpacingLabel" class="tel-accent-label" x="0" y="526" text-anchor="middle">spacing</text>
+
+                  <rect id="telStateBox" class="tel-state-box" x="278" y="118" width="344" height="36" rx="18"></rect>
+                  <text id="telStateText" class="tel-state-text" x="450" y="142" text-anchor="middle">State</text>
+                  <text class="tel-label" x="64" y="288">Din</text>
+                  <text id="telDoutLabel" class="tel-label" x="800" y="0">Dout</text>
+                </g>
+
+                <g class="tel-input-summary">
+                  <text x="60" y="592">Driven by calculator inputs</text>
+                  <text id="telInputSummary" x="286" y="592">--</text>
+                </g>
+              </svg>
+              <div class="tel-spacing-controls">
+                <label class="field-label" for="telSpacing">Lens spacing d (mm)</label>
+                <input id="telSpacing" class="calc-input tel-spacing-slider" type="range" min="30" max="320" step="1" value="200">
+                <output id="telSpacingValue" class="tel-spacing-value" for="telSpacing">200 mm</output>
+                <button id="telSpacingReset" class="tel-spacing-reset" type="button">Reset to collimated</button>
+              </div>
+            </figure>
           </article>
 
           <article class="calc-panel" id="calc-focus">
@@ -266,7 +351,7 @@
                 </div>
 
                 <div class="field-group">
-                  <label class="field-label" for="focWavelength">Wavelength (nm)</label>
+                  <label class="field-label" for="focWavelength">Wavelength &lambda; (nm)</label>
                   <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1064">
                 </div>
 
@@ -274,6 +359,10 @@
                   <label class="field-label" for="focFocal">Lens Focal Length (mm)</label>
                   <input id="focFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="100.00">
                 </div>
+              </div>
+
+              <div class="result-grid focus-result-grid">
+                <div class="result-tile focus-result-main"><span>Spot Size</span><strong id="focSpotSize">-- um</strong></div>
               </div>
             </div>
 
@@ -306,9 +395,7 @@
                 </dl>
               </section>
 
-              <div class="result-grid focus-result-grid">
-                <div class="result-tile focus-result-main"><span>Spot Size</span><strong id="focSpotSize">-- um</strong></div>
-              </div>
+
             </div>
           </article>
 
@@ -327,9 +414,23 @@
               </select>
             </div>
 
-            <section id="detModelDetails" class="detector-model-panel" aria-label="Selected detector model details">
-              <div class="detector-formula-pill"><span>P_limit = 127.63 D^2</span></div>
+            <div class="detector-layout detector-calc-layout">
+              <div class="input-column">
+                <label class="field-label" for="detBeam">13.5% beam diameter D (mm)</label>
+                <input id="detBeam" class="text-input calc-input" type="number" min="0.01" step="any" value="0.10">
 
+                <label class="field-label" for="detWavelength">Wavelength</label>
+                <select id="detWavelength" class="text-input calc-input">
+                  <option value="1064">1064 nm</option>
+                </select>
+              </div>
+
+              <div class="result-grid detector-result-grid">
+                <div class="result-tile detector-result-main"><span>CW saturation power limit</span><strong id="detLimit">-- mW</strong></div>
+              </div>
+            </div>
+
+            <section id="detModelDetails" class="detector-model-panel" aria-label="Selected detector model details">
               <div class="detector-spec-band" aria-label="Detector model specifications">
                 <div class="detector-spec"><span>Sensor</span><strong id="detSensorSpec">1 inch CMOS, 11.3 x 11.3 mm active area</strong></div>
                 <div class="detector-spec"><span>Resolution</span><strong id="detResolutionSpec">2048 x 2048, 5.5 x 5.5 um pixels</strong></div>
@@ -378,21 +479,7 @@
               </figure>
             </section>
 
-            <div class="detector-layout detector-calc-layout">
-              <div class="input-column">
-                <label class="field-label" for="detBeam">13.5% beam diameter D (mm)</label>
-                <input id="detBeam" class="text-input calc-input" type="number" min="0.01" step="any" value="0.10">
 
-                <label class="field-label" for="detWavelength">Wavelength</label>
-                <select id="detWavelength" class="text-input calc-input">
-                  <option value="1064">1064 nm</option>
-                </select>
-              </div>
-
-              <div class="result-grid detector-result-grid">
-                <div class="result-tile detector-result-main"><span>CW saturation power limit</span><strong id="detLimit">-- mW</strong></div>
-              </div>
-            </div>
           </article>
 
           <article class="calc-panel" id="calc-grating">
@@ -401,65 +488,89 @@
                 <p class="panel-kicker">Reflective grating equation</p>
                 <h2>Grating</h2>
               </div>
-              <code>m lambda = d (sin alpha + sin beta)</code>
+              <div class="math-pill" aria-label="m lambda equals d times sine alpha plus sine beta">
+                <span class="math-formula math-formula-compact">
+                  <span class="math-var">m&lambda;</span>
+                  <span class="math-equals">=</span>
+                  <span>d&nbsp;(sin&nbsp;&alpha;&nbsp;+&nbsp;sin&nbsp;&beta;)</span>
+                </span>
+              </div>
             </div>
-            <figure class="schematic" aria-label="Reflective grating angles">
-              <svg viewBox="0 0 720 220" role="img">
-                <defs>
-                  <marker id="arrow-gra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
-                  </marker>
-                </defs>
-                <line class="grating" x1="168" y1="168" x2="560" y2="168"></line>
-                <g class="grooves">
-                  <line x1="188" y1="168" x2="212" y2="126"></line>
-                  <line x1="226" y1="168" x2="250" y2="126"></line>
-                  <line x1="264" y1="168" x2="288" y2="126"></line>
-                  <line x1="302" y1="168" x2="326" y2="126"></line>
-                  <line x1="340" y1="168" x2="364" y2="126"></line>
-                  <line x1="378" y1="168" x2="402" y2="126"></line>
-                  <line x1="416" y1="168" x2="440" y2="126"></line>
-                  <line x1="454" y1="168" x2="478" y2="126"></line>
-                  <line x1="492" y1="168" x2="516" y2="126"></line>
-                </g>
-                <line class="normal" x1="364" y1="38" x2="364" y2="184"></line>
-                <line class="beam" x1="158" y1="48" x2="344" y2="150" marker-end="url(#arrow-gra)"></line>
-                <line class="beam" x1="384" y1="150" x2="574" y2="55" marker-end="url(#arrow-gra)"></line>
-                <path class="angle" d="M335 144 A56 56 0 0 1 364 112"></path>
-                <path class="angle" d="M364 112 A62 62 0 0 1 417 140"></path>
-                <text x="166" y="39">incident</text>
-                <text x="512" y="45">diffracted</text>
-                <text class="accent-label" x="310" y="109">alpha</text>
-                <text class="accent-label" x="408" y="116">beta</text>
-                <text x="270" y="199">groove period d</text>
-              </svg>
-            </figure>
+
             <div class="calc-grid">
               <div class="input-column">
                 <label class="field-label" for="graDensity">Line density (lines/mm)</label>
                 <input id="graDensity" class="text-input calc-input" type="number" min="1" step="any" value="1200">
 
-                <label class="field-label" for="graWavelength">Wavelength (nm)</label>
+                <label class="field-label" for="graWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
                 <input id="graWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
 
                 <label class="field-label" for="graOrder">Diffraction order</label>
                 <input id="graOrder" class="text-input calc-input" type="number" min="1" step="1" value="1">
 
-                <label class="field-label" for="graAlpha">Incidence angle alpha (deg)</label>
+                <label class="field-label" for="graAlpha">Incidence angle <span class="math-inline-symbol">&alpha;</span> (deg)</label>
                 <input id="graAlpha" class="text-input calc-input" type="number" step="any" value="35">
               </div>
               <div class="result-grid">
-                <div class="result-tile"><span>Diffraction beta</span><strong id="graBeta">-- deg</strong></div>
+                <div class="result-tile"><span>Diffraction <span class="math-inline-symbol">&beta;</span></span><strong id="graBeta">-- deg</strong></div>
                 <div class="result-tile"><span>Littrow angle</span><strong id="graLittrow">-- deg</strong></div>
                 <div class="result-tile"><span>Groove period</span><strong id="graPeriod">-- nm</strong></div>
                 <div class="result-tile"><span>Angular dispersion</span><strong id="graDispersion">-- mrad/nm</strong></div>
               </div>
             </div>
+            <figure class="schematic grating-schematic" aria-label="Reflective grating diffraction orders">
+              <svg class="provided-grating-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 550" width="100%" height="100%" role="img">
+                <defs>
+                  <marker id="arrow-solid-mid" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1 L 8 5 L 0 9 Z" fill="#0ea5e9"></path>
+                  </marker>
+                  <marker id="arrow-solid-end" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 1 L 8 5 L 0 9 Z" fill="#0ea5e9"></path>
+                  </marker>
+                </defs>
+
+                <rect width="550" height="550" fill="transparent"></rect>
+
+                <path d="M 50 50 L 150 50 L 150 105 A 15 15 0 0 0 150 135 L 150 205 A 15 15 0 0 0 150 235 L 150 305 A 15 15 0 0 0 150 335 L 150 405 A 15 15 0 0 0 150 435 L 150 500 L 50 500 Z" fill="#cbd5e1" stroke="#1e293b" stroke-width="3" stroke-linejoin="round"></path>
+
+                <line x1="150" y1="120" x2="190" y2="120" stroke="#475569" stroke-width="1.5"></line>
+                <line x1="150" y1="220" x2="190" y2="220" stroke="#475569" stroke-width="1.5"></line>
+                <line x1="180" y1="120" x2="180" y2="220" stroke="#475569" stroke-width="1.5"></line>
+                <path d="M 176 128 L 180 120 L 184 128 M 176 212 L 180 220 L 184 212" fill="none" stroke="#475569" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                <text x="170" y="176" text-anchor="end" font-family="'Times New Roman', serif" font-style="italic" font-size="22" fill="#1e293b">a</text>
+
+                <line x1="150" y1="220" x2="270" y2="220" stroke="#475569" stroke-width="1.5"></line>
+                <line x1="150" y1="320" x2="270" y2="320" stroke="#475569" stroke-width="1.5"></line>
+
+                <polyline points="400,75 275,147.5 150,220" fill="none" stroke="#0ea5e9" stroke-width="2.5" marker-mid="url(#arrow-solid-mid)"></polyline>
+                <line x1="150" y1="220" x2="400" y2="365" stroke="#0ea5e9" stroke-width="2.5" marker-end="url(#arrow-solid-end)"></line>
+                <line x1="150" y1="220" x2="350" y2="420" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-solid-end)"></line>
+
+                <text x="410" y="370" font-family="'Times New Roman', serif" font-style="italic" font-size="18" fill="#1e293b">m=0</text>
+                <text x="360" y="425" font-family="'Times New Roman', serif" font-style="italic" font-size="18" fill="#1e293b">m=1</text>
+
+                <path d="M 230 220 A 80 80 0 0 0 219.2 179.9" fill="none" stroke="#1e293b" stroke-width="1.5"></path>
+                <text x="236" y="195" font-family="'Times New Roman', serif" font-style="italic" font-size="22" fill="#1e293b">&#952;<tspan dy="0.3em" font-size="0.75em">i</tspan></text>
+
+                <polyline points="400,175 275,247.5 150,320" fill="none" stroke="#0ea5e9" stroke-width="2.5" marker-mid="url(#arrow-solid-mid)"></polyline>
+                <line x1="150" y1="320" x2="400" y2="465" stroke="#0ea5e9" stroke-width="2.5" marker-end="url(#arrow-solid-end)"></line>
+                <line x1="150" y1="320" x2="320" y2="490" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-solid-end)"></line>
+
+                <text x="410" y="470" font-family="'Times New Roman', serif" font-style="italic" font-size="18" fill="#1e293b">m=0</text>
+                <text x="330" y="495" font-family="'Times New Roman', serif" font-style="italic" font-size="18" fill="#1e293b">m=1</text>
+
+                <path d="M 220 320 A 70 70 0 0 1 210.6 355.1" fill="none" stroke="#1e293b" stroke-width="1.5"></path>
+                <text x="226" y="348" font-family="'Times New Roman', serif" font-style="italic" font-size="22" fill="#1e293b">&#952;<tspan dy="0.3em" font-size="0.75em">m=0</tspan></text>
+
+                <path d="M 250 320 A 100 100 0 0 1 220.7 390.7" fill="none" stroke="#1e293b" stroke-width="1.5"></path>
+                <text x="256" y="385" font-family="'Times New Roman', serif" font-style="italic" font-size="22" fill="#1e293b">&#952;<tspan dy="0.3em" font-size="0.75em">m=1</tspan></text>
+              </svg>
+            </figure>
           </article>
         </div>
       </section>
     </main>
 
-    <script src="app.js?v=lab-update-1"></script>
+    <script src="app.js?v=detector-no-formula-1"></script>
   </body>
 </html>

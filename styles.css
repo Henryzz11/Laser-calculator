@@ -241,6 +241,160 @@ h2 {
   stroke-linecap: round;
 }
 
+.telescope-dynamic-schematic {
+  background: #11151a;
+}
+
+.telescope-dynamic-schematic .telescope-dynamic-svg {
+  display: block;
+  width: 100%;
+  max-height: 520px;
+}
+
+.telescope-dynamic-schematic .tel-bg {
+  fill: #1e2126;
+}
+
+.telescope-dynamic-schematic .tel-stage {
+  fill: #11151a;
+}
+
+.telescope-dynamic-schematic .tel-title,
+.telescope-dynamic-schematic .tel-metric-values text {
+  fill: #f3f4f6;
+  font-weight: 850;
+}
+
+.telescope-dynamic-schematic .tel-title {
+  font-size: 22px;
+  letter-spacing: 0.02em;
+}
+
+.telescope-dynamic-schematic .tel-metric-labels text,
+.telescope-dynamic-schematic .tel-small-label,
+.telescope-dynamic-schematic .tel-input-summary text {
+  fill: #a7b0bd;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.telescope-dynamic-schematic .tel-metric-values text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 18px;
+}
+
+.telescope-dynamic-schematic .tel-axis {
+  stroke: #5f7182;
+  stroke-width: 2;
+}
+
+.telescope-dynamic-schematic .tel-center-ray {
+  stroke: #93c5fd;
+  stroke-width: 2;
+  opacity: 0.55;
+}
+
+.telescope-dynamic-schematic .tel-beam-fill {
+  fill: #3b82f6;
+  opacity: 0.16;
+}
+
+.telescope-dynamic-schematic .tel-beam-edge {
+  fill: none;
+  stroke: #93c5fd;
+  stroke-width: 3;
+  opacity: 0.88;
+}
+
+.telescope-dynamic-schematic .tel-lens {
+  fill: rgba(255, 255, 255, 0.1);
+  stroke: #e5e7eb;
+  stroke-width: 3;
+}
+
+.telescope-dynamic-schematic .tel-negative-lens {
+  fill: rgba(196, 147, 63, 0.16);
+  stroke: #f6c56f;
+}
+
+.telescope-dynamic-schematic .tel-virtual-ray {
+  stroke: #9ca3af;
+  stroke-width: 2;
+  stroke-dasharray: 7 8;
+}
+
+.telescope-dynamic-schematic .tel-focus-dot {
+  fill: #fca5a5;
+}
+
+.telescope-dynamic-schematic .tel-focus-label {
+  fill: #fca5a5;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.telescope-dynamic-schematic .tel-label,
+.telescope-dynamic-schematic .tel-state-text {
+  fill: #f8fafc;
+  font-size: 15px;
+  font-weight: 850;
+}
+
+.telescope-dynamic-schematic .tel-accent-label {
+  fill: #4ade80;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.telescope-dynamic-schematic .tel-measure {
+  stroke: #4ade80;
+  stroke-width: 3;
+}
+
+.telescope-dynamic-schematic .tel-state-box {
+  fill: #11151a;
+  stroke: #4ade80;
+  stroke-width: 2;
+}
+
+.tel-spacing-controls {
+  display: grid;
+  grid-template-columns: minmax(150px, auto) minmax(180px, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 12px 2px;
+}
+
+.tel-spacing-slider {
+  width: 100%;
+  accent-color: var(--teal);
+}
+
+.tel-spacing-value {
+  min-width: 78px;
+  border: 1px solid #6b7280;
+  border-radius: var(--radius);
+  color: #ffffff;
+  background: #242a31;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-weight: 800;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.tel-spacing-reset {
+  border: 1px solid #4b5563;
+  border-radius: var(--radius);
+  background: #374151;
+  color: #ffffff;
+  padding: 9px 14px;
+  font-weight: 800;
+}
+
+.tel-spacing-reset:hover {
+  background: #4b5563;
+}
+
 .schematic .grating {
   stroke: #5b6368;
   stroke-width: 6;
@@ -258,6 +412,81 @@ h2 {
   stroke: var(--gold);
   stroke-width: 4;
   stroke-linecap: round;
+}
+
+.grating-schematic {
+  background: #ffffff;
+}
+
+.grating-schematic svg {
+  max-height: 430px;
+}
+
+.grating-schematic .provided-grating-svg {
+  display: block;
+  width: 100%;
+  max-height: 520px;
+}
+
+.grating-schematic .provided-grating-svg text {
+  fill: revert;
+  font-size: revert;
+  font-weight: revert;
+  font-family: revert;
+}
+
+.grating-schematic #arrow-solid-mid path,
+.grating-schematic #arrow-solid-end path {
+  fill: #0ea5e9;
+}
+
+.grating-body {
+  fill: #c8c8c8;
+  stroke: #101010;
+  stroke-width: 5;
+}
+
+.grating-rays line {
+  stroke: #21c8ff;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.grating-rays .diffracted-dashed {
+  stroke-width: 4;
+  stroke-dasharray: 10 8;
+  opacity: 0.82;
+}
+
+.grating-normal,
+.grating-period,
+.grating-period-tick {
+  stroke: #30343a;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.grating-angle {
+  fill: none;
+  stroke: #30343a;
+  stroke-width: 3;
+}
+
+.grating-symbol,
+.grating-order {
+  fill: #243040;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.grating-order {
+  font-size: 24px;
+}
+
+#arrow-gra-blue path {
+  fill: #21c8ff;
 }
 
 .schematic marker path {
@@ -339,9 +568,7 @@ h2 {
 }
 
 .collimation-result-area {
-  display: grid;
-  grid-template-columns: minmax(300px, 1fr) minmax(320px, 1fr);
-  gap: 18px;
+  display: block;
   padding: 18px;
 }
 
@@ -371,7 +598,7 @@ h2 {
 }
 
 .collimation-result-grid {
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .collimation-result-main {
@@ -448,6 +675,13 @@ h2 {
   display: inline-block;
 }
 
+.math-inline-symbol {
+  display: inline-block;
+  text-transform: none;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+}
+
 .math-fraction {
   display: inline-grid;
   grid-template-rows: auto auto;
@@ -466,6 +700,14 @@ h2 {
   padding-top: 4px;
 }
 
+.formula-paren {
+  display: inline-block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.85em;
+  font-weight: 700;
+  line-height: 0.7;
+}
+
 .focus-schematic {
   background: #ffffff;
 }
@@ -478,10 +720,11 @@ h2 {
 }
 
 .focus-result-area {
-  display: grid;
-  grid-template-columns: minmax(300px, 1fr) minmax(240px, 0.58fr);
-  gap: 18px;
-  align-items: stretch;
+  display: block;
+  padding: 18px;
+}
+
+.formula-area {
   padding: 18px;
 }
 
@@ -534,24 +777,6 @@ h2 {
 
 .detector-model-panel[hidden] {
   display: none;
-}
-
-.detector-formula-pill {
-  padding: 18px 18px 0;
-  background: #ffffff;
-}
-
-.detector-formula-pill span {
-  display: inline-block;
-  min-width: min(100%, 380px);
-  border: 1px solid #d8d0c5;
-  border-radius: var(--radius);
-  background: #fbf7ef;
-  color: #4b5358;
-  padding: 11px 13px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: 1rem;
-  font-weight: 700;
 }
 
 .detector-spec-band {
@@ -649,13 +874,15 @@ h2 {
 
 .detector-layout {
   display: grid;
-  grid-template-columns: minmax(260px, 0.72fr) minmax(320px, 1fr);
-  gap: 18px;
+  grid-template-columns: 1fr;
+  gap: 14px;
   padding: 18px;
 }
 
 .detector-calc-layout {
   border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
 }
 
 .detector-result-grid {
@@ -674,15 +901,27 @@ h2 {
 
 .calc-grid {
   display: grid;
-  grid-template-columns: minmax(260px, 0.72fr) minmax(320px, 1fr);
-  gap: 18px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
 }
 
 .input-column {
   display: grid;
   align-content: start;
   gap: 10px;
+}
+
+.input-grid-2,
+.power-ratio-input-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.inline-result-grid {
+  margin-top: 14px;
 }
 
 .field-label {
@@ -713,6 +952,19 @@ h2 {
   align-content: start;
 }
 
+.result-grid.collimation-result-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.result-grid.focus-result-grid,
+.result-grid.detector-result-grid {
+  grid-template-columns: 1fr;
+}
+
+.focus-input-area > .result-grid {
+  margin-top: 14px;
+}
+
 .result-tile {
   min-height: 112px;
   border: 1px solid var(--line);
@@ -721,7 +973,7 @@ h2 {
   padding: 15px;
 }
 
-.result-tile span {
+.result-tile > span {
   display: block;
   color: var(--muted);
   font-size: 0.77rem;
@@ -746,10 +998,12 @@ h2 {
 @media (max-width: 900px) {
   .calculator-shell,
   .calc-grid,
-  .focus-result-area,
-  .collimation-result-area,
   .detector-layout {
     grid-template-columns: 1fr;
+  }
+
+  .collimation-result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .detector-spec-band {
@@ -774,6 +1028,11 @@ h2 {
   .schematic {
     padding: 12px 14px;
   }
+
+  .tel-spacing-controls {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
 }
 
 @media (max-width: 560px) {
@@ -786,6 +1045,9 @@ h2 {
   .result-grid,
   .focus-input-grid,
   .collimation-input-grid,
+  .collimation-result-grid,
+  .input-grid-2,
+  .power-ratio-input-grid,
   .detector-spec-band {
     grid-template-columns: 1fr;
   }
@@ -803,7 +1065,6 @@ h2 {
   .detector-layout,
   .detector-spec-band,
   .detector-model-select,
-  .detector-formula-pill,
   .calc-heading {
     padding: 14px;
   }

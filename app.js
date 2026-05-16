@@ -1,5 +1,7 @@
 const state = {
   activeCalculator: "per",
+  telescopeSpacingMode: "auto",
+  telescopeSignature: "",
 };
 
 function numberValue(id) {
@@ -38,25 +40,38 @@ function switchCalculator(name) {
   });
 }
 
+function powerToW(value, unit) {
+  if (unit === "w") return value;
+  if (unit === "mw") return value / 1000;
+  return value / 1000000;
+}
+
 function updatePer() {
-  const pMax = numberValue("perPmax");
-  const pMin = numberValue("perPmin");
+  const pMax = numberValue("powMax");
+  const pMin = numberValue("powMin");
+  const maxUnit = document.querySelector("#powMaxUnit")?.value || "mw";
+  const minUnit = document.querySelector("#powMinUnit")?.value || "mw";
   if (pMax <= 0 || pMin <= 0) {
-    setText("perDb", null);
-    setText("perLeakage", null);
-    setText("perPurity", null);
-    setText("perRatio", null);
+    ["powRatioDb", "powRatioLinear", "powMinMax", "powDelta"].forEach((id) => setText(id, null));
     return;
   }
 
-  const ratio = pMax / pMin;
-  const perDb = 10 * Math.log10(ratio);
-  const leakage = (pMin / pMax) * 100;
-  const purity = (pMax / (pMax + pMin)) * 100;
-  setText("perDb", fmt(perDb, 4), " dB");
-  setText("perLeakage", fmt(leakage, 4), " %");
-  setText("perPurity", fmt(purity, 5), " %");
-  setText("perRatio", `${fmt(ratio, 4)}:1`);
+  const pMaxW = powerToW(pMax, maxUnit);
+  const pMinW = powerToW(pMin, minUnit);
+  if (pMaxW <= 0 || pMinW <= 0) {
+    ["powRatioDb", "powRatioLinear", "powMinMax", "powDelta"].forEach((id) => setText(id, null));
+    return;
+  }
+
+  const ratio = pMaxW / pMinW;
+  const ratioDb = 10 * Math.log10(ratio);
+  const minMaxPercent = (pMinW / pMaxW) * 100;
+  const deltaMw = (pMaxW - pMinW) * 1000;
+
+  setText("powRatioDb", fmt(ratioDb, 5), " dB");
+  setText("powRatioLinear", `${fmt(ratio, 5)}:1`);
+  setText("powMinMax", fmt(minMaxPercent, 5), " %");
+  setText("powDelta", fmt(deltaMw, 5), " mW");
 }
 
 function setCollimationMethod(method) {
@@ -111,6 +126,207 @@ function updateCollimation() {
   setText("colRayleigh", fmt(rayleighLengthM, 4), " m");
 }
 
+function setSvgText(id, value) {
+  const element = document.querySelector(`#${id}`);
+  if (element) element.textContent = value;
+}
+
+function setSvgAttr(id, attrs) {
+  const element = document.querySelector(`#${id}`);
+  if (!element) return;
+  Object.entries(attrs).forEach(([key, value]) => element.setAttribute(key, value));
+}
+
+function setSvgVisible(id, visible) {
+  const element = document.querySelector(`#${id}`);
+  if (element) element.style.display = visible ? "" : "none";
+}
+
+function positiveLensPath(x, top = 142, bottom = 498, bow = 28) {
+  const mid = (top + bottom) / 2;
+  return `M ${x} ${top} Q ${x + bow} ${mid} ${x} ${bottom} Q ${x - bow} ${mid} ${x} ${top}`;
+}
+
+function negativeLensPath(x, top = 172, bottom = 468, bow = 22, width = 52) {
+  const mid = (top + bottom) / 2;
+  return `M ${x - width / 2} ${top} Q ${x} ${mid} ${x - width / 2} ${bottom} L ${x + width / 2} ${bottom} Q ${x} ${mid} ${x + width / 2} ${top} Z`;
+}
+
+function idealTelescopeSpacing(type, f1, f2) {
+  return type === "keplerian" ? f1 + f2 : f2 - f1;
+}
+
+function configureTelescopeSpacingSlider(type, f1, f2, idealLength) {
+  const slider = document.querySelector("#telSpacing");
+  const value = document.querySelector("#telSpacingValue");
+  const reset = document.querySelector("#telSpacingReset");
+  const valid = Number.isFinite(idealLength) && idealLength > 0;
+  if (!slider || !value) return valid ? idealLength : NaN;
+
+  const signature = `${type}:${f1}:${f2}`;
+  if (state.telescopeSignature !== signature) {
+    state.telescopeSignature = signature;
+    state.telescopeSpacingMode = "auto";
+  }
+
+  const min = valid
+    ? Math.max(1, Math.round(type === "keplerian" ? f1 * 0.6 : idealLength * 0.35))
+    : 1;
+  const max = valid
+    ? Math.max(min + 1, Math.round(idealLength + f2 * 0.8))
+    : 2;
+  slider.min = String(min);
+  slider.max = String(max);
+  slider.disabled = !valid;
+  if (reset) reset.disabled = !valid;
+
+  let spacing = Number(slider.value);
+  if (!valid || state.telescopeSpacingMode === "auto" || !Number.isFinite(spacing)) {
+    spacing = valid ? idealLength : min;
+  }
+  spacing = Math.min(Math.max(spacing, min), max);
+  slider.value = String(Math.round(spacing));
+  value.textContent = valid ? `${fmt(spacing, 5)} mm` : "--";
+  return spacing;
+}
+
+function telescopeState(type, spacing, f1, f2, idealLength) {
+  const tolerance = Math.max(0.5, Math.abs(idealLength) * 0.003);
+  if (type === "keplerian") {
+    if (Math.abs(spacing - idealLength) <= tolerance) {
+      return { color: "#4ade80", message: "State: d = f1 + f2 (Collimated)" };
+    }
+    if (Math.abs(spacing - f1) <= tolerance) {
+      return { color: "#ef4444", message: "State: d = f1 (Focus on L2)" };
+    }
+    if (spacing < f1) {
+      return { color: "#fca5a5", message: "State: d < f1 (Converging)" };
+    }
+    if (spacing < idealLength) {
+      return { color: "#fbbf24", message: "State: f1 < d < f1 + f2 (Diverging)" };
+    }
+    return { color: "#60a5fa", message: "State: d > f1 + f2 (Converging)" };
+  }
+
+  if (Math.abs(spacing - idealLength) <= tolerance) {
+    return { color: "#4ade80", message: "State: d = f2 - |f1| (Collimated)" };
+  }
+  if (spacing < idealLength) {
+    return { color: "#fbbf24", message: "State: d < f2 - |f1| (Diverging)" };
+  }
+  return { color: "#60a5fa", message: "State: d > f2 - |f1| (Converging)" };
+}
+
+function updateTelescopeSvg(type, din, f1, f2, mag, idealLength, spacing) {
+  const svg = document.querySelector("#telDynamicSvg");
+  if (!svg) return;
+
+  const centerY = 320;
+  const xStart = 62;
+  const xEnd = 838;
+  const x1 = 205;
+  const slider = document.querySelector("#telSpacing");
+  const maxSpacing = slider ? Number(slider.max) : Math.max(idealLength, spacing, 1);
+  const scale = Math.min(3, Math.max(1.2, (xEnd - 110 - x1) / Math.max(maxSpacing, 1)));
+  const spacingPx = Math.max(1, spacing * scale);
+  const x2 = x1 + spacingPx;
+  const inputRadius = 42;
+  const f1Px = Math.max(f1 * scale, 1);
+  const f2Px = Math.max(f2 * scale, 1);
+
+  let topPoints;
+  let bottomPoints;
+  let fillPoints;
+  let topL2;
+  let bottomL2;
+  let topEnd;
+  let bottomEnd;
+
+  const topIn = centerY - inputRadius;
+  const bottomIn = centerY + inputRadius;
+
+  if (type === "keplerian") {
+    const focusX = x1 + f1Px;
+    const mTopMiddle = inputRadius / f1Px;
+    const hTopL2 = -mTopMiddle * (x2 - focusX);
+    topL2 = centerY + hTopL2;
+    const mTopOut = mTopMiddle - (-hTopL2 / f2Px);
+    topEnd = topL2 + mTopOut * (xEnd - x2);
+
+    const mBottomMiddle = -inputRadius / f1Px;
+    const hBottomL2 = -mBottomMiddle * (x2 - focusX);
+    bottomL2 = centerY + hBottomL2;
+    const mBottomOut = mBottomMiddle - (-hBottomL2 / f2Px);
+    bottomEnd = bottomL2 + mBottomOut * (xEnd - x2);
+
+    topPoints = `${xStart},${topIn} ${x1},${topIn} ${x2},${topL2} ${xEnd},${topEnd}`;
+    bottomPoints = `${xStart},${bottomIn} ${x1},${bottomIn} ${x2},${bottomL2} ${xEnd},${bottomEnd}`;
+    fillPoints = `${xStart},${topIn} ${x1},${topIn} ${x2},${topL2} ${xEnd},${topEnd} ${xEnd},${bottomEnd} ${x2},${bottomL2} ${x1},${bottomIn} ${xStart},${bottomIn}`;
+
+    setSvgAttr("telFocusDot", { cx: focusX, cy: centerY, r: 4 });
+    setSvgAttr("telFocusLabel", { x: focusX, y: centerY + 28 });
+    setSvgText("telFocusLabel", "F1");
+    ["telFocusDot", "telFocusLabel"].forEach((id) => setSvgVisible(id, true));
+    ["telVirtualTop", "telVirtualBottom"].forEach((id) => setSvgVisible(id, false));
+  } else {
+    const virtualFocusX = x1 - f1Px;
+    const mTopIn = -inputRadius / f1Px;
+    const hTopL2 = mTopIn * (x2 - virtualFocusX);
+    topL2 = centerY + hTopL2;
+    const mTopOut = mTopIn - (hTopL2 / f2Px);
+    topEnd = topL2 + mTopOut * (xEnd - x2);
+
+    const mBottomIn = inputRadius / f1Px;
+    const hBottomL2 = mBottomIn * (x2 - virtualFocusX);
+    bottomL2 = centerY + hBottomL2;
+    const mBottomOut = mBottomIn - (hBottomL2 / f2Px);
+    bottomEnd = bottomL2 + mBottomOut * (xEnd - x2);
+
+    topPoints = `${xStart},${topIn} ${x1},${topIn} ${x2},${topL2} ${xEnd},${topEnd}`;
+    bottomPoints = `${xStart},${bottomIn} ${x1},${bottomIn} ${x2},${bottomL2} ${xEnd},${bottomEnd}`;
+    fillPoints = `${xStart},${topIn} ${x1},${topIn} ${x2},${topL2} ${xEnd},${topEnd} ${xEnd},${bottomEnd} ${x2},${bottomL2} ${x1},${bottomIn} ${xStart},${bottomIn}`;
+
+    setSvgAttr("telVirtualTop", { x1: virtualFocusX, y1: centerY, x2: x1, y2: topIn });
+    setSvgAttr("telVirtualBottom", { x1: virtualFocusX, y1: centerY, x2: x1, y2: bottomIn });
+    ["telVirtualTop", "telVirtualBottom"].forEach((id) => setSvgVisible(id, true));
+    ["telFocusDot", "telFocusLabel"].forEach((id) => setSvgVisible(id, false));
+  }
+
+  const lens2Radius = Math.max(Math.abs(topL2 - centerY), Math.abs(bottomL2 - centerY), inputRadius * mag);
+  const lens2Top = Math.max(118, centerY - lens2Radius - 55);
+  const lens2Bottom = Math.min(522, centerY + lens2Radius + 55);
+  const stateInfo = telescopeState(type, spacing, f1, f2, idealLength);
+
+  setSvgText("telSvgTitle", type === "keplerian" ? "Keplerian Beam Expander" : "Galilean Beam Expander");
+  setSvgText("telMetricSpacing", fmt(spacing, 5));
+  setSvgText("telMetricCondition", type === "keplerian" ? "f1 + f2" : "f2 - |f1|");
+  setSvgText("telMetricMagnification", `${fmt(mag, 4)}x`);
+  setSvgText("telLens1Label", type === "keplerian" ? "L1 positive" : "L1 negative");
+  setSvgText("telLens2Label", "L2 positive");
+  setSvgText("telLens1F", `f1 = ${fmt(f1, 5)} mm`);
+  setSvgText("telLens2F", `f2 = ${fmt(f2, 5)} mm`);
+  setSvgText("telSpacingLabel", `d = ${fmt(spacing, 5)} mm`);
+  setSvgText("telInputSummary", `f1 = ${fmt(f1, 5)} mm, f2 = ${fmt(f2, 5)} mm, ideal d = ${fmt(idealLength, 5)} mm`);
+  setSvgText("telStateText", stateInfo.message);
+
+  setSvgAttr("telStateBox", { stroke: stateInfo.color });
+  setSvgAttr("telLens1", { d: type === "keplerian" ? positiveLensPath(x1, 172, 468, 24) : negativeLensPath(x1, 178, 462, 24, 56) });
+  setSvgAttr("telLens2", { d: positiveLensPath(x2, lens2Top, lens2Bottom, 28) });
+  document.querySelector("#telLens1")?.classList.toggle("tel-negative-lens", type === "galilean");
+  document.querySelector("#telLens1")?.classList.toggle("tel-positive-lens", type === "keplerian");
+
+  setSvgAttr("telLens1Label", { x: x1, y: 156 });
+  setSvgAttr("telLens2Label", { x: x2, y: lens2Top - 18 });
+  setSvgAttr("telLens1F", { x: x1, y: 488 });
+  setSvgAttr("telLens2F", { x: x2, y: lens2Bottom + 24 });
+  setSvgAttr("telSpacingLine", { x1, x2, y1: 512, y2: 512 });
+  setSvgAttr("telSpacingLabel", { x: (x1 + x2) / 2, y: 530 });
+  setSvgAttr("telDoutLabel", { x: Math.min(xEnd - 42, x2 + 110), y: Math.min(topEnd, bottomEnd) - 16 });
+  setSvgAttr("telBeamTop", { points: topPoints });
+  setSvgAttr("telBeamBottom", { points: bottomPoints });
+  setSvgAttr("telBeamFill", { points: fillPoints });
+}
+
 function updateTelescope() {
   const type = document.querySelector("#telType").value;
   const din = numberValue("telDin");
@@ -122,11 +338,15 @@ function updateTelescope() {
   }
 
   const mag = f2 / f1;
-  const length = type === "keplerian" ? f1 + f2 : f1 - f2;
+  const idealLength = idealTelescopeSpacing(type, f1, f2);
+  const spacing = configureTelescopeSpacingSlider(type, f1, f2, idealLength);
   setText("telMag", fmt(mag, 4), " x");
   setText("telDout", fmt(din * mag, 4), " mm");
-  setText("telLength", length > 0 ? fmt(length, 4) : "check signs", length > 0 ? " mm" : "");
+  setText("telLength", idealLength > 0 ? fmt(idealLength, 4) : "check focal lengths", idealLength > 0 ? " mm" : "");
   setText("telAngular", fmt(1 / mag, 4), " x");
+  if (idealLength > 0 && Number.isFinite(spacing)) {
+    updateTelescopeSvg(type, din, f1, f2, mag, idealLength, spacing);
+  }
 }
 
 function updateFocus() {
@@ -281,6 +501,27 @@ function updateCalculators() {
 function bindEvents() {
   document.querySelectorAll(".calc-tab").forEach((button) => {
     button.addEventListener("click", () => switchCalculator(button.dataset.calculator));
+  });
+
+  ["telType", "telF1", "telF2"].forEach((id) => {
+    const control = document.querySelector(`#${id}`);
+    const resetSpacing = () => {
+      state.telescopeSpacingMode = "auto";
+      state.telescopeSignature = "";
+    };
+    control?.addEventListener("input", resetSpacing);
+    control?.addEventListener("change", resetSpacing);
+  });
+
+  const telSpacing = document.querySelector("#telSpacing");
+  telSpacing?.addEventListener("input", () => {
+    state.telescopeSpacingMode = "manual";
+  });
+
+  document.querySelector("#telSpacingReset")?.addEventListener("click", () => {
+    state.telescopeSpacingMode = "auto";
+    state.telescopeSignature = "";
+    updateCalculators();
   });
 
   document.querySelectorAll(".calc-input").forEach((input) => {
