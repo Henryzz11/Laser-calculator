@@ -458,27 +458,27 @@ function updateGrating() {
   const density = numberValue("graDensity");
   const wavelengthMm = numberValue("graWavelength") * 1e-6;
   const order = numberValue("graOrder");
-  const alpha = degToRad(numberValue("graAlpha"));
+  const thetaI = degToRad(numberValue("graAlpha"));
 
-  if (density <= 0 || wavelengthMm <= 0 || order <= 0 || !Number.isFinite(alpha)) {
+  if (density <= 0 || wavelengthMm <= 0 || order <= 0 || !Number.isFinite(thetaI)) {
     ["graBeta", "graLittrow", "graPeriod", "graDispersion"].forEach((id) => setText(id, null));
     return;
   }
 
-  const d = 1 / density;
-  const sinBeta = (order * wavelengthMm) / d - Math.sin(alpha);
-  const sinLittrow = (order * wavelengthMm) / (2 * d);
-  const periodNm = d * 1e6;
+  const grooveSpacing = 1 / density;
+  const sinThetaM = (order * wavelengthMm) / grooveSpacing - Math.sin(thetaI);
+  const sinLittrow = (order * wavelengthMm) / (2 * grooveSpacing);
+  const spacingNm = grooveSpacing * 1e6;
 
-  setText("graPeriod", fmt(periodNm, 5), " nm");
+  setText("graPeriod", fmt(spacingNm, 5), " nm");
 
-  if (Math.abs(sinBeta) > 1) {
+  if (Math.abs(sinThetaM) > 1) {
     setText("graBeta", "no solution");
     setText("graDispersion", null);
   } else {
-    const beta = Math.asin(sinBeta);
-    const dispersion = (order / (d * Math.cos(beta))) * 1e-3;
-    setText("graBeta", fmt(radToDeg(beta), 5), " deg");
+    const thetaM = Math.asin(sinThetaM);
+    const dispersion = (order / (grooveSpacing * Math.cos(thetaM))) * 1e-3;
+    setText("graBeta", fmt(radToDeg(thetaM), 5), " deg");
     setText("graDispersion", fmt(dispersion, 4), " mrad/nm");
   }
 

@@ -405,33 +405,36 @@
                 <p class="panel-kicker">Reflective grating equation</p>
                 <h2>Grating</h2>
               </div>
-              <div class="math-pill" aria-label="m lambda equals d times sine alpha plus sine beta">
+              <div class="math-pill" aria-label="a times sine theta m plus sine theta i equals m lambda">
                 <span class="math-formula math-formula-compact">
-                  <span class="math-var">m&lambda;</span>
+                  <span class="math-var">a</span>
+                  <span class="formula-paren">[</span>
+                  <span>sin(&theta;<sub>m</sub>)&nbsp;+&nbsp;sin(&theta;<sub>i</sub>)</span>
+                  <span class="formula-paren">]</span>
                   <span class="math-equals">=</span>
-                  <span>d&nbsp;(sin&nbsp;&alpha;&nbsp;+&nbsp;sin&nbsp;&beta;)</span>
+                  <span>m&lambda;</span>
                 </span>
               </div>
             </div>
 
             <div class="calc-grid">
               <div class="input-column">
-                <label class="field-label" for="graDensity">Line density (lines/mm)</label>
+                <label class="field-label" for="graDensity">Groove density (lines/mm)</label>
                 <input id="graDensity" class="text-input calc-input" type="number" min="1" step="any" value="1200">
 
                 <label class="field-label" for="graWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
                 <input id="graWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
 
-                <label class="field-label" for="graOrder">Diffraction order</label>
+                <label class="field-label" for="graOrder">Diffraction order m</label>
                 <input id="graOrder" class="text-input calc-input" type="number" min="1" step="1" value="1">
 
-                <label class="field-label" for="graAlpha">Incidence angle <span class="math-inline-symbol">&alpha;</span> (deg)</label>
+                <label class="field-label" for="graAlpha">Incident angle <span class="math-inline-symbol">&theta;<sub>i</sub></span> (deg)</label>
                 <input id="graAlpha" class="text-input calc-input" type="number" step="any" value="35">
               </div>
               <div class="result-grid">
-                <div class="result-tile"><span>Diffraction <span class="math-inline-symbol">&beta;</span></span><strong id="graBeta">-- deg</strong></div>
-                <div class="result-tile"><span>Littrow angle</span><strong id="graLittrow">-- deg</strong></div>
-                <div class="result-tile"><span>Groove period</span><strong id="graPeriod">-- nm</strong></div>
+                <div class="result-tile"><span>Diffraction angle <span class="math-inline-symbol">&theta;<sub>m</sub></span></span><strong id="graBeta">-- deg</strong></div>
+                <div class="result-tile"><span>Littrow angle <span class="math-inline-symbol">&theta;<sub>i</sub>=&theta;<sub>m</sub></span></span><strong id="graLittrow">-- deg</strong></div>
+                <div class="result-tile"><span>Groove spacing <span class="math-inline-symbol">a</span></span><strong id="graPeriod">-- nm</strong></div>
                 <div class="result-tile"><span>Angular dispersion</span><strong id="graDispersion">-- mrad/nm</strong></div>
               </div>
             </div>
