@@ -74,6 +74,137 @@ function updatePer() {
   setText("powDelta", fmt(deltaMw, 5), " mW");
 }
 
+function energyToJ(value, unit) {
+  if (unit === "j") return value;
+  if (unit === "mj") return value / 1000;
+  if (unit === "uj") return value / 1000000;
+  if (unit === "nj") return value / 1000000000;
+  return value / 1000000000000;
+}
+
+function rateToHz(value, unit) {
+  if (unit === "ghz") return value * 1000000000;
+  if (unit === "mhz") return value * 1000000;
+  if (unit === "khz") return value * 1000;
+  return value;
+}
+
+function formatScaled(value, scales) {
+  if (!Number.isFinite(value)) return "--";
+  const abs = Math.abs(value);
+  const scale = scales.find((candidate) => abs >= candidate.factor) || scales[scales.length - 1];
+  return `${fmt(value / scale.factor, 5)} ${scale.unit}`;
+}
+
+function formatPowerAuto(valueW) {
+  return formatScaled(valueW, [
+    { factor: 1, unit: "W" },
+    { factor: 1e-3, unit: "mW" },
+    { factor: 1e-6, unit: "uW" },
+    { factor: 1e-9, unit: "nW" },
+  ]);
+}
+
+function formatEnergyAuto(valueJ) {
+  return formatScaled(valueJ, [
+    { factor: 1, unit: "J" },
+    { factor: 1e-3, unit: "mJ" },
+    { factor: 1e-6, unit: "uJ" },
+    { factor: 1e-9, unit: "nJ" },
+    { factor: 1e-12, unit: "pJ" },
+  ]);
+}
+
+function formatRateAuto(valueHz) {
+  return formatScaled(valueHz, [
+    { factor: 1e9, unit: "GHz" },
+    { factor: 1e6, unit: "MHz" },
+    { factor: 1e3, unit: "kHz" },
+    { factor: 1, unit: "Hz" },
+  ]);
+}
+
+function formatTimeAuto(valueS) {
+  return formatScaled(valueS, [
+    { factor: 1, unit: "s" },
+    { factor: 1e-3, unit: "ms" },
+    { factor: 1e-6, unit: "us" },
+    { factor: 1e-9, unit: "ns" },
+    { factor: 1e-12, unit: "ps" },
+  ]);
+}
+
+function setEnergyPowerMode(mode) {
+  document.querySelectorAll("[data-energy-mode]").forEach((panel) => {
+    panel.hidden = panel.dataset.energyMode !== mode;
+  });
+}
+
+function updateEnergyPower() {
+  const mode = document.querySelector("#epMode")?.value || "energy-to-power";
+  const rateHz = rateToHz(numberValue("epRateInput"), document.querySelector("#epRateUnit")?.value || "khz");
+  setEnergyPowerMode(mode);
+
+  if (rateHz <= 0) {
+    ["epPowerResult", "epEnergyResult", "epRateResult", "epPeriodResult"].forEach((id) => setText(id, null));
+    return;
+  }
+
+  let energyJ;
+  let powerW;
+
+  if (mode === "power-to-energy") {
+    powerW = powerToW(numberValue("epPowerInput"), document.querySelector("#epPowerUnit")?.value || "w");
+    if (powerW <= 0) {
+      ["epPowerResult", "epEnergyResult", "epRateResult", "epPeriodResult"].forEach((id) => setText(id, null));
+      return;
+    }
+    energyJ = powerW / rateHz;
+  } else {
+    energyJ = energyToJ(numberValue("epEnergyInput"), document.querySelector("#epEnergyUnit")?.value || "uj");
+    if (energyJ <= 0) {
+      ["epPowerResult", "epEnergyResult", "epRateResult", "epPeriodResult"].forEach((id) => setText(id, null));
+      return;
+    }
+    powerW = energyJ * rateHz;
+  }
+
+  setText("epPowerResult", formatPowerAuto(powerW));
+  setText("epEnergyResult", formatEnergyAuto(energyJ));
+  setText("epRateResult", formatRateAuto(rateHz));
+  setText("epPeriodResult", formatTimeAuto(1 / rateHz));
+}
+
+function formatLengthAuto(valueM) {
+  return formatScaled(valueM, [
+    { factor: 1000, unit: "km" },
+    { factor: 1, unit: "m" },
+    { factor: 1e-3, unit: "mm" },
+    { factor: 1e-6, unit: "um" },
+    { factor: 1e-9, unit: "nm" },
+  ]);
+}
+
+function updateRayleigh() {
+  const diameterUm = numberValue("rayDiameter");
+  const wavelengthM = numberValue("rayWavelength") * 1e-9;
+  const m2 = numberValue("rayM2");
+
+  if (diameterUm <= 0 || wavelengthM <= 0 || m2 <= 0) {
+    ["rayLength", "rayConfocal", "rayRadius", "rayDivergence"].forEach((id) => setText(id, null));
+    return;
+  }
+
+  const radiusM = (diameterUm * 1e-6) / 2;
+  const rayleighM = (Math.PI * radiusM * radiusM) / (m2 * wavelengthM);
+  const fullAngleMrad = ((2 * m2 * wavelengthM) / (Math.PI * radiusM)) * 1000;
+
+  setText("rayLength", formatLengthAuto(rayleighM));
+  setText("rayConfocal", formatLengthAuto(2 * rayleighM));
+  setText("rayRadius", fmt(radiusM * 1e6, 5), " um");
+  setText("rayDivergence", fmt(fullAngleMrad, 5), " mrad");
+}
+
 function setCollimationMethod(method) {
   document.querySelectorAll("[data-col-method]").forEach((panel) => {
     panel.hidden = panel.dataset.colMethod !== method;
@@ -230,7 +361,10 @@ function updateTelescopeSvg(type, din, f1, f2, mag, idealLength, spacing) {
   const scale = Math.min(3, Math.max(1.2, (xEnd - 110 - x1) / Math.max(maxSpacing, 1)));
   const spacingPx = Math.max(1, spacing * scale);
   const x2 = x1 + spacingPx;
-  const inputRadius = 42;
+  const lensDiameterMm = 25.4;
+  const lensHalfPx = 112;
+  const mmToPx = (2 * lensHalfPx) / lensDiameterMm;
+  const inputRadius = (din / 2) * mmToPx;
   const f1Px = Math.max(f1 * scale, 1);
   const f2Px = Math.max(f2 * scale, 1);
 
@@ -292,9 +426,12 @@ function updateTelescopeSvg(type, din, f1, f2, mag, idealLength, spacing) {
     ["telFocusDot", "telFocusLabel"].forEach((id) => setSvgVisible(id, false));
   }
 
-  const lens2Radius = Math.max(Math.abs(topL2 - centerY), Math.abs(bottomL2 - centerY), inputRadius * mag);
-  const lens2Top = Math.max(118, centerY - lens2Radius - 55);
-  const lens2Bottom = Math.min(522, centerY + lens2Radius + 55);
+  const l2BeamRadius = Math.max(Math.abs(topL2 - centerY), Math.abs(bottomL2 - centerY));
+  const l1Fill = inputRadius / lensHalfPx;
+  const l2Fill = l2BeamRadius / lensHalfPx;
+  const beamOverfillsLens = l1Fill > 1 || l2Fill > 1;
+  const lensTop = centerY - lensHalfPx;
+  const lensBottom = centerY + lensHalfPx;
   const stateInfo = telescopeState(type, spacing, f1, f2, idealLength);
 
   setSvgText("telSvgTitle", type === "keplerian" ? "Keplerian Beam Expander" : "Galilean Beam Expander");
@@ -303,25 +440,32 @@ function updateTelescopeSvg(type, din, f1, f2, mag, idealLength, spacing) {
   setSvgText("telMetricMagnification", `${fmt(mag, 4)}x`);
   setSvgText("telLens1Label", type === "keplerian" ? "L1 positive" : "L1 negative");
   setSvgText("telLens2Label", "L2 positive");
-  setSvgText("telLens1F", `f1 = ${fmt(f1, 5)} mm`);
-  setSvgText("telLens2F", `f2 = ${fmt(f2, 5)} mm`);
+  setSvgText("telLens1F", `1 in aperture; f1 = ${fmt(f1, 5)} mm`);
+  setSvgText("telLens2F", `1 in aperture; f2 = ${fmt(f2, 5)} mm`);
   setSvgText("telSpacingLabel", `d = ${fmt(spacing, 5)} mm`);
-  setSvgText("telInputSummary", `f1 = ${fmt(f1, 5)} mm, f2 = ${fmt(f2, 5)} mm, ideal d = ${fmt(idealLength, 5)} mm`);
+  setSvgText(
+    "telInputSummary",
+    `Lens aperture = 25.4 mm; L1 fill = ${fmt(l1Fill * 100, 4)}%; L2 fill = ${fmt(l2Fill * 100, 4)}%${beamOverfillsLens ? " OVERFILLED" : ""}`,
+  );
   setSvgText("telStateText", stateInfo.message);
 
   setSvgAttr("telStateBox", { stroke: stateInfo.color });
-  setSvgAttr("telLens1", { d: type === "keplerian" ? positiveLensPath(x1, 172, 468, 24) : negativeLensPath(x1, 178, 462, 24, 56) });
-  setSvgAttr("telLens2", { d: positiveLensPath(x2, lens2Top, lens2Bottom, 28) });
+  setSvgAttr("telLens1", { d: type === "keplerian" ? positiveLensPath(x1, lensTop, lensBottom, 22) : negativeLensPath(x1, lensTop, lensBottom, 20, 52) });
+  setSvgAttr("telLens2", { d: positiveLensPath(x2, lensTop, lensBottom, 22) });
   document.querySelector("#telLens1")?.classList.toggle("tel-negative-lens", type === "galilean");
   document.querySelector("#telLens1")?.classList.toggle("tel-positive-lens", type === "keplerian");
 
-  setSvgAttr("telLens1Label", { x: x1, y: 156 });
-  setSvgAttr("telLens2Label", { x: x2, y: lens2Top - 18 });
-  setSvgAttr("telLens1F", { x: x1, y: 488 });
-  setSvgAttr("telLens2F", { x: x2, y: lens2Bottom + 24 });
+  setSvgAttr("telLens1Label", { x: x1, y: lensTop - 18 });
+  setSvgAttr("telLens2Label", { x: x2, y: lensTop - 18 });
+  setSvgAttr("telLens1F", { x: x1, y: lensBottom + 24 });
+  setSvgAttr("telLens2F", { x: x2, y: lensBottom + 24 });
   setSvgAttr("telSpacingLine", { x1, x2, y1: 512, y2: 512 });
   setSvgAttr("telSpacingLabel", { x: (x1 + x2) / 2, y: 530 });
-  setSvgAttr("telDoutLabel", { x: Math.min(xEnd - 42, x2 + 110), y: Math.min(topEnd, bottomEnd) - 16 });
+  setSvgAttr("telDinLabel", { x: xStart + 2, y: Math.max(126, topIn - 10) });
+  setSvgAttr("telDoutLabel", { x: Math.min(xEnd - 42, x2 + 110), y: Math.max(126, Math.min(topEnd, bottomEnd) - 16) });
+  ["telBeamTop", "telBeamBottom", "telBeamFill", "telLens1", "telLens2"].forEach((id) => {
+    document.querySelector(`#${id}`)?.classList.toggle("tel-overfill", beamOverfillsLens);
+  });
   setSvgAttr("telBeamTop", { points: topPoints });
   setSvgAttr("telBeamBottom", { points: bottomPoints });
   setSvgAttr("telBeamFill", { points: fillPoints });
@@ -332,18 +476,24 @@ function updateTelescope() {
   const din = numberValue("telDin");
   const f1 = numberValue("telF1");
   const f2 = numberValue("telF2");
-  if (din <= 0 || f1 <= 0 || f2 <= 0) {
-    ["telMag", "telDout", "telLength", "telAngular"].forEach((id) => setText(id, null));
+  const wavelengthM = numberValue("telWavelength") * 1e-9;
+  const m2 = numberValue("telM2");
+  if (din <= 0 || f1 <= 0 || f2 <= 0 || wavelengthM <= 0 || m2 <= 0) {
+    ["telMag", "telDout", "telLength", "telRayleigh"].forEach((id) => setText(id, null));
     return;
   }
 
   const mag = f2 / f1;
   const idealLength = idealTelescopeSpacing(type, f1, f2);
   const spacing = configureTelescopeSpacingSlider(type, f1, f2, idealLength);
+  const outputDiameterMm = din * mag;
+  const outputRadiusM = (outputDiameterMm * 1e-3) / 2;
+  const outputRayleighM = (Math.PI * outputRadiusM * outputRadiusM) / (m2 * wavelengthM);
+
   setText("telMag", fmt(mag, 4), " x");
-  setText("telDout", fmt(din * mag, 4), " mm");
+  setText("telDout", fmt(outputDiameterMm, 4), " mm");
   setText("telLength", idealLength > 0 ? fmt(idealLength, 4) : "check focal lengths", idealLength > 0 ? " mm" : "");
-  setText("telAngular", fmt(1 / mag, 4), " x");
+  setText("telRayleigh", formatLengthAuto(outputRayleighM));
   if (idealLength > 0 && Number.isFinite(spacing)) {
     updateTelescopeSvg(type, din, f1, f2, mag, idealLength, spacing);
   }
@@ -492,7 +642,9 @@ function updateGrating() {
 function updateCalculators() {
   updatePer();
   updateCollimation();
+  updateEnergyPower();
   updateTelescope();
+  updateRayleigh();
   updateFocus();
   updateDetector();
   updateGrating();
@@ -503,7 +655,7 @@ function bindEvents() {
     button.addEventListener("click", () => switchCalculator(button.dataset.calculator));
   });
 
-  ["telType", "telF1", "telF2"].forEach((id) => {
+  ["telType", "telF1", "telF2", "telWavelength", "telM2"].forEach((id) => {
     const control = document.querySelector(`#${id}`);
     const resetSpacing = () => {
       state.telescopeSpacingMode = "auto";

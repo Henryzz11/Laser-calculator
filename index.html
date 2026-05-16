@@ -25,10 +25,12 @@
         <aside class="calculator-tabs" aria-label="Calculators">
           <button class="calc-tab active" data-calculator="collimation" type="button">Fiber Collimation</button>
           <button class="calc-tab" data-calculator="focus" type="button">Focus Spot Size</button>
-          <button class="calc-tab" data-calculator="telescope" type="button">Telescope</button>
-          <button class="calc-tab" data-calculator="detector" type="button">Detector Safety</button>
-          <button class="calc-tab" data-calculator="grating" type="button">Grating</button>
-          <button class="calc-tab" data-calculator="per" type="button">Max/Min to dB</button>
+          <button class="calc-tab" data-calculator="telescope" type="button">Beam Telescope</button>
+          <button class="calc-tab" data-calculator="rayleigh" type="button">Rayleigh Length</button>
+          <button class="calc-tab" data-calculator="detector" type="button">Detector Limit</button>
+          <button class="calc-tab" data-calculator="grating" type="button">Reflective Grating</button>
+          <button class="calc-tab" data-calculator="energy" type="button">Pulse Energy &harr; Power</button>
+          <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
         </aside>
 
         <div class="calculator-stack">
@@ -92,7 +94,7 @@
               <div class="result-grid collimation-result-grid inline-result-grid">
                 <div class="result-tile collimation-result-main"><span>Collimated beam diameter</span><strong id="colDiameter">-- mm</strong></div>
                 <div class="result-tile"><span>Full-angle divergence</span><strong id="colDivergence">-- mrad</strong></div>
-                <div class="result-tile"><span>Rayleigh length</span><strong id="colRayleigh">-- m</strong></div>
+                <div class="result-tile"><span>Rayleigh length <span class="math-inline-symbol">z<sub>R</sub></span></span><strong id="colRayleigh">-- m</strong></div>
               </div>
             </div>
 
@@ -112,7 +114,7 @@
                   <dt>f</dt><dd>Collimating focal length (mm)</dd>
                   <dt>NA</dt><dd>Numerical aperture</dd>
                   <dt>d</dt><dd>Fiber core diameter (um)</dd>
-                  <dt>&lambda;</dt><dd>Wavelength, used for Rayleigh length only</dd>
+                  <dt>&lambda;</dt><dd>Wavelength, used for Rayleigh length</dd>
                   <dt>&theta;</dt><dd>Full-angle divergence after collimation (mrad)</dd>
                 </dl>
               </section>
@@ -140,7 +142,7 @@
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Focused Gaussian beam</p>
-                <h2>Calculate Focus Spot Size</h2>
+                <h2>Focus Spot Size</h2>
               </div>
               <div class="math-pill" aria-label="S equals 1.27 M squared lambda f over D">
                 <span class="math-formula math-formula-compact">
@@ -219,7 +221,7 @@
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Afocal beam relay</p>
-                <h2>Telescope</h2>
+                <h2>Beam Telescope</h2>
               </div>
               <div class="math-pill" aria-label="M equals f2 over f1">
                 <span class="math-formula math-formula-compact">
@@ -249,12 +251,18 @@
 
                 <label class="field-label" for="telF2">Lens 2 focal length magnitude (mm)</label>
                 <input id="telF2" class="text-input calc-input" type="number" min="0.01" step="any" value="150">
+
+                <label class="field-label" for="telWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
+                <input id="telWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+
+                <label class="field-label" for="telM2">Beam quality M<sup>2</sup></label>
+                <input id="telM2" class="text-input calc-input" type="number" min="0.01" step="any" value="1">
               </div>
               <div class="result-grid">
                 <div class="result-tile"><span>Beam magnification</span><strong id="telMag">-- x</strong></div>
                 <div class="result-tile"><span>Output diameter</span><strong id="telDout">-- mm</strong></div>
                 <div class="result-tile"><span>Ideal lens spacing</span><strong id="telLength">-- mm</strong></div>
-                <div class="result-tile"><span>Angular scale</span><strong id="telAngular">-- x</strong></div>
+                <div class="result-tile"><span>Output Rayleigh length <span class="math-inline-symbol">z<sub>R</sub></span></span><strong id="telRayleigh">-- m</strong></div>
               </div>
             </div>
             <figure class="schematic telescope-dynamic-schematic" aria-label="Dynamic telescope beam expander diagram driven by focal length inputs">
@@ -298,7 +306,7 @@
 
                   <rect id="telStateBox" class="tel-state-box" x="278" y="118" width="344" height="36" rx="18"></rect>
                   <text id="telStateText" class="tel-state-text" x="450" y="142" text-anchor="middle">State</text>
-                  <text class="tel-label" x="64" y="288">Din</text>
+                  <text id="telDinLabel" class="tel-label" x="64" y="288">Din</text>
                   <text id="telDoutLabel" class="tel-label" x="800" y="0">Dout</text>
                 </g>
 
@@ -316,11 +324,74 @@
             </figure>
           </article>
 
+          <article class="calc-panel" id="calc-rayleigh">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Gaussian beam propagation</p>
+                <h2>Rayleigh Length</h2>
+              </div>
+              <div class="collimation-formula-stack" aria-label="Rayleigh length formula">
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">z<sub>R</sub></span>
+                    <span class="math-equals">=</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">&pi;&nbsp;w<sub>0</sub><sup>2</sup></span>
+                      <span class="math-denominator">M<sup>2</sup>&nbsp;&lambda;</span>
+                    </span>
+                  </span>
+                </div>
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">w<sub>0</sub></span>
+                    <span class="math-equals">=</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">D</span>
+                      <span class="math-denominator">2</span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-grid">
+              <div class="input-column">
+                <label class="field-label" for="rayDiameter">Waist diameter D (um)</label>
+                <input id="rayDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="100">
+
+                <label class="field-label" for="rayWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
+                <input id="rayWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+
+                <label class="field-label" for="rayM2">Beam quality M<sup>2</sup></label>
+                <input id="rayM2" class="text-input calc-input" type="number" min="0.01" step="any" value="1">
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>Rayleigh length <span class="math-inline-symbol">z<sub>R</sub></span></span><strong id="rayLength">-- mm</strong></div>
+                <div class="result-tile"><span>Confocal parameter</span><strong id="rayConfocal">-- mm</strong></div>
+                <div class="result-tile"><span>Waist radius <span class="math-inline-symbol">w<sub>0</sub></span></span><strong id="rayRadius">-- um</strong></div>
+                <div class="result-tile"><span>Full-angle divergence</span><strong id="rayDivergence">-- mrad</strong></div>
+              </div>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="Rayleigh length variables">
+                <p class="panel-kicker">Variables</p>
+                <dl class="variable-list">
+                  <dt>z<sub>R</sub></dt><dd>Rayleigh length</dd>
+                  <dt>D</dt><dd>Beam waist diameter at 1/e2 intensity</dd>
+                  <dt>w<sub>0</sub></dt><dd>Beam waist radius</dd>
+                  <dt>&lambda;</dt><dd>Wavelength</dd>
+                  <dt>M<sup>2</sup></dt><dd>Beam quality factor</dd>
+                </dl>
+              </section>
+            </div>
+          </article>
+
           <article class="calc-panel" id="calc-detector">
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">CMOS camera saturation limit</p>
-                <h2>Detector Safety</h2>
+                <h2>Detector Safety Limit</h2>
               </div>
             </div>
 
@@ -403,7 +474,7 @@
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Reflective grating equation</p>
-                <h2>Grating</h2>
+                <h2>Reflective Grating</h2>
               </div>
               <div class="math-pill" aria-label="a times sine theta m plus sine theta i equals m lambda">
                 <span class="math-formula math-formula-compact">
@@ -488,11 +559,112 @@
             </figure>
           </article>
 
+          <article class="calc-panel" id="calc-energy">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Pulse train conversion</p>
+                <h2>Pulse Energy &harr; Average Power</h2>
+              </div>
+              <div class="collimation-formula-stack" aria-label="Energy and average power formulas">
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">P<sub>avg</sub></span>
+                    <span class="math-equals">=</span>
+                    <span>E<sub>p</sub>&nbsp;f<sub>rep</sub></span>
+                  </span>
+                </div>
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">E<sub>p</sub></span>
+                    <span class="math-equals">=</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">P<sub>avg</sub></span>
+                      <span class="math-denominator">f<sub>rep</sub></span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-grid">
+              <div class="input-column">
+                <label class="field-label" for="epMode">Conversion</label>
+                <select id="epMode" class="text-input calc-input">
+                  <option value="energy-to-power">Energy + rep rate to power</option>
+                  <option value="power-to-energy">Power + rep rate to energy</option>
+                </select>
+
+                <div class="energy-mode-fields" data-energy-mode="energy-to-power">
+                  <div class="field-group">
+                    <label class="field-label" for="epEnergyInput">Pulse energy E<sub>p</sub></label>
+                    <input id="epEnergyInput" class="text-input calc-input" type="number" min="0" step="any" value="10">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="epEnergyUnit">Energy unit</label>
+                    <select id="epEnergyUnit" class="text-input calc-input">
+                      <option value="pj">pJ</option>
+                      <option value="nj">nJ</option>
+                      <option value="uj" selected>uJ</option>
+                      <option value="mj">mJ</option>
+                      <option value="j">J</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="energy-mode-fields" data-energy-mode="power-to-energy" hidden>
+                  <div class="field-group">
+                    <label class="field-label" for="epPowerInput">Average power P<sub>avg</sub></label>
+                    <input id="epPowerInput" class="text-input calc-input" type="number" min="0" step="any" value="1">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="epPowerUnit">Power unit</label>
+                    <select id="epPowerUnit" class="text-input calc-input">
+                      <option value="uw">uW</option>
+                      <option value="mw">mW</option>
+                      <option value="w" selected>W</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="epRateInput">Repetition rate f<sub>rep</sub></label>
+                  <input id="epRateInput" class="text-input calc-input" type="number" min="0" step="any" value="100">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="epRateUnit">Rate unit</label>
+                  <select id="epRateUnit" class="text-input calc-input">
+                    <option value="hz">Hz</option>
+                    <option value="khz" selected>kHz</option>
+                    <option value="mhz">MHz</option>
+                    <option value="ghz">GHz</option>
+                  </select>
+                </div>
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>Average power <span class="math-inline-symbol">P<sub>avg</sub></span></span><strong id="epPowerResult">-- W</strong></div>
+                <div class="result-tile"><span>Pulse energy <span class="math-inline-symbol">E<sub>p</sub></span></span><strong id="epEnergyResult">-- uJ</strong></div>
+                <div class="result-tile"><span>Repetition rate <span class="math-inline-symbol">f<sub>rep</sub></span></span><strong id="epRateResult">-- kHz</strong></div>
+                <div class="result-tile"><span>Pulse period</span><strong id="epPeriodResult">-- us</strong></div>
+              </div>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="Pulse energy and average power variables">
+                <p class="panel-kicker">Variables</p>
+                <dl class="variable-list">
+                  <dt>P<sub>avg</sub></dt><dd>Average power</dd>
+                  <dt>E<sub>p</sub></dt><dd>Energy per pulse</dd>
+                  <dt>f<sub>rep</sub></dt><dd>Pulse repetition rate</dd>
+                </dl>
+              </section>
+            </div>
+          </article>
+
           <article class="calc-panel" id="calc-per">
             <div class="calc-heading">
               <div>
-                <p class="panel-kicker">Max to min power ratio</p>
-                <h2>Max / Min Power to dB</h2>
+                <p class="panel-kicker">Max/min power ratio</p>
+                <h2>Power Ratio to dB</h2>
               </div>
               <div class="math-pill" aria-label="dB equals 10 log base 10 of P max over P min">
                 <span class="math-formula math-formula-compact">

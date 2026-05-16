@@ -306,10 +306,23 @@ h2 {
   opacity: 0.88;
 }
 
+.telescope-dynamic-schematic .tel-beam-edge.tel-overfill {
+  stroke: #fb7185;
+}
+
+.telescope-dynamic-schematic .tel-beam-fill.tel-overfill {
+  fill: #ef4444;
+  opacity: 0.24;
+}
+
 .telescope-dynamic-schematic .tel-lens {
   fill: rgba(255, 255, 255, 0.1);
   stroke: #e5e7eb;
   stroke-width: 3;
+}
+
+.telescope-dynamic-schematic .tel-lens.tel-overfill {
+  stroke: #fb7185;
 }
 
 .telescope-dynamic-schematic .tel-negative-lens {
