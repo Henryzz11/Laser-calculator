@@ -23,99 +23,16 @@
 
       <section class="calculator-shell" aria-label="Optics calculators">
         <aside class="calculator-tabs" aria-label="Calculators">
-          <button class="calc-tab active" data-calculator="per" type="button">Max/Min to dB</button>
-          <button class="calc-tab" data-calculator="collimation" type="button">Fiber Collimation</button>
-          <button class="calc-tab" data-calculator="telescope" type="button">Telescope</button>
+          <button class="calc-tab active" data-calculator="collimation" type="button">Fiber Collimation</button>
           <button class="calc-tab" data-calculator="focus" type="button">Focus Spot Size</button>
+          <button class="calc-tab" data-calculator="telescope" type="button">Telescope</button>
           <button class="calc-tab" data-calculator="detector" type="button">Detector Safety</button>
           <button class="calc-tab" data-calculator="grating" type="button">Grating</button>
+          <button class="calc-tab" data-calculator="per" type="button">Max/Min to dB</button>
         </aside>
 
         <div class="calculator-stack">
-          <article class="calc-panel active" id="calc-per">
-            <div class="calc-heading">
-              <div>
-                <p class="panel-kicker">Max to min power ratio</p>
-                <h2>Max / Min Power to dB</h2>
-              </div>
-              <div class="math-pill" aria-label="dB equals 10 log base 10 of P max over P min">
-                <span class="math-formula math-formula-compact">
-                  <span class="math-var">dB</span>
-                  <span class="math-equals">=</span>
-                  <span>10&nbsp;log<sub>10</sub></span>
-                  <span class="formula-paren">(</span>
-                  <span class="math-fraction">
-                    <span class="math-numerator">P<sub>max</sub></span>
-                    <span class="math-denominator">P<sub>min</sub></span>
-                  </span>
-                  <span class="formula-paren">)</span>
-                </span>
-              </div>
-            </div>
-
-            <div class="calc-grid">
-              <div class="input-column power-ratio-input-grid">
-                <div class="field-group">
-                  <label class="field-label" for="powMax">Max power</label>
-                  <input id="powMax" class="text-input calc-input" type="number" min="0" step="any" value="10">
-                </div>
-
-                <div class="field-group">
-                  <label class="field-label" for="powMaxUnit">Max unit</label>
-                  <select id="powMaxUnit" class="text-input calc-input">
-                    <option value="uw">uW</option>
-                    <option value="mw" selected>mW</option>
-                    <option value="w">W</option>
-                  </select>
-                </div>
-
-                <div class="field-group">
-                  <label class="field-label" for="powMin">Min power</label>
-                  <input id="powMin" class="text-input calc-input" type="number" min="0" step="any" value="0.01">
-                </div>
-
-                <div class="field-group">
-                  <label class="field-label" for="powMinUnit">Min unit</label>
-                  <select id="powMinUnit" class="text-input calc-input">
-                    <option value="uw">uW</option>
-                    <option value="mw" selected>mW</option>
-                    <option value="w">W</option>
-                  </select>
-                </div>
-              </div>
-              <div class="result-grid">
-                <div class="result-tile"><span>Ratio in dB</span><strong id="powRatioDb">-- dB</strong></div>
-                <div class="result-tile"><span>Power ratio</span><strong id="powRatioLinear">--</strong></div>
-                <div class="result-tile"><span>Min / Max</span><strong id="powMinMax">-- %</strong></div>
-                <div class="result-tile"><span>Max - Min</span><strong id="powDelta">-- mW</strong></div>
-              </div>
-            </div>
-
-            <div class="formula-area">
-              <section class="formula-panel" aria-label="Max to min power dB formula">
-                <p class="panel-kicker">Formula</p>
-                <div class="formula-lines math-display-lines">
-                  <div class="formula-line">
-                    <span class="math-var">dB</span>
-                    <span class="math-equals">=</span>
-                    <span>10&nbsp;log<sub>10</sub></span>
-                    <span class="formula-paren">(</span>
-                    <span class="math-fraction">
-                      <span class="math-numerator">P<sub>max</sub></span>
-                      <span class="math-denominator">P<sub>min</sub></span>
-                    </span>
-                    <span class="formula-paren">)</span>
-                  </div>
-                </div>
-                <dl class="variable-list">
-                  <dt>P<sub>max</sub></dt><dd>Maximum measured power, converted to W internally</dd>
-                  <dt>P<sub>min</sub></dt><dd>Minimum measured power, converted to W internally</dd>
-                </dl>
-              </section>
-            </div>
-          </article>
-
-          <article class="calc-panel" id="calc-collimation">
+          <article class="calc-panel active" id="calc-collimation">
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Fiber output collimation</p>
@@ -212,6 +129,85 @@
                   <dt>f</dt><dd>Collimating focal length (mm)</dd>
                   <dt>MFD</dt><dd>Mode field diameter (um)</dd>
                   <dt>&theta;</dt><dd>Full-angle divergence after collimation (mrad)</dd>
+                </dl>
+              </section>
+
+
+            </div>
+          </article>
+
+          <article class="calc-panel" id="calc-focus">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Focused Gaussian beam</p>
+                <h2>Calculate Focus Spot Size</h2>
+              </div>
+              <div class="math-pill" aria-label="S equals 1.27 M squared lambda f over D">
+                <span class="math-formula math-formula-compact">
+                  <span class="math-var">S</span>
+                  <span class="math-equals">=</span>
+                  <span class="math-fraction">
+                    <span class="math-numerator">1.27&nbsp;&middot;&nbsp;M<sup>2</sup>&nbsp;&middot;&nbsp;&lambda;&nbsp;&middot;&nbsp;f</span>
+                    <span class="math-denominator">D</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div class="focus-input-area">
+              <div class="focus-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="focBeamDiameter">Beam Diameter (mm)</label>
+                  <input id="focBeamDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="10.00">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="focM2">Laser Beam Parameter (M<sup>2</sup>)</label>
+                  <input id="focM2" class="text-input calc-input" type="number" min="0.01" step="any" value="1">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="focWavelength">Wavelength &lambda; (nm)</label>
+                  <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1064">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="focFocal">Lens Focal Length (mm)</label>
+                  <input id="focFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="100.00">
+                </div>
+              </div>
+
+              <div class="result-grid focus-result-grid">
+                <div class="result-tile focus-result-main"><span>Spot Size</span><strong id="focSpotSize">-- um</strong></div>
+              </div>
+            </div>
+
+            <figure class="schematic focus-schematic" aria-label="Focus spot size geometry">
+              <img src="assets/focus-spot-diagram.svg?v=focus-polish-3" alt="Input beam focused by a lens to spot diameter S at focal length f">
+            </figure>
+
+            <div class="focus-result-area">
+              <section class="formula-panel" aria-label="Focus spot size formula">
+                <p class="panel-kicker">Formula</p>
+                <div class="math-formula math-formula-large" aria-label="S equals 1.27 M squared lambda f over D">
+                  <span class="math-var">S</span>
+                  <span class="math-equals">=</span>
+                  <span class="math-fraction">
+                    <span class="math-numerator">1.27&nbsp;&middot;&nbsp;M<sup>2</sup>&nbsp;&middot;&nbsp;&lambda;&nbsp;&middot;&nbsp;f</span>
+                    <span class="math-denominator">D</span>
+                  </span>
+                </div>
+                <dl class="variable-list">
+                  <dt>S</dt>
+                  <dd>Focus spot diameter (um)</dd>
+                  <dt>M<sup>2</sup></dt>
+                  <dd>Laser beam parameter</dd>
+                  <dt>&lambda;</dt>
+                  <dd>Wavelength in um, converted from the nm input</dd>
+                  <dt>f</dt>
+                  <dd>Lens focal length (mm)</dd>
+                  <dt>D</dt>
+                  <dd>Input beam diameter (mm)</dd>
                 </dl>
               </section>
 
@@ -318,85 +314,6 @@
                 <button id="telSpacingReset" class="tel-spacing-reset" type="button">Reset to collimated</button>
               </div>
             </figure>
-          </article>
-
-          <article class="calc-panel" id="calc-focus">
-            <div class="calc-heading">
-              <div>
-                <p class="panel-kicker">Focused Gaussian beam</p>
-                <h2>Calculate Focus Spot Size</h2>
-              </div>
-              <div class="math-pill" aria-label="S equals 1.27 M squared lambda f over D">
-                <span class="math-formula math-formula-compact">
-                  <span class="math-var">S</span>
-                  <span class="math-equals">=</span>
-                  <span class="math-fraction">
-                    <span class="math-numerator">1.27&nbsp;&middot;&nbsp;M<sup>2</sup>&nbsp;&middot;&nbsp;&lambda;&nbsp;&middot;&nbsp;f</span>
-                    <span class="math-denominator">D</span>
-                  </span>
-                </span>
-              </div>
-            </div>
-
-            <div class="focus-input-area">
-              <div class="focus-input-grid">
-                <div class="field-group">
-                  <label class="field-label" for="focBeamDiameter">Beam Diameter (mm)</label>
-                  <input id="focBeamDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="10.00">
-                </div>
-
-                <div class="field-group">
-                  <label class="field-label" for="focM2">Laser Beam Parameter (M<sup>2</sup>)</label>
-                  <input id="focM2" class="text-input calc-input" type="number" min="0.01" step="any" value="1">
-                </div>
-
-                <div class="field-group">
-                  <label class="field-label" for="focWavelength">Wavelength &lambda; (nm)</label>
-                  <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1064">
-                </div>
-
-                <div class="field-group">
-                  <label class="field-label" for="focFocal">Lens Focal Length (mm)</label>
-                  <input id="focFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="100.00">
-                </div>
-              </div>
-
-              <div class="result-grid focus-result-grid">
-                <div class="result-tile focus-result-main"><span>Spot Size</span><strong id="focSpotSize">-- um</strong></div>
-              </div>
-            </div>
-
-            <figure class="schematic focus-schematic" aria-label="Focus spot size geometry">
-              <img src="assets/focus-spot-diagram.svg?v=focus-polish-3" alt="Input beam focused by a lens to spot diameter S at focal length f">
-            </figure>
-
-            <div class="focus-result-area">
-              <section class="formula-panel" aria-label="Focus spot size formula">
-                <p class="panel-kicker">Formula</p>
-                <div class="math-formula math-formula-large" aria-label="S equals 1.27 M squared lambda f over D">
-                  <span class="math-var">S</span>
-                  <span class="math-equals">=</span>
-                  <span class="math-fraction">
-                    <span class="math-numerator">1.27&nbsp;&middot;&nbsp;M<sup>2</sup>&nbsp;&middot;&nbsp;&lambda;&nbsp;&middot;&nbsp;f</span>
-                    <span class="math-denominator">D</span>
-                  </span>
-                </div>
-                <dl class="variable-list">
-                  <dt>S</dt>
-                  <dd>Focus spot diameter (um)</dd>
-                  <dt>M<sup>2</sup></dt>
-                  <dd>Laser beam parameter</dd>
-                  <dt>&lambda;</dt>
-                  <dd>Wavelength in um, converted from the nm input</dd>
-                  <dt>f</dt>
-                  <dd>Lens focal length (mm)</dd>
-                  <dt>D</dt>
-                  <dd>Input beam diameter (mm)</dd>
-                </dl>
-              </section>
-
-
-            </div>
           </article>
 
           <article class="calc-panel" id="calc-detector">
@@ -566,6 +483,89 @@
                 <text x="256" y="385" font-family="'Times New Roman', serif" font-style="italic" font-size="22" fill="#1e293b">&#952;<tspan dy="0.3em" font-size="0.75em">m=1</tspan></text>
               </svg>
             </figure>
+          </article>
+
+          <article class="calc-panel" id="calc-per">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Max to min power ratio</p>
+                <h2>Max / Min Power to dB</h2>
+              </div>
+              <div class="math-pill" aria-label="dB equals 10 log base 10 of P max over P min">
+                <span class="math-formula math-formula-compact">
+                  <span class="math-var">dB</span>
+                  <span class="math-equals">=</span>
+                  <span>10&nbsp;log<sub>10</sub></span>
+                  <span class="formula-paren">(</span>
+                  <span class="math-fraction">
+                    <span class="math-numerator">P<sub>max</sub></span>
+                    <span class="math-denominator">P<sub>min</sub></span>
+                  </span>
+                  <span class="formula-paren">)</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="calc-grid">
+              <div class="input-column power-ratio-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="powMax">Max power</label>
+                  <input id="powMax" class="text-input calc-input" type="number" min="0" step="any" value="10">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="powMaxUnit">Max unit</label>
+                  <select id="powMaxUnit" class="text-input calc-input">
+                    <option value="uw">uW</option>
+                    <option value="mw" selected>mW</option>
+                    <option value="w">W</option>
+                  </select>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="powMin">Min power</label>
+                  <input id="powMin" class="text-input calc-input" type="number" min="0" step="any" value="0.01">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="powMinUnit">Min unit</label>
+                  <select id="powMinUnit" class="text-input calc-input">
+                    <option value="uw">uW</option>
+                    <option value="mw" selected>mW</option>
+                    <option value="w">W</option>
+                  </select>
+                </div>
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>Ratio in dB</span><strong id="powRatioDb">-- dB</strong></div>
+                <div class="result-tile"><span>Power ratio</span><strong id="powRatioLinear">--</strong></div>
+                <div class="result-tile"><span>Min / Max</span><strong id="powMinMax">-- %</strong></div>
+                <div class="result-tile"><span>Max - Min</span><strong id="powDelta">-- mW</strong></div>
+              </div>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="Max to min power dB formula">
+                <p class="panel-kicker">Formula</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line">
+                    <span class="math-var">dB</span>
+                    <span class="math-equals">=</span>
+                    <span>10&nbsp;log<sub>10</sub></span>
+                    <span class="formula-paren">(</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">P<sub>max</sub></span>
+                      <span class="math-denominator">P<sub>min</sub></span>
+                    </span>
+                    <span class="formula-paren">)</span>
+                  </div>
+                </div>
+                <dl class="variable-list">
+                  <dt>P<sub>max</sub></dt><dd>Maximum measured power, converted to W internally</dd>
+                  <dt>P<sub>min</sub></dt><dd>Minimum measured power, converted to W internally</dd>
+                </dl>
+              </section>
+            </div>
           </article>
         </div>
       </section>

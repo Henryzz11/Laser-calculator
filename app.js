@@ -1,5 +1,5 @@
 const state = {
-  activeCalculator: "per",
+  activeCalculator: "collimation",
   telescopeSpacingMode: "auto",
   telescopeSignature: "",
 };
