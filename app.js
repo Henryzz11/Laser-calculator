@@ -74,6 +74,151 @@ function updatePer() {
   setText("powDelta", fmt(deltaMw, 5), " mW");
 }
 
+const SPEED_OF_LIGHT = 299792458;
+
+function timeToSeconds(value, unit) {
+  if (unit === "fs") return value * 1e-15;
+  if (unit === "ps") return value * 1e-12;
+  if (unit === "ns") return value * 1e-9;
+  if (unit === "us") return value * 1e-6;
+  if (unit === "ms") return value * 1e-3;
+  return value;
+}
+
+function bandwidthToHz(value, unit) {
+  if (unit === "thz") return value * 1e12;
+  if (unit === "ghz") return value * 1e9;
+  if (unit === "mhz") return value * 1e6;
+  if (unit === "khz") return value * 1e3;
+  return value;
+}
+
+function lengthToM(value, unit) {
+  if (unit === "mm") return value / 1000;
+  if (unit === "cm") return value / 100;
+  return value;
+}
+
+function wavelengthBandwidthToHz(centerNm, bandwidthNm) {
+  const centerM = centerNm * 1e-9;
+  const bandwidthM = bandwidthNm * 1e-9;
+  return (SPEED_OF_LIGHT * bandwidthM) / (centerM * centerM);
+}
+
+function frequencyBandwidthToNm(centerNm, bandwidthHz) {
+  const centerM = centerNm * 1e-9;
+  return ((centerM * centerM * bandwidthHz) / SPEED_OF_LIGHT) * 1e9;
+}
+
+function formatBandwidthAuto(valueHz) {
+  return formatScaled(valueHz, [
+    { factor: 1e12, unit: "THz" },
+    { factor: 1e9, unit: "GHz" },
+    { factor: 1e6, unit: "MHz" },
+    { factor: 1e3, unit: "kHz" },
+    { factor: 1, unit: "Hz" },
+  ]);
+}
+
+function setPulseBandwidthMode(mode) {
+  document.querySelectorAll("[data-pb-mode]").forEach((panel) => {
+    panel.hidden = panel.dataset.pbMode !== mode;
+  });
+}
+
+function setPulseBandwidthKind(kind) {
+  document.querySelectorAll("[data-pb-bandwidth-kind]").forEach((panel) => {
+    panel.hidden = panel.dataset.pbBandwidthKind !== kind;
+  });
+}
+
+function setCavityMode(mode) {
+  document.querySelectorAll("[data-cav-mode]").forEach((panel) => {
+    panel.hidden = panel.dataset.cavMode !== mode;
+  });
+}
+
+function updatePulseBandwidth() {
+  const mode = document.querySelector("#pbMode")?.value || "duration-to-bandwidth";
+  const kind = document.querySelector("#pbBandwidthKind")?.value || "wavelength";
+  const tbp = Number(document.querySelector("#pbShape")?.value || 0.441);
+  const centerNm = numberValue("pbCenter");
+
+  setPulseBandwidthMode(mode);
+  setPulseBandwidthKind(kind);
+
+  if (centerNm <= 0 || tbp <= 0) {
+    ["pbDurationResult", "pbFreqResult", "pbWaveResult", "pbTbpResult"].forEach((id) => setText(id, null));
+    return;
+  }
+
+  let durationS;
+  let bandwidthHz;
+
+  if (mode === "duration-to-bandwidth") {
+    durationS = timeToSeconds(numberValue("pbDuration"), document.querySelector("#pbDurationUnit")?.value || "fs");
+    if (durationS <= 0) {
+      ["pbDurationResult", "pbFreqResult", "pbWaveResult", "pbTbpResult"].forEach((id) => setText(id, null));
+      return;
+    }
+    bandwidthHz = tbp / durationS;
+  } else {
+    if (kind === "frequency") {
+      bandwidthHz = bandwidthToHz(numberValue("pbBandwidthFreq"), document.querySelector("#pbBandwidthFreqUnit")?.value || "thz");
+    } else {
+      bandwidthHz = wavelengthBandwidthToHz(centerNm, numberValue("pbBandwidthNm"));
+    }
+    if (bandwidthHz <= 0) {
+      ["pbDurationResult", "pbFreqResult", "pbWaveResult", "pbTbpResult"].forEach((id) => setText(id, null));
+      return;
+    }
+    durationS = tbp / bandwidthHz;
+  }
+
+  setText("pbDurationResult", formatTimeAuto(durationS));
+  setText("pbFreqResult", formatBandwidthAuto(bandwidthHz));
+  setText("pbWaveResult", fmt(frequencyBandwidthToNm(centerNm, bandwidthHz), 5), " nm");
+  setText("pbTbpResult", fmt(tbp, 4));
+}
+
+function updateCavity() {
+  const mode = document.querySelector("#cavMode")?.value || "length-to-rate";
+  const type = document.querySelector("#cavType")?.value || "linear";
+  const index = numberValue("cavIndex");
+  const roundTripFactor = type === "linear" ? 2 : 1;
+  let lengthM;
+  let repRateHz;
+
+  setCavityMode(mode);
+
+  if (index <= 0) {
+    ["cavRateResult", "cavLengthResult", "cavRoundTripResult", "cavRoundTripTime"].forEach((id) => setText(id, null));
+    return;
+  }
+
+  if (mode === "rate-to-length") {
+    repRateHz = rateToHz(numberValue("cavRate"), document.querySelector("#cavRateUnit")?.value || "mhz");
+    if (repRateHz <= 0) {
+      ["cavRateResult", "cavLengthResult", "cavRoundTripResult", "cavRoundTripTime"].forEach((id) => setText(id, null));
+      return;
+    }
+    lengthM = SPEED_OF_LIGHT / (index * repRateHz * roundTripFactor);
+  } else {
+    lengthM = lengthToM(numberValue("cavLength"), document.querySelector("#cavLengthUnit")?.value || "m");
+    if (lengthM <= 0) {
+      ["cavRateResult", "cavLengthResult", "cavRoundTripResult", "cavRoundTripTime"].forEach((id) => setText(id, null));
+      return;
+    }
+    repRateHz = SPEED_OF_LIGHT / (index * lengthM * roundTripFactor);
+  }
+
+  const roundTripLengthM = lengthM * roundTripFactor;
+  setText("cavRateResult", formatRateAuto(repRateHz));
+  setText("cavLengthResult", formatLengthAuto(lengthM));
+  setText("cavRoundTripResult", formatLengthAuto(roundTripLengthM));
+  setText("cavRoundTripTime", formatTimeAuto(1 / repRateHz));
+}
+
 function energyToJ(value, unit) {
   if (unit === "j") return value;
   if (unit === "mj") return value / 1000;
@@ -131,6 +276,7 @@ function formatTimeAuto(valueS) {
     { factor: 1e-6, unit: "us" },
     { factor: 1e-9, unit: "ns" },
     { factor: 1e-12, unit: "ps" },
+    { factor: 1e-15, unit: "fs" },
   ]);
 }
 
@@ -643,6 +789,8 @@ function updateCalculators() {
   updatePer();
   updateCollimation();
   updateEnergyPower();
+  updatePulseBandwidth();
+  updateCavity();
   updateTelescope();
   updateRayleigh();
   updateFocus();

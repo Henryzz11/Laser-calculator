@@ -30,6 +30,8 @@
           <button class="calc-tab" data-calculator="detector" type="button">Detector Limit</button>
           <button class="calc-tab" data-calculator="grating" type="button">Reflective Grating</button>
           <button class="calc-tab" data-calculator="energy" type="button">Pulse Energy &harr; Power</button>
+          <button class="calc-tab" data-calculator="pulsebandwidth" type="button">Pulse Duration &harr; Spectrum</button>
+          <button class="calc-tab" data-calculator="cavity" type="button">Cavity Rep Rate</button>
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
         </aside>
 
@@ -657,6 +659,185 @@
                   <dt>f<sub>rep</sub></dt><dd>Pulse repetition rate</dd>
                 </dl>
               </section>
+            </div>
+          </article>
+
+          <article class="calc-panel" id="calc-pulsebandwidth">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Transform-limited pulse estimate</p>
+                <h2>Pulse Duration &harr; Spectrum Bandwidth</h2>
+              </div>
+              <div class="collimation-formula-stack" aria-label="Pulse duration and spectrum bandwidth formulas">
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">TBP</span>
+                    <span class="math-equals">=</span>
+                    <span>&Delta;&nu;&nbsp;&tau;</span>
+                  </span>
+                </div>
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">&Delta;&lambda;</span>
+                    <span class="math-equals">=</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">&lambda;<sub>0</sub><sup>2</sup>&nbsp;&Delta;&nu;</span>
+                      <span class="math-denominator">c</span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-grid">
+              <div class="input-column">
+                <label class="field-label" for="pbMode">Conversion</label>
+                <select id="pbMode" class="text-input calc-input">
+                  <option value="duration-to-bandwidth">Pulse duration to spectrum</option>
+                  <option value="bandwidth-to-duration">Spectrum to transform-limited duration</option>
+                </select>
+
+                <label class="field-label" for="pbShape">Pulse shape</label>
+                <select id="pbShape" class="text-input calc-input">
+                  <option value="0.441">Gaussian, TBP 0.441</option>
+                  <option value="0.315">sech2, TBP 0.315</option>
+                </select>
+
+                <label class="field-label" for="pbCenter">Center wavelength <span class="math-inline-symbol">&lambda;<sub>0</sub></span> (nm)</label>
+                <input id="pbCenter" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+
+                <div data-pb-mode="duration-to-bandwidth">
+                  <div class="field-group">
+                    <label class="field-label" for="pbDuration">Pulse duration <span class="math-inline-symbol">&tau;</span></label>
+                    <input id="pbDuration" class="text-input calc-input" type="number" min="0" step="any" value="300">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="pbDurationUnit">Duration unit</label>
+                    <select id="pbDurationUnit" class="text-input calc-input">
+                      <option value="fs" selected>fs</option>
+                      <option value="ps">ps</option>
+                      <option value="ns">ns</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div data-pb-mode="bandwidth-to-duration" hidden>
+                  <div class="field-group">
+                    <label class="field-label" for="pbBandwidthKind">Bandwidth input</label>
+                    <select id="pbBandwidthKind" class="text-input calc-input">
+                      <option value="wavelength">Wavelength bandwidth</option>
+                      <option value="frequency">Frequency bandwidth</option>
+                    </select>
+                  </div>
+                  <div data-pb-bandwidth-kind="wavelength">
+                    <label class="field-label" for="pbBandwidthNm">Spectrum bandwidth <span class="math-inline-symbol">&Delta;&lambda;</span> (nm)</label>
+                    <input id="pbBandwidthNm" class="text-input calc-input" type="number" min="0" step="any" value="5">
+                  </div>
+                  <div data-pb-bandwidth-kind="frequency" hidden>
+                    <label class="field-label" for="pbBandwidthFreq">Frequency bandwidth <span class="math-inline-symbol">&Delta;&nu;</span></label>
+                    <input id="pbBandwidthFreq" class="text-input calc-input" type="number" min="0" step="any" value="1">
+                    <label class="field-label" for="pbBandwidthFreqUnit">Bandwidth unit</label>
+                    <select id="pbBandwidthFreqUnit" class="text-input calc-input">
+                      <option value="ghz">GHz</option>
+                      <option value="thz" selected>THz</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>Transform-limited duration <span class="math-inline-symbol">&tau;</span></span><strong id="pbDurationResult">-- fs</strong></div>
+                <div class="result-tile"><span>Frequency bandwidth <span class="math-inline-symbol">&Delta;&nu;</span></span><strong id="pbFreqResult">-- THz</strong></div>
+                <div class="result-tile"><span>Wavelength bandwidth <span class="math-inline-symbol">&Delta;&lambda;</span></span><strong id="pbWaveResult">-- nm</strong></div>
+                <div class="result-tile"><span>TBP used</span><strong id="pbTbpResult">--</strong></div>
+              </div>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="Pulse bandwidth variables">
+                <p class="panel-kicker">Notes</p>
+                <dl class="variable-list">
+                  <dt>Gaussian</dt><dd>Transform-limited TBP = 0.441</dd>
+                  <dt>sech2</dt><dd>Transform-limited TBP = 0.315</dd>
+                  <dt>&Delta;&lambda;</dt><dd>Small-bandwidth approximation around the center wavelength</dd>
+                </dl>
+              </section>
+            </div>
+          </article>
+
+          <article class="calc-panel" id="calc-cavity">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Oscillator timing</p>
+                <h2>Cavity / Repetition Rate</h2>
+              </div>
+              <div class="collimation-formula-stack" aria-label="Cavity repetition rate formulas">
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">f<sub>rep</sub></span>
+                    <span class="math-equals">=</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">c</span>
+                      <span class="math-denominator">n&nbsp;L<sub>rt</sub></span>
+                    </span>
+                  </span>
+                </div>
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">L<sub>rt</sub></span>
+                    <span class="math-equals">=</span>
+                    <span>2L&nbsp;(linear),&nbsp;L&nbsp;(ring)</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-grid">
+              <div class="input-column">
+                <label class="field-label" for="cavMode">Conversion</label>
+                <select id="cavMode" class="text-input calc-input">
+                  <option value="length-to-rate">Cavity length to rep rate</option>
+                  <option value="rate-to-length">Rep rate to cavity length</option>
+                </select>
+
+                <label class="field-label" for="cavType">Cavity geometry</label>
+                <select id="cavType" class="text-input calc-input">
+                  <option value="linear" selected>Linear standing-wave cavity</option>
+                  <option value="ring">Ring cavity</option>
+                </select>
+
+                <label class="field-label" for="cavIndex">Effective refractive index n</label>
+                <input id="cavIndex" class="text-input calc-input" type="number" min="0.1" step="any" value="1">
+
+                <div data-cav-mode="length-to-rate">
+                  <label class="field-label" for="cavLength">Physical cavity length L</label>
+                  <input id="cavLength" class="text-input calc-input" type="number" min="0" step="any" value="1.5">
+
+                  <label class="field-label" for="cavLengthUnit">Length unit</label>
+                  <select id="cavLengthUnit" class="text-input calc-input">
+                    <option value="mm">mm</option>
+                    <option value="cm">cm</option>
+                    <option value="m" selected>m</option>
+                  </select>
+                </div>
+
+                <div data-cav-mode="rate-to-length" hidden>
+                  <label class="field-label" for="cavRate">Repetition rate <span class="math-inline-symbol">f<sub>rep</sub></span></label>
+                  <input id="cavRate" class="text-input calc-input" type="number" min="0" step="any" value="100">
+
+                  <label class="field-label" for="cavRateUnit">Rate unit</label>
+                  <select id="cavRateUnit" class="text-input calc-input">
+                    <option value="khz">kHz</option>
+                    <option value="mhz" selected>MHz</option>
+                    <option value="ghz">GHz</option>
+                  </select>
+                </div>
+              </div>
+              <div class="result-grid">
+                <div class="result-tile"><span>Repetition rate <span class="math-inline-symbol">f<sub>rep</sub></span></span><strong id="cavRateResult">-- MHz</strong></div>
+                <div class="result-tile"><span>Physical cavity length L</span><strong id="cavLengthResult">-- m</strong></div>
+                <div class="result-tile"><span>Round-trip length <span class="math-inline-symbol">L<sub>rt</sub></span></span><strong id="cavRoundTripResult">-- m</strong></div>
+                <div class="result-tile"><span>Round-trip time</span><strong id="cavRoundTripTime">-- ns</strong></div>
+              </div>
             </div>
           </article>
 
