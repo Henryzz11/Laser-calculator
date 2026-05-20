@@ -7,6 +7,7 @@
   --muted: #677078;
   --teal: #087f8c;
   --teal-dark: #05616b;
+  --result-blue: #2563eb;
   --gold: #c4933f;
   --ink: #2f343a;
   --shadow: 0 18px 42px rgba(58, 51, 43, 0.08);
@@ -998,7 +999,7 @@ h2 {
 .result-tile strong {
   display: block;
   margin-top: 12px;
-  color: var(--ink);
+  color: var(--result-blue);
   font-size: clamp(1.15rem, 2.1vw, 1.62rem);
   line-height: 1.15;
   overflow-wrap: anywhere;
