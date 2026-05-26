@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=detector-no-formula-1">
+    <link rel="stylesheet" href="styles.css?v=energy-power-default-1">
   </head>
   <body>
     <main class="app-shell">
@@ -24,6 +24,7 @@
       <section class="calculator-shell" aria-label="Optics calculators">
         <aside class="calculator-tabs" aria-label="Calculators">
           <button class="calc-tab active" data-calculator="collimation" type="button">Fiber Collimation</button>
+          <button class="calc-tab" data-calculator="feedback" type="button">Cladding Feedback</button>
           <button class="calc-tab" data-calculator="focus" type="button">Focus Spot Size</button>
           <button class="calc-tab" data-calculator="telescope" type="button">Beam Telescope</button>
           <button class="calc-tab" data-calculator="rayleigh" type="button">Rayleigh Length</button>
@@ -100,10 +101,6 @@
               </div>
             </div>
 
-            <figure class="schematic collimation-schematic" aria-label="Fiber collimation geometry">
-              <img src="assets/fiber-collimation.png?v=lab-update-1" alt="Fiber collimation geometry showing MFD, NA, collimating lens, focal length, and collimated beam diameter">
-            </figure>
-
             <div class="collimation-result-area">
               <section class="formula-panel" data-col-formula="na" aria-label="NA collimation formula" hidden>
                 <p class="panel-kicker">NA Method</p>
@@ -134,9 +131,132 @@
                   <dt>MFD</dt><dd>Mode field diameter (um)</dd>
                   <dt>&theta;</dt><dd>Full-angle divergence after collimation (mrad)</dd>
                 </dl>
+                <div class="derivation-note">
+                  <p class="panel-kicker">Derivation</p>
+                  <p>For an ideal Gaussian mode with M<sup>2</sup> = 1, the mode field radius is</p>
+                  <div class="formula-lines math-display-lines derivation-lines">
+                    <div class="formula-line"><span class="math-var">w<sub>0</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">MFD</span><span class="math-denominator">2</span></span></div>
+                    <div class="formula-line"><span class="math-var">&theta;</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&lambda;</span><span class="math-denominator">&pi;&nbsp;w<sub>0</sub></span></span></div>
+                    <div class="formula-line"><span class="math-var">D</span><span class="math-equals">=</span><span>2&nbsp;f&nbsp;&theta;</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">4&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">&pi;&nbsp;MFD</span></span></div>
+                  </div>
+                  <p>The factor 4 comes from converting radius to diameter twice: MFD = 2w<sub>0</sub> and D = 2w.</p>
+                </div>
               </section>
 
 
+            </div>
+          </article>
+
+
+          <article class="calc-panel" id="calc-feedback">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Double-clad fiber feedback</p>
+                <h2>Cladding Feedback</h2>
+              </div>
+              <div class="collimation-formula-stack" aria-label="Cladding feedback formulas">
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">&alpha;<sub>min</sub></span>
+                    <span class="math-equals">=</span>
+                    <span class="math-fraction"><span class="math-numerator">1</span><span class="math-denominator">2</span></span>
+                    <span>sin<sup>-1</sup></span>
+                    <span class="formula-paren">(</span>
+                    <span class="math-fraction"><span class="math-numerator">NA<sub>clad</sub></span><span class="math-denominator">n<sub>fiber</sub></span></span>
+                    <span class="formula-paren">)</span>
+                  </span>
+                </div>
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">G<sub>th</sub></span>
+                    <span class="math-equals">=</span>
+                    <span>-10&nbsp;log<sub>10</sub></span>
+                    <span>[R&nbsp;&middot;&nbsp;(</span>
+                    <span class="math-fraction"><span class="math-numerator">D<sub>core</sub></span><span class="math-denominator">D<sub>clad</sub></span></span>
+                    <span>)<sup>2</sup>]</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="feedback-input-area">
+              <div class="feedback-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="fbIndex">Fiber refractive index n</label>
+                  <input id="fbIndex" class="text-input calc-input" type="number" min="0.1" step="any" value="1.45">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="fbNa">Inner cladding NA</label>
+                  <input id="fbNa" class="text-input calc-input" type="number" min="0.001" step="any" value="0.46">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="fbCleave">Cleave angle <span class="math-inline-symbol">&alpha;</span> (deg)</label>
+                  <input id="fbCleave" class="text-input calc-input" type="number" min="0" step="any" value="12">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="fbCore">Core diameter D<sub>core</sub> (um)</label>
+                  <input id="fbCore" class="text-input calc-input" type="number" min="0.01" step="any" value="85">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="fbClad">Cladding diameter D<sub>clad</sub> (um)</label>
+                  <input id="fbClad" class="text-input calc-input" type="number" min="0.01" step="any" value="400">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="fbFresnel">Fresnel reflection R (%)</label>
+                  <input id="fbFresnel" class="text-input calc-input" type="number" min="0.0001" step="any" value="3.5">
+                </div>
+              </div>
+
+              <div class="result-grid feedback-result-grid inline-result-grid">
+                <div class="result-tile"><span>Minimum cleave angle <span class="math-inline-symbol">&alpha;<sub>min</sub></span></span><strong id="fbAlphaMin">-- deg</strong></div>
+                <div class="result-tile"><span>Cladding acceptance angle <span class="math-inline-symbol">&theta;<sub>max</sub></span></span><strong id="fbThetaMax">-- deg</strong></div>
+                <div class="result-tile"><span>Reflected angle 2&alpha;</span><strong id="fbReflectedAngle">-- deg</strong></div>
+                <div class="result-tile"><span>Cladding guidance</span><strong id="fbGuidance">--</strong></div>
+                <div class="result-tile"><span>Feedback level</span><strong id="fbFeedbackDb">-- dB</strong></div>
+                <div class="result-tile"><span>Gain threshold</span><strong id="fbGainThreshold">-- dB</strong></div>
+              </div>
+            </div>
+
+            <figure class="schematic feedback-schematic" aria-label="Double-clad fiber end facet feedback geometry">
+              <svg viewBox="0 0 840 300" role="img">
+                <defs>
+                  <marker id="arrow-feedback" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                    <path d="M 0 1 L 8 5 L 0 9 Z"></path>
+                  </marker>
+                  <linearGradient id="feedback-core" x1="0" x2="1" y1="0" y2="0">
+                    <stop offset="0" stop-color="#d9f1f4"></stop>
+                    <stop offset="1" stop-color="#ffffff"></stop>
+                  </linearGradient>
+                </defs>
+                <rect x="72" y="96" width="520" height="108" rx="8" class="feedback-clad"></rect>
+                <rect x="72" y="135" width="520" height="30" rx="4" fill="url(#feedback-core)" class="feedback-core"></rect>
+                <line x1="58" y1="150" x2="670" y2="150" class="axis"></line>
+                <line x1="585" y1="74" x2="632" y2="226" class="feedback-facet"></line>
+                <line x1="608" y1="64" x2="608" y2="236" class="normal"></line>
+                <line x1="86" y1="150" x2="585" y2="150" class="feedback-ray" marker-end="url(#arrow-feedback)"></line>
+                <line x1="585" y1="150" x2="745" y2="95" class="feedback-ray feedback-reflected" marker-end="url(#arrow-feedback)"></line>
+                <path d="M 650 150 A 65 65 0 0 0 646 129" class="feedback-angle"></path>
+                <path d="M 625 150 A 40 40 0 0 0 623 136" class="feedback-angle feedback-angle-small"></path>
+                <text x="95" y="124">Inner cladding</text>
+                <text x="95" y="184">Core</text>
+                <text x="610" y="54" class="accent-label">angle cleave &alpha;</text>
+                <text x="662" y="145" class="accent-label">2&alpha;</text>
+                <text x="660" y="86" text-anchor="start">reflected light</text>
+                <text x="420" y="244" text-anchor="middle" class="feedback-caption">2&alpha; &gt; theta max: reflected beam is not guided by the inner cladding.</text>
+              </svg>
+            </figure>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="Cladding feedback notes">
+                <p class="panel-kicker">Variables</p>
+                <dl class="variable-list">
+                  <dt>&alpha;</dt><dd>Facet cleave angle relative to a normal cleave</dd>
+                  <dt>2&alpha;</dt><dd>Reflection deflection angle caused by the tilted facet</dd>
+                  <dt>NA<sub>clad</sub></dt><dd>Inner cladding numerical aperture</dd>
+                  <dt>R</dt><dd>Single-facet Fresnel reflection as a fraction</dd>
+                  <dt>G<sub>th</sub></dt><dd>Approximate gain needed to compensate cladding feedback loss</dd>
+                </dl>
+              </section>
             </div>
           </article>
 
@@ -593,7 +713,7 @@
                 <label class="field-label" for="epMode">Conversion</label>
                 <select id="epMode" class="text-input calc-input">
                   <option value="energy-to-power">Energy + rep rate to power</option>
-                  <option value="power-to-energy">Power + rep rate to energy</option>
+                  <option value="power-to-energy" selected>Power + rep rate to energy</option>
                 </select>
 
                 <div class="energy-mode-fields" data-energy-mode="energy-to-power">
@@ -927,6 +1047,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=detector-no-formula-1"></script>
+    <script src="app.js?v=energy-power-default-1"></script>
   </body>
 </html>

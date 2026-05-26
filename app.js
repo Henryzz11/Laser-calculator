@@ -287,7 +287,7 @@ function setEnergyPowerMode(mode) {
 }
 
 function updateEnergyPower() {
-  const mode = document.querySelector("#epMode")?.value || "energy-to-power";
+  const mode = document.querySelector("#epMode")?.value || "power-to-energy";
   const rateHz = rateToHz(numberValue("epRateInput"), document.querySelector("#epRateUnit")?.value || "khz");
   setEnergyPowerMode(mode);
 
@@ -349,6 +349,50 @@ function updateRayleigh() {
   setText("rayConfocal", formatLengthAuto(2 * rayleighM));
   setText("rayRadius", fmt(radiusM * 1e6, 5), " um");
   setText("rayDivergence", fmt(fullAngleMrad, 5), " mrad");
+}
+
+
+function updateFeedback() {
+  const nFiber = numberValue("fbIndex");
+  const naClad = numberValue("fbNa");
+  const cleaveAngle = numberValue("fbCleave");
+  const coreDiameter = numberValue("fbCore");
+  const cladDiameter = numberValue("fbClad");
+  const fresnelPercent = numberValue("fbFresnel");
+  const ids = ["fbAlphaMin", "fbThetaMax", "fbReflectedAngle", "fbGuidance", "fbFeedbackDb", "fbGainThreshold"];
+
+  if (nFiber <= 0 || naClad <= 0 || cleaveAngle < 0 || coreDiameter <= 0 || cladDiameter <= 0 || fresnelPercent <= 0) {
+    ids.forEach((id) => setText(id, null));
+    return;
+  }
+
+  const acceptanceRatio = naClad / nFiber;
+  if (acceptanceRatio > 1) {
+    ["fbAlphaMin", "fbThetaMax", "fbReflectedAngle", "fbGuidance"].forEach((id) => setText(id, null));
+  } else {
+    const thetaMax = radToDeg(Math.asin(acceptanceRatio));
+    const alphaMin = thetaMax / 2;
+    const reflectedAngle = 2 * cleaveAngle;
+    let guidance = "Guided risk";
+    if (Math.abs(reflectedAngle - thetaMax) < 1e-9) {
+      guidance = "At threshold";
+    } else if (reflectedAngle > thetaMax) {
+      guidance = "Not guided";
+    }
+
+    setText("fbAlphaMin", fmt(alphaMin, 5), " deg");
+    setText("fbThetaMax", fmt(thetaMax, 5), " deg");
+    setText("fbReflectedAngle", fmt(reflectedAngle, 5), " deg");
+    setText("fbGuidance", guidance);
+  }
+
+  const fresnel = fresnelPercent / 100;
+  const areaOverlap = (coreDiameter / cladDiameter) ** 2;
+  const feedbackLevelDb = 10 * Math.log10(fresnel * areaOverlap);
+  const gainThresholdDb = -feedbackLevelDb;
+
+  setText("fbFeedbackDb", fmt(feedbackLevelDb, 5), " dB");
+  setText("fbGainThreshold", fmt(gainThresholdDb, 5), " dB");
 }
 
 function setCollimationMethod(method) {
@@ -788,6 +832,7 @@ function updateGrating() {
 function updateCalculators() {
   updatePer();
   updateCollimation();
+  updateFeedback();
   updateEnergyPower();
   updatePulseBandwidth();
   updateCavity();
