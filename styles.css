@@ -771,17 +771,6 @@ h2 {
   line-height: 0.7;
 }
 
-.focus-schematic {
-  background: #ffffff;
-}
-
-.focus-schematic img {
-  display: block;
-  width: 100%;
-  max-height: 430px;
-  object-fit: contain;
-}
-
 .focus-result-area {
   display: block;
   padding: 18px;

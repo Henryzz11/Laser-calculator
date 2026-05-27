@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=telescope-white-1">
+    <link rel="stylesheet" href="styles.css?v=focus-derivation-1">
   </head>
   <body>
     <main class="app-shell">
@@ -295,10 +295,6 @@
               </div>
             </div>
 
-            <figure class="schematic focus-schematic" aria-label="Focus spot size geometry">
-              <img src="assets/focus-spot-diagram.svg?v=focus-polish-3" alt="Input beam focused by a lens to spot diameter S at focal length f">
-            </figure>
-
             <div class="focus-result-area">
               <section class="formula-panel" aria-label="Focus spot size formula">
                 <p class="panel-kicker">Formula</p>
@@ -322,6 +318,38 @@
                   <dt>D</dt>
                   <dd>Input beam diameter (mm)</dd>
                 </dl>
+                <div class="derivation-note">
+                  <p class="panel-kicker">Derivation</p>
+                  <p>For Gaussian beam diameters defined at 1/e<sup>2</sup> intensity, the input beam radius at the lens is</p>
+                  <div class="formula-lines math-display-lines derivation-lines">
+                    <div class="formula-line">
+                      <span class="math-var">w<sub>L</sub></span>
+                      <span class="math-equals">=</span>
+                      <span class="math-fraction"><span class="math-numerator">D</span><span class="math-denominator">2</span></span>
+                    </div>
+                    <div class="formula-line">
+                      <span class="math-var">&theta;</span>
+                      <span class="math-equals">=</span>
+                      <span class="math-fraction"><span class="math-numerator">w<sub>L</sub></span><span class="math-denominator">f</span></span>
+                      <span class="math-equals">=</span>
+                      <span class="math-fraction"><span class="math-numerator">M<sup>2</sup>&nbsp;&lambda;</span><span class="math-denominator">&pi;&nbsp;w<sub>0</sub></span></span>
+                    </div>
+                    <div class="formula-line">
+                      <span class="math-var">w<sub>0</sub></span>
+                      <span class="math-equals">=</span>
+                      <span class="math-fraction"><span class="math-numerator">M<sup>2</sup>&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">&pi;&nbsp;w<sub>L</sub></span></span>
+                    </div>
+                    <div class="formula-line">
+                      <span class="math-var">S</span>
+                      <span class="math-equals">=</span>
+                      <span>2&nbsp;w<sub>0</sub></span>
+                      <span class="math-equals">=</span>
+                      <span class="math-fraction"><span class="math-numerator">4&nbsp;M<sup>2</sup>&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">&pi;&nbsp;D</span></span>
+                      <span class="math-equals">≈</span>
+                      <span class="math-fraction"><span class="math-numerator">1.27&nbsp;M<sup>2</sup>&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">D</span></span>
+                    </div>
+                  </div>
+                </div>
               </section>
 
 
