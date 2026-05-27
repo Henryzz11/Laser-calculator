@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=energy-power-default-1">
+    <link rel="stylesheet" href="styles.css?v=no-air-na-1">
   </head>
   <body>
     <main class="app-shell">
@@ -26,6 +26,7 @@
           <button class="calc-tab active" data-calculator="collimation" type="button">Fiber Collimation</button>
           <button class="calc-tab" data-calculator="feedback" type="button">Cladding Feedback</button>
           <button class="calc-tab" data-calculator="focus" type="button">Focus Spot Size</button>
+          <button class="calc-tab" data-calculator="fnumber" type="button">F-number</button>
           <button class="calc-tab" data-calculator="telescope" type="button">Beam Telescope</button>
           <button class="calc-tab" data-calculator="rayleigh" type="button">Rayleigh Length</button>
           <button class="calc-tab" data-calculator="detector" type="button">Detector Limit</button>
@@ -57,6 +58,10 @@
                     <option value="mfd">MFD Gaussian mode</option>
                     <option value="na">NA geometric approximation</option>
                   </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="colClearAperture">Collimator clear aperture (mm)</label>
+                  <input id="colClearAperture" class="text-input calc-input" type="number" min="0.01" step="any" value="25.4">
                 </div>
               </div>
 
@@ -98,6 +103,9 @@
                 <div class="result-tile collimation-result-main"><span>Collimated beam diameter</span><strong id="colDiameter">-- mm</strong></div>
                 <div class="result-tile"><span>Full-angle divergence</span><strong id="colDivergence">-- mrad</strong></div>
                 <div class="result-tile"><span>Rayleigh length <span class="math-inline-symbol">z<sub>R</sub></span></span><strong id="colRayleigh">-- m</strong></div>
+                <div class="result-tile"><span>Collimator F-number</span><strong id="colFNumber">--</strong></div>
+                <div class="result-tile"><span>Clear aperture fill</span><strong id="colLensFill">-- %</strong></div>
+                <div class="result-tile collimation-warning-tile"><span>Lens warning</span><strong id="colLensWarning">--</strong></div>
               </div>
             </div>
 
@@ -217,34 +225,6 @@
               </div>
             </div>
 
-            <figure class="schematic feedback-schematic" aria-label="Double-clad fiber end facet feedback geometry">
-              <svg viewBox="0 0 840 300" role="img">
-                <defs>
-                  <marker id="arrow-feedback" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-                    <path d="M 0 1 L 8 5 L 0 9 Z"></path>
-                  </marker>
-                  <linearGradient id="feedback-core" x1="0" x2="1" y1="0" y2="0">
-                    <stop offset="0" stop-color="#d9f1f4"></stop>
-                    <stop offset="1" stop-color="#ffffff"></stop>
-                  </linearGradient>
-                </defs>
-                <rect x="72" y="96" width="520" height="108" rx="8" class="feedback-clad"></rect>
-                <rect x="72" y="135" width="520" height="30" rx="4" fill="url(#feedback-core)" class="feedback-core"></rect>
-                <line x1="58" y1="150" x2="670" y2="150" class="axis"></line>
-                <line x1="585" y1="74" x2="632" y2="226" class="feedback-facet"></line>
-                <line x1="608" y1="64" x2="608" y2="236" class="normal"></line>
-                <line x1="86" y1="150" x2="585" y2="150" class="feedback-ray" marker-end="url(#arrow-feedback)"></line>
-                <line x1="585" y1="150" x2="745" y2="95" class="feedback-ray feedback-reflected" marker-end="url(#arrow-feedback)"></line>
-                <path d="M 650 150 A 65 65 0 0 0 646 129" class="feedback-angle"></path>
-                <path d="M 625 150 A 40 40 0 0 0 623 136" class="feedback-angle feedback-angle-small"></path>
-                <text x="95" y="124">Inner cladding</text>
-                <text x="95" y="184">Core</text>
-                <text x="610" y="54" class="accent-label">angle cleave &alpha;</text>
-                <text x="662" y="145" class="accent-label">2&alpha;</text>
-                <text x="660" y="86" text-anchor="start">reflected light</text>
-                <text x="420" y="244" text-anchor="middle" class="feedback-caption">2&alpha; &gt; theta max: reflected beam is not guided by the inner cladding.</text>
-              </svg>
-            </figure>
 
             <div class="formula-area">
               <section class="formula-panel" aria-label="Cladding feedback notes">
@@ -299,10 +279,19 @@
                   <label class="field-label" for="focFocal">Lens Focal Length (mm)</label>
                   <input id="focFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="100.00">
                 </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="focClearAperture">Lens clear aperture (mm)</label>
+                  <input id="focClearAperture" class="text-input calc-input" type="number" min="0.01" step="any" value="25.4">
+                </div>
               </div>
 
               <div class="result-grid focus-result-grid">
                 <div class="result-tile focus-result-main"><span>Spot Size</span><strong id="focSpotSize">-- um</strong></div>
+                <div class="result-tile"><span>Effective F-number</span><strong id="focFNumber">--</strong></div>
+                <div class="result-tile"><span>Half cone angle</span><strong id="focHalfAngle">-- deg</strong></div>
+                <div class="result-tile"><span>Clear aperture fill</span><strong id="focLensFill">-- %</strong></div>
+                <div class="result-tile focus-warning-tile wide-result"><span>Lens warning</span><strong id="focLensWarning">--</strong></div>
               </div>
             </div>
 
@@ -336,6 +325,69 @@
               </section>
 
 
+            </div>
+          </article>
+
+
+          <article class="calc-panel" id="calc-fnumber">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Focusing speed and lens fill</p>
+                <h2>F-number</h2>
+              </div>
+              <div class="math-pill" aria-label="F number equals focal length over beam diameter">
+                <span class="math-formula math-formula-compact">
+                  <span class="math-var">f/#</span>
+                  <span class="math-equals">=</span>
+                  <span class="math-fraction">
+                    <span class="math-numerator">f</span>
+                    <span class="math-denominator">D</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div class="fnumber-input-area">
+              <div class="fnumber-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="fnFocal">Lens focal length f (mm)</label>
+                  <input id="fnFocal" class="text-input calc-input" type="number" min="0.01" step="any" value="50">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="fnBeamDiameter">Input beam diameter D (mm)</label>
+                  <input id="fnBeamDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="10">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="fnClearAperture">Lens clear aperture (mm)</label>
+                  <input id="fnClearAperture" class="text-input calc-input" type="number" min="0.01" step="any" value="25.4">
+                </div>
+              </div>
+
+              <div class="result-grid fnumber-result-grid inline-result-grid">
+                <div class="result-tile"><span>F-number</span><strong id="fnNumber">--</strong></div>
+                <div class="result-tile"><span>Effective f-number</span><strong id="fnEffective">--</strong></div>
+                <div class="result-tile"><span>Half cone angle</span><strong id="fnHalfAngle">-- deg</strong></div>
+                <div class="result-tile"><span>Clear aperture fill</span><strong id="fnFill">-- %</strong></div>
+                <div class="result-tile fnumber-warning-tile"><span>Lens warning</span><strong id="fnWarning">--</strong></div>
+              </div>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="F-number notes">
+                <p class="panel-kicker">Notes</p>
+                <dl class="variable-list">
+                  <dt>f</dt><dd>Lens focal length</dd>
+                  <dt>D</dt><dd>Input beam diameter, or the effective clear aperture when the lens clips the beam</dd>
+                  <dt>f/# &lt; 4</dt><dd>Fast focus; plano-convex spherical aberration can become a serious limitation</dd>
+                  <dt>f/# 4-8</dt><dd>Moderate focus; check spherical aberration, especially for fiber coupling or small spots</dd>
+                  <dt>f/# &gt; 8</dt><dd>Gentler focus; usually lower aberration if the beam fill is modest, but spot size is larger</dd>
+                </dl>
+                <div class="derivation-note">
+                  <p class="panel-kicker">Practical warning</p>
+                  <p>If a plano-convex lens is used at low f-number, spherical aberration can become significant. An aspheric lens or microscope objective usually improves small-f/# focusing.</p>
+                  <p>If the beam diameter approaches the clear aperture, consider both spherical aberration and clipping carefully.</p>
+                </div>
+              </section>
             </div>
           </article>
 
@@ -380,11 +432,15 @@
                 <label class="field-label" for="telM2">Beam quality M<sup>2</sup></label>
                 <input id="telM2" class="text-input calc-input" type="number" min="0.01" step="any" value="1">
               </div>
-              <div class="result-grid">
+              <div class="result-grid telescope-result-grid">
                 <div class="result-tile"><span>Beam magnification</span><strong id="telMag">-- x</strong></div>
                 <div class="result-tile"><span>Output diameter</span><strong id="telDout">-- mm</strong></div>
                 <div class="result-tile"><span>Ideal lens spacing</span><strong id="telLength">-- mm</strong></div>
                 <div class="result-tile"><span>Output Rayleigh length <span class="math-inline-symbol">z<sub>R</sub></span></span><strong id="telRayleigh">-- m</strong></div>
+                <div class="result-tile"><span>L1 F-number</span><strong id="telFNumberL1">--</strong></div>
+                <div class="result-tile"><span>L2 F-number</span><strong id="telFNumberL2">--</strong></div>
+                <div class="result-tile"><span>1 inch aperture fill</span><strong id="telLensFill">-- %</strong></div>
+                <div class="result-tile telescope-warning-tile wide-result"><span>Aperture warning</span><strong id="telLensWarning">--</strong></div>
               </div>
             </div>
             <figure class="schematic telescope-dynamic-schematic" aria-label="Dynamic telescope beam expander diagram driven by focal length inputs">
@@ -1047,6 +1103,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=energy-power-default-1"></script>
+    <script src="app.js?v=no-air-na-1"></script>
   </body>
 </html>

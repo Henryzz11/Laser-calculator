@@ -406,11 +406,19 @@ function setCollimationMethod(method) {
 
 function updateCollimation() {
   const method = document.querySelector("#colMethod")?.value || "mfd";
+  const clearAperture = numberValue("colClearAperture");
+  const outputIds = ["colDiameter", "colDivergence", "colRayleigh", "colFNumber", "colLensFill", "colLensWarning"];
   setCollimationMethod(method);
 
   let diameter;
   let divergenceMrad;
   let wavelengthNm;
+  let focalMm;
+
+  if (clearAperture <= 0) {
+    outputIds.forEach((id) => setText(id, null));
+    return;
+  }
 
   if (method === "na") {
     wavelengthNm = numberValue("colWavelengthNa");
@@ -418,10 +426,11 @@ function updateCollimation() {
     const coreUm = numberValue("colCore");
     const fMm = numberValue("colFocalNa");
     if (wavelengthNm <= 0 || na <= 0 || coreUm <= 0 || fMm <= 0) {
-      ["colDiameter", "colDivergence", "colRayleigh"].forEach((id) => setText(id, null));
+      outputIds.forEach((id) => setText(id, null));
       return;
     }
 
+    focalMm = fMm;
     diameter = 2 * fMm * na;
     divergenceMrad = coreUm / fMm;
   } else {
@@ -430,10 +439,11 @@ function updateCollimation() {
     const mfdUm = numberValue("colMfd");
     const fMm = numberValue("colFocalMfd");
     if (wavelengthNm <= 0 || wavelengthUm <= 0 || mfdUm <= 0 || fMm <= 0) {
-      ["colDiameter", "colDivergence", "colRayleigh"].forEach((id) => setText(id, null));
+      outputIds.forEach((id) => setText(id, null));
       return;
     }
 
+    focalMm = fMm;
     diameter = (4 * wavelengthUm * fMm) / (Math.PI * mfdUm);
     divergenceMrad = mfdUm / fMm;
   }
@@ -441,10 +451,14 @@ function updateCollimation() {
   const wavelengthMm = wavelengthNm * 1e-6;
   const collimatedRadiusMm = diameter / 2;
   const rayleighLengthM = (Math.PI * collimatedRadiusMm * collimatedRadiusMm) / wavelengthMm / 1000;
+  const analysis = fNumberAnalysis(focalMm, diameter, clearAperture);
 
   setText("colDiameter", fmt(diameter, 4), " mm");
   setText("colDivergence", fmt(divergenceMrad, 4), " mrad");
   setText("colRayleigh", fmt(rayleighLengthM, 4), " m");
+  setText("colFNumber", analysis ? fmt(analysis.effectiveFNumber, 5) : null);
+  setText("colLensFill", analysis ? fmt(analysis.fill, 5) : null, analysis ? " %" : "");
+  setText("colLensWarning", fNumberWarning(analysis));
 }
 
 function setSvgText(id, value) {
@@ -536,6 +550,89 @@ function telescopeState(type, spacing, f1, f2, idealLength) {
     return { color: "#fbbf24", message: "State: d < f2 - |f1| (Diverging)" };
   }
   return { color: "#60a5fa", message: "State: d > f2 - |f1| (Converging)" };
+}
+
+
+const DEFAULT_LENS_APERTURE_MM = 25.4;
+
+function fNumberAnalysis(focalMm, beamDiameterMm, clearApertureMm = DEFAULT_LENS_APERTURE_MM) {
+  if (focalMm <= 0 || beamDiameterMm <= 0 || clearApertureMm <= 0) return null;
+
+  const effectiveDiameter = Math.min(beamDiameterMm, clearApertureMm);
+  const fNumber = focalMm / beamDiameterMm;
+  const effectiveFNumber = focalMm / effectiveDiameter;
+  const halfAngleRad = Math.atan(effectiveDiameter / (2 * focalMm));
+  return {
+    fNumber,
+    effectiveFNumber,
+    halfAngleDeg: radToDeg(halfAngleRad),
+    airNa: Math.sin(halfAngleRad),
+    fill: (beamDiameterMm / clearApertureMm) * 100,
+  };
+}
+
+function fNumberWarning(analysis) {
+  if (!analysis) return "--";
+
+  const warnings = [];
+  if (analysis.fill >= 100) {
+    warnings.push("Beam clips the clear aperture.");
+  } else if (analysis.fill >= 85) {
+    warnings.push("Beam is close to the clear aperture.");
+  }
+
+  if (analysis.effectiveFNumber < 4) {
+    warnings.push("If using a plano-convex lens: strong spherical aberration risk.");
+  } else if (analysis.effectiveFNumber < 8) {
+    warnings.push("If using a plano-convex lens: check spherical aberration.");
+  } else {
+    warnings.push("If using a plano-convex lens, spherical aberration is usually mild when beam fill is modest.");
+  }
+
+  return warnings.join(" ");
+}
+
+function telescopeLensWarning(l1Analysis, l2Analysis) {
+  if (!l1Analysis || !l2Analysis) return "--";
+
+  const maxFill = Math.max(l1Analysis.fill, l2Analysis.fill);
+  const minFNumber = Math.min(l1Analysis.effectiveFNumber, l2Analysis.effectiveFNumber);
+  const warnings = [];
+
+  if (maxFill >= 100) {
+    warnings.push("Beam overfills the 1 inch lens aperture.");
+  } else if (maxFill >= 85) {
+    warnings.push("Beam is close to the 1 inch clear aperture.");
+  }
+
+  if (minFNumber < 4) {
+    warnings.push("Low f/#: simple singlet lenses can show strong spherical aberration.");
+  } else if (minFNumber < 8) {
+    warnings.push("Moderate f/#: check spherical aberration if using simple singlets.");
+  } else if (warnings.length === 0) {
+    warnings.push("Aperture fill and f/# look gentle for this telescope.");
+  }
+
+  return warnings.join(" ");
+}
+
+function updateFNumber() {
+  const focal = numberValue("fnFocal");
+  const beamDiameter = numberValue("fnBeamDiameter");
+  const clearAperture = numberValue("fnClearAperture");
+  const ids = ["fnNumber", "fnEffective", "fnHalfAngle", "fnFill", "fnWarning"];
+  const analysis = fNumberAnalysis(focal, beamDiameter, clearAperture);
+
+  if (!analysis) {
+    ids.forEach((id) => setText(id, null));
+    return;
+  }
+
+  setText("fnNumber", fmt(analysis.fNumber, 5));
+  setText("fnEffective", fmt(analysis.effectiveFNumber, 5));
+  setText("fnHalfAngle", fmt(analysis.halfAngleDeg, 5), " deg");
+  setText("fnFill", fmt(analysis.fill, 5), " %");
+  setText("fnWarning", fNumberWarning(analysis));
 }
 
 function updateTelescopeSvg(type, din, f1, f2, mag, idealLength, spacing) {
@@ -668,8 +765,9 @@ function updateTelescope() {
   const f2 = numberValue("telF2");
   const wavelengthM = numberValue("telWavelength") * 1e-9;
   const m2 = numberValue("telM2");
+  const outputIds = ["telMag", "telDout", "telLength", "telRayleigh", "telFNumberL1", "telFNumberL2", "telLensFill", "telLensWarning"];
   if (din <= 0 || f1 <= 0 || f2 <= 0 || wavelengthM <= 0 || m2 <= 0) {
-    ["telMag", "telDout", "telLength", "telRayleigh"].forEach((id) => setText(id, null));
+    outputIds.forEach((id) => setText(id, null));
     return;
   }
 
@@ -679,11 +777,20 @@ function updateTelescope() {
   const outputDiameterMm = din * mag;
   const outputRadiusM = (outputDiameterMm * 1e-3) / 2;
   const outputRayleighM = (Math.PI * outputRadiusM * outputRadiusM) / (m2 * wavelengthM);
+  const l1Analysis = fNumberAnalysis(f1, din, DEFAULT_LENS_APERTURE_MM);
+  const l2Analysis = fNumberAnalysis(f2, outputDiameterMm, DEFAULT_LENS_APERTURE_MM);
 
   setText("telMag", fmt(mag, 4), " x");
   setText("telDout", fmt(outputDiameterMm, 4), " mm");
   setText("telLength", idealLength > 0 ? fmt(idealLength, 4) : "check focal lengths", idealLength > 0 ? " mm" : "");
   setText("telRayleigh", formatLengthAuto(outputRayleighM));
+  setText("telFNumberL1", l1Analysis ? fmt(l1Analysis.effectiveFNumber, 5) : null);
+  setText("telFNumberL2", l2Analysis ? fmt(l2Analysis.effectiveFNumber, 5) : null);
+  setText(
+    "telLensFill",
+    l1Analysis && l2Analysis ? `L1: ${fmt(l1Analysis.fill, 4)}%, L2: ${fmt(l2Analysis.fill, 4)}%` : null,
+  );
+  setText("telLensWarning", telescopeLensWarning(l1Analysis, l2Analysis));
   if (idealLength > 0 && Number.isFinite(spacing)) {
     updateTelescopeSvg(type, din, f1, f2, mag, idealLength, spacing);
   }
@@ -694,16 +801,23 @@ function updateFocus() {
   const m2 = numberValue("focM2");
   const wavelengthNm = numberValue("focWavelength");
   const fMm = numberValue("focFocal");
+  const clearAperture = numberValue("focClearAperture");
+  const outputIds = ["focSpotSize", "focFNumber", "focHalfAngle", "focLensFill", "focLensWarning"];
 
-  if (beamDiameter <= 0 || m2 <= 0 || wavelengthNm <= 0 || fMm <= 0) {
-    setText("focSpotSize", null);
+  if (beamDiameter <= 0 || m2 <= 0 || wavelengthNm <= 0 || fMm <= 0 || clearAperture <= 0) {
+    outputIds.forEach((id) => setText(id, null));
     return;
   }
 
   const wavelengthUm = wavelengthNm / 1000;
   const spotSizeUm = (1.27 * m2 * wavelengthUm * fMm) / beamDiameter;
+  const analysis = fNumberAnalysis(fMm, beamDiameter, clearAperture);
 
   setText("focSpotSize", fmt(spotSizeUm, 4), " um");
+  setText("focFNumber", analysis ? fmt(analysis.effectiveFNumber, 5) : null);
+  setText("focHalfAngle", analysis ? fmt(analysis.halfAngleDeg, 5) : null, analysis ? " deg" : "");
+  setText("focLensFill", analysis ? fmt(analysis.fill, 5) : null, analysis ? " %" : "");
+  setText("focLensWarning", fNumberWarning(analysis));
 }
 
 const detectorProfiles = {
@@ -833,6 +947,7 @@ function updateCalculators() {
   updatePer();
   updateCollimation();
   updateFeedback();
+  updateFNumber();
   updateEnergyPower();
   updatePulseBandwidth();
   updateCavity();

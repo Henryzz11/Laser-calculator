@@ -523,7 +523,9 @@ h2 {
 }
 
 .collimation-method-row {
-  max-width: 420px;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 12px;
   margin-bottom: 14px;
 }
 
@@ -630,6 +632,31 @@ h2 {
 
 
 
+
+.fnumber-input-area {
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.fnumber-input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.fnumber-result-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.fnumber-warning-tile {
+  grid-column: span 2;
+}
+
+.fnumber-warning-tile strong {
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+}
+
 .feedback-input-area {
   padding: 18px;
   border-bottom: 1px solid var(--line);
@@ -646,55 +673,6 @@ h2 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.feedback-schematic {
-  background: #ffffff;
-}
-
-.feedback-schematic svg {
-  max-height: 340px;
-}
-
-.feedback-clad {
-  fill: #f3f8f8;
-  stroke: #718087;
-  stroke-width: 3;
-}
-
-.feedback-core {
-  stroke: #087f8c;
-  stroke-width: 2;
-}
-
-.feedback-facet {
-  stroke: #2f343a;
-  stroke-width: 4;
-}
-
-.feedback-ray {
-  stroke: #d72b2b;
-  stroke-width: 5;
-  stroke-linecap: round;
-}
-
-.feedback-reflected {
-  stroke-width: 4;
-}
-
-.feedback-angle {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 3;
-}
-
-.feedback-angle-small {
-  stroke: var(--teal-dark);
-}
-
-.feedback-caption {
-  fill: var(--muted);
-  font-size: 14px;
-  font-weight: 750;
-}
 
 .focus-input-area {
   padding: 18px;
@@ -853,20 +831,23 @@ h2 {
 }
 
 .focus-result-grid {
-  grid-template-columns: 1fr;
-  align-content: stretch;
-  height: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
 }
 
 .focus-result-main {
-  min-height: 180px;
-  height: 100%;
   border-color: rgba(8, 127, 140, 0.28);
   background: #fffdf9;
 }
 
 .focus-result-main strong {
-  font-size: 3rem;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+.focus-warning-tile strong,
+.collimation-warning-tile strong,
+.telescope-warning-tile strong {
+  font-size: clamp(0.95rem, 1.45vw, 1.18rem);
 }
 
 .detector-model-select {
@@ -1111,7 +1092,10 @@ h2 {
   }
 
   .focus-input-grid,
+  .collimation-method-row,
   .collimation-input-grid,
+  .fnumber-input-grid,
+  .fnumber-result-grid,
   .feedback-input-grid,
   .feedback-result-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1146,9 +1130,12 @@ h2 {
   .calculator-tabs,
   .result-grid,
   .focus-input-grid,
+  .collimation-method-row,
   .collimation-input-grid,
   .feedback-input-grid,
   .feedback-result-grid,
+  .fnumber-input-grid,
+  .fnumber-result-grid,
   .collimation-result-grid,
   .input-grid-2,
   .power-ratio-input-grid,
@@ -1167,6 +1154,7 @@ h2 {
   .collimation-input-area,
   .collimation-result-area,
   .feedback-input-area,
+  .fnumber-input-area,
   .detector-layout,
   .detector-spec-band,
   .detector-model-select,
@@ -1180,5 +1168,12 @@ h2 {
 
   .schematic text {
     font-size: 16px;
+  }
+}
+
+
+@media (max-width: 560px) {
+  .fnumber-warning-tile {
+    grid-column: auto;
   }
 }
