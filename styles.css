@@ -243,7 +243,7 @@ h2 {
 }
 
 .telescope-dynamic-schematic {
-  background: #11151a;
+  background: #ffffff;
 }
 
 .telescope-dynamic-schematic .telescope-dynamic-svg {
@@ -253,16 +253,20 @@ h2 {
 }
 
 .telescope-dynamic-schematic .tel-bg {
-  fill: #1e2126;
+  fill: #ffffff;
+  stroke: #d8d0c5;
+  stroke-width: 1.5;
 }
 
 .telescope-dynamic-schematic .tel-stage {
-  fill: #11151a;
+  fill: #f7fafb;
+  stroke: #d8d0c5;
+  stroke-width: 1.5;
 }
 
 .telescope-dynamic-schematic .tel-title,
 .telescope-dynamic-schematic .tel-metric-values text {
-  fill: #f3f4f6;
+  fill: var(--ink);
   font-weight: 850;
 }
 
@@ -274,7 +278,7 @@ h2 {
 .telescope-dynamic-schematic .tel-metric-labels text,
 .telescope-dynamic-schematic .tel-small-label,
 .telescope-dynamic-schematic .tel-input-summary text {
-  fill: #a7b0bd;
+  fill: var(--muted);
   font-size: 14px;
   font-weight: 750;
 }
@@ -285,26 +289,26 @@ h2 {
 }
 
 .telescope-dynamic-schematic .tel-axis {
-  stroke: #5f7182;
+  stroke: #95a3ad;
   stroke-width: 2;
 }
 
 .telescope-dynamic-schematic .tel-center-ray {
-  stroke: #93c5fd;
+  stroke: #2f7fbb;
   stroke-width: 2;
-  opacity: 0.55;
+  opacity: 0.48;
 }
 
 .telescope-dynamic-schematic .tel-beam-fill {
-  fill: #3b82f6;
-  opacity: 0.16;
+  fill: #2f7fbb;
+  opacity: 0.13;
 }
 
 .telescope-dynamic-schematic .tel-beam-edge {
   fill: none;
-  stroke: #93c5fd;
+  stroke: #2f7fbb;
   stroke-width: 3;
-  opacity: 0.88;
+  opacity: 0.82;
 }
 
 .telescope-dynamic-schematic .tel-beam-edge.tel-overfill {
@@ -317,8 +321,8 @@ h2 {
 }
 
 .telescope-dynamic-schematic .tel-lens {
-  fill: rgba(255, 255, 255, 0.1);
-  stroke: #e5e7eb;
+  fill: rgba(8, 127, 140, 0.12);
+  stroke: #61727a;
   stroke-width: 3;
 }
 
@@ -327,46 +331,46 @@ h2 {
 }
 
 .telescope-dynamic-schematic .tel-negative-lens {
-  fill: rgba(196, 147, 63, 0.16);
-  stroke: #f6c56f;
+  fill: rgba(196, 147, 63, 0.18);
+  stroke: #b88620;
 }
 
 .telescope-dynamic-schematic .tel-virtual-ray {
-  stroke: #9ca3af;
+  stroke: #7f8b94;
   stroke-width: 2;
   stroke-dasharray: 7 8;
 }
 
 .telescope-dynamic-schematic .tel-focus-dot {
-  fill: #fca5a5;
+  fill: #d45a5a;
 }
 
 .telescope-dynamic-schematic .tel-focus-label {
-  fill: #fca5a5;
+  fill: #d45a5a;
   font-size: 14px;
   font-weight: 850;
 }
 
 .telescope-dynamic-schematic .tel-label,
 .telescope-dynamic-schematic .tel-state-text {
-  fill: #f8fafc;
+  fill: var(--ink);
   font-size: 15px;
   font-weight: 850;
 }
 
 .telescope-dynamic-schematic .tel-accent-label {
-  fill: #4ade80;
+  fill: var(--teal-dark);
   font-size: 14px;
   font-weight: 850;
 }
 
 .telescope-dynamic-schematic .tel-measure {
-  stroke: #4ade80;
+  stroke: var(--teal);
   stroke-width: 3;
 }
 
 .telescope-dynamic-schematic .tel-state-box {
-  fill: #11151a;
+  fill: #ffffff;
   stroke: #4ade80;
   stroke-width: 2;
 }
@@ -386,10 +390,10 @@ h2 {
 
 .tel-spacing-value {
   min-width: 78px;
-  border: 1px solid #6b7280;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  color: #ffffff;
-  background: #242a31;
+  color: var(--ink);
+  background: #ffffff;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   font-weight: 800;
   padding: 8px 10px;
@@ -397,16 +401,16 @@ h2 {
 }
 
 .tel-spacing-reset {
-  border: 1px solid #4b5563;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #374151;
-  color: #ffffff;
+  background: #ffffff;
+  color: var(--ink);
   padding: 9px 14px;
   font-weight: 800;
 }
 
 .tel-spacing-reset:hover {
-  background: #4b5563;
+  background: var(--surface-soft);
 }
 
 .schematic .grating {
