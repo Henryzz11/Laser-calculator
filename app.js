@@ -355,44 +355,21 @@ function updateRayleigh() {
 function updateFeedback() {
   const nFiber = numberValue("fbIndex");
   const naClad = numberValue("fbNa");
-  const cleaveAngle = numberValue("fbCleave");
-  const coreDiameter = numberValue("fbCore");
-  const cladDiameter = numberValue("fbClad");
-  const fresnelPercent = numberValue("fbFresnel");
-  const ids = ["fbAlphaMin", "fbThetaMax", "fbReflectedAngle", "fbGuidance", "fbFeedbackDb", "fbGainThreshold"];
 
-  if (nFiber <= 0 || naClad <= 0 || cleaveAngle < 0 || coreDiameter <= 0 || cladDiameter <= 0 || fresnelPercent <= 0) {
-    ids.forEach((id) => setText(id, null));
+  if (nFiber <= 0 || naClad <= 0) {
+    setText("fbAlphaMin", null);
     return;
   }
 
   const acceptanceRatio = naClad / nFiber;
   if (acceptanceRatio > 1) {
-    ["fbAlphaMin", "fbThetaMax", "fbReflectedAngle", "fbGuidance"].forEach((id) => setText(id, null));
-  } else {
-    const thetaMax = radToDeg(Math.asin(acceptanceRatio));
-    const alphaMin = thetaMax / 2;
-    const reflectedAngle = 2 * cleaveAngle;
-    let guidance = "Guided risk";
-    if (Math.abs(reflectedAngle - thetaMax) < 1e-9) {
-      guidance = "At threshold";
-    } else if (reflectedAngle > thetaMax) {
-      guidance = "Not guided";
-    }
-
-    setText("fbAlphaMin", fmt(alphaMin, 5), " deg");
-    setText("fbThetaMax", fmt(thetaMax, 5), " deg");
-    setText("fbReflectedAngle", fmt(reflectedAngle, 5), " deg");
-    setText("fbGuidance", guidance);
+    setText("fbAlphaMin", "no solution");
+    return;
   }
 
-  const fresnel = fresnelPercent / 100;
-  const areaOverlap = (coreDiameter / cladDiameter) ** 2;
-  const feedbackLevelDb = 10 * Math.log10(fresnel * areaOverlap);
-  const gainThresholdDb = -feedbackLevelDb;
-
-  setText("fbFeedbackDb", fmt(feedbackLevelDb, 5), " dB");
-  setText("fbGainThreshold", fmt(gainThresholdDb, 5), " dB");
+  const thetaMax = radToDeg(Math.asin(acceptanceRatio));
+  const alphaMin = thetaMax / 2;
+  setText("fbAlphaMin", fmt(alphaMin, 5), " deg");
 }
 
 function setCollimationMethod(method) {
@@ -957,7 +934,7 @@ function updateGratingSvg(thetaIDeg, thetaMDeg, order, evanescent) {
 
   const thetaMRad = degToRad(thetaMDeg);
   const dxM = Math.cos(thetaMRad) * lineLength;
-  const dyM = Math.sin(thetaMRad) * lineLength;
+  const dyM = -Math.sin(thetaMRad) * lineLength;
   setLine("graRayDiff1", origin.x, origin.y, origin.x + dxM, origin.y + dyM);
   setLine("graRayDiff2", origin2.x, origin2.y, origin2.x + dxM, origin2.y + dyM);
 }

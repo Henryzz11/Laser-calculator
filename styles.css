@@ -781,12 +781,13 @@ h2 {
 
 .formula-lines {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   margin-top: 14px;
   color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.38rem;
+  font-family: "Times New Roman", Georgia, serif;
+  font-size: clamp(1.38rem, 2.4vw, 2rem);
   font-weight: 700;
+  letter-spacing: 0;
 }
 
 .math-display-lines .formula-line {
@@ -856,12 +857,21 @@ h2 {
 
 .feedback-input-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
 .feedback-result-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.feedback-result-main {
+  border-color: rgba(8, 127, 140, 0.28);
+  background: #fffdf9;
+}
+
+.feedback-result-main strong {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
 }
 
 
@@ -885,29 +895,35 @@ h2 {
 
 .math-pill {
   border: 1px solid #d8d0c5;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #fbf7ef;
-  color: #3f474d;
-  padding: 8px 12px;
+  color: #30363d;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 12px 18px;
 }
 
 .math-formula {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.42em;
   color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Times New Roman", Georgia, serif;
   font-weight: 700;
-  line-height: 1.1;
+  letter-spacing: 0;
+  line-height: 1.05;
+  white-space: nowrap;
 }
 
 .math-formula-compact {
-  font-size: 1.05rem;
+  font-size: clamp(1.18rem, 1.8vw, 1.55rem);
 }
 
 .formula-note {
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 12px;
   color: var(--muted);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 0.82rem;
@@ -917,7 +933,7 @@ h2 {
 
 .math-formula-large {
   margin-top: 14px;
-  font-size: 2.15rem;
+  font-size: clamp(2.1rem, 5vw, 3.6rem);
 }
 
 .math-var,
@@ -925,10 +941,28 @@ h2 {
   display: inline-block;
 }
 
+.math-var {
+  font-style: italic;
+}
+
+.math-formula sub,
+.math-display-lines sub,
+.math-inline-symbol sub {
+  font-size: 0.68em;
+  line-height: 0;
+}
+
+.math-formula sup,
+.math-display-lines sup,
+.math-inline-symbol sup {
+  font-size: 0.68em;
+  line-height: 0;
+}
+
 .math-inline-symbol {
   display: inline-block;
   text-transform: none;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Times New Roman", Georgia, serif;
   font-style: italic;
 }
 
@@ -937,25 +971,28 @@ h2 {
   grid-template-rows: auto auto;
   justify-items: center;
   align-items: center;
+  margin: 0 0.08em;
+  vertical-align: middle;
 }
 
 .math-numerator {
   display: block;
-  border-bottom: 2px solid currentColor;
-  padding: 0 7px 4px;
+  border-bottom: 3px solid currentColor;
+  padding: 0 0.36em 0.14em;
 }
 
 .math-denominator {
   display: block;
-  padding-top: 4px;
+  padding-top: 0.14em;
 }
 
 .formula-paren {
   display: inline-block;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.85em;
+  font-family: "Times New Roman", Georgia, serif;
+  font-size: 2.15em;
   font-weight: 700;
-  line-height: 0.7;
+  line-height: 0.58;
+  transform: translateY(-0.02em);
 }
 
 .focus-result-area {

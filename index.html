@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=grating-white-widget-1">
+    <link rel="stylesheet" href="styles.css?v=feedback-min-angle-formulas-1">
   </head>
   <body>
     <main class="app-shell">
@@ -28,7 +28,7 @@
           <button class="calc-tab" data-calculator="telescope" type="button">Beam Telescope</button>
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
           <button class="calc-tab" data-calculator="rayleigh" type="button">Rayleigh Length</button>
-          <button class="calc-tab" data-calculator="feedback" type="button">Cladding Feedback</button>
+          <button class="calc-tab" data-calculator="feedback" type="button">Cleave Angle</button>
           <button class="calc-tab" data-calculator="fnumber" type="button">F-number</button>
           <button class="calc-tab" data-calculator="detector" type="button">Detector Limit</button>
           <button class="calc-tab" data-calculator="grating" type="button">Reflective Grating</button>
@@ -160,81 +160,51 @@
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Double-clad fiber feedback</p>
-                <h2>Cladding Feedback</h2>
+                <h2>Minimum Cleave Angle</h2>
               </div>
-              <div class="collimation-formula-stack" aria-label="Cladding feedback formulas">
-                <div class="math-pill">
-                  <span class="math-formula math-formula-compact">
-                    <span class="math-var">&alpha;<sub>min</sub></span>
-                    <span class="math-equals">=</span>
-                    <span class="math-fraction"><span class="math-numerator">1</span><span class="math-denominator">2</span></span>
-                    <span>sin<sup>-1</sup></span>
-                    <span class="formula-paren">(</span>
-                    <span class="math-fraction"><span class="math-numerator">NA<sub>clad</sub></span><span class="math-denominator">n<sub>fiber</sub></span></span>
-                    <span class="formula-paren">)</span>
+              <div class="math-pill" aria-label="Minimum cleave angle formula">
+                <span class="math-formula math-formula-compact">
+                  <span class="math-var">&alpha;<sub>min</sub></span>
+                  <span class="math-equals">=</span>
+                  <span class="math-fraction">
+                    <span class="math-numerator">1</span>
+                    <span class="math-denominator">2</span>
                   </span>
-                </div>
-                <div class="math-pill">
-                  <span class="math-formula math-formula-compact">
-                    <span class="math-var">G<sub>th</sub></span>
-                    <span class="math-equals">=</span>
-                    <span>-10&nbsp;log<sub>10</sub></span>
-                    <span>[R&nbsp;&middot;&nbsp;(</span>
-                    <span class="math-fraction"><span class="math-numerator">D<sub>core</sub></span><span class="math-denominator">D<sub>clad</sub></span></span>
-                    <span>)<sup>2</sup>]</span>
+                  <span>sin<sup>&minus;1</sup></span>
+                  <span class="formula-paren">(</span>
+                  <span class="math-fraction">
+                    <span class="math-numerator">NA<sub>clad</sub></span>
+                    <span class="math-denominator">n<sub>fiber</sub></span>
                   </span>
-                </div>
+                  <span class="formula-paren">)</span>
+                </span>
               </div>
             </div>
 
             <div class="feedback-input-area">
               <div class="feedback-input-grid">
                 <div class="field-group">
-                  <label class="field-label" for="fbIndex">Fiber refractive index n</label>
+                  <label class="field-label" for="fbIndex">Fiber refractive index <span class="math-inline-symbol">n<sub>fiber</sub></span></label>
                   <input id="fbIndex" class="text-input calc-input" type="number" min="0.1" step="any" value="1.45">
                 </div>
                 <div class="field-group">
-                  <label class="field-label" for="fbNa">Inner cladding NA</label>
+                  <label class="field-label" for="fbNa">Inner cladding NA <span class="math-inline-symbol">NA<sub>clad</sub></span></label>
                   <input id="fbNa" class="text-input calc-input" type="number" min="0.001" step="any" value="0.46">
-                </div>
-                <div class="field-group">
-                  <label class="field-label" for="fbCleave">Cleave angle <span class="math-inline-symbol">&alpha;</span> (deg)</label>
-                  <input id="fbCleave" class="text-input calc-input" type="number" min="0" step="any" value="12">
-                </div>
-                <div class="field-group">
-                  <label class="field-label" for="fbCore">Core diameter D<sub>core</sub> (um)</label>
-                  <input id="fbCore" class="text-input calc-input" type="number" min="0.01" step="any" value="85">
-                </div>
-                <div class="field-group">
-                  <label class="field-label" for="fbClad">Cladding diameter D<sub>clad</sub> (um)</label>
-                  <input id="fbClad" class="text-input calc-input" type="number" min="0.01" step="any" value="400">
-                </div>
-                <div class="field-group">
-                  <label class="field-label" for="fbFresnel">Fresnel reflection R (%)</label>
-                  <input id="fbFresnel" class="text-input calc-input" type="number" min="0.0001" step="any" value="3.5">
                 </div>
               </div>
 
               <div class="result-grid feedback-result-grid inline-result-grid">
-                <div class="result-tile"><span>Minimum cleave angle <span class="math-inline-symbol">&alpha;<sub>min</sub></span></span><strong id="fbAlphaMin">-- deg</strong></div>
-                <div class="result-tile"><span>Cladding acceptance angle <span class="math-inline-symbol">&theta;<sub>max</sub></span></span><strong id="fbThetaMax">-- deg</strong></div>
-                <div class="result-tile"><span>Reflected angle 2&alpha;</span><strong id="fbReflectedAngle">-- deg</strong></div>
-                <div class="result-tile"><span>Cladding guidance</span><strong id="fbGuidance">--</strong></div>
-                <div class="result-tile"><span>Feedback level</span><strong id="fbFeedbackDb">-- dB</strong></div>
-                <div class="result-tile"><span>Gain threshold</span><strong id="fbGainThreshold">-- dB</strong></div>
+                <div class="result-tile feedback-result-main"><span>Minimum cleave angle <span class="math-inline-symbol">&alpha;<sub>min</sub></span></span><strong id="fbAlphaMin">-- deg</strong></div>
               </div>
             </div>
 
-
             <div class="formula-area">
-              <section class="formula-panel" aria-label="Cladding feedback notes">
+              <section class="formula-panel" aria-label="Minimum cleave angle variables">
                 <p class="panel-kicker">Variables</p>
                 <dl class="variable-list">
-                  <dt>&alpha;</dt><dd>Facet cleave angle relative to a normal cleave</dd>
-                  <dt>2&alpha;</dt><dd>Reflection deflection angle caused by the tilted facet</dd>
+                  <dt>&alpha;<sub>min</sub></dt><dd>Minimum facet angle relative to a normal cleave</dd>
                   <dt>NA<sub>clad</sub></dt><dd>Inner cladding numerical aperture</dd>
-                  <dt>R</dt><dd>Single-facet Fresnel reflection as a fraction</dd>
-                  <dt>G<sub>th</sub></dt><dd>Approximate gain needed to compensate cladding feedback loss</dd>
+                  <dt>n<sub>fiber</sub></dt><dd>Refractive index of the fiber material</dd>
                 </dl>
               </section>
             </div>
@@ -1129,6 +1099,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=grating-white-widget-1"></script>
+    <script src="app.js?v=feedback-min-angle-formulas-1"></script>
   </body>
 </html>
