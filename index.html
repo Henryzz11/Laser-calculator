@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=feedback-min-angle-formulas-1">
+    <link rel="stylesheet" href="styles.css?v=home-navigation-1">
   </head>
   <body>
     <main class="app-shell">
@@ -21,9 +21,9 @@
         </div>
       </header>
 
-      <section class="calculator-shell" aria-label="Optics calculators">
+      <section class="calculator-shell home-mode" aria-label="Optics calculators">
         <aside class="calculator-tabs" aria-label="Calculators">
-          <button class="calc-tab active" data-calculator="collimation" type="button">Fiber Collimation</button>
+          <button class="calc-tab" data-calculator="collimation" type="button">Fiber Collimation</button>
           <button class="calc-tab" data-calculator="focus" type="button">Focus Spot Size</button>
           <button class="calc-tab" data-calculator="telescope" type="button">Beam Telescope</button>
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
@@ -38,7 +38,8 @@
         </aside>
 
         <div class="calculator-stack">
-          <article class="calc-panel active" id="calc-collimation">
+          <button id="backToHome" class="back-home-button" type="button">Back to calculators</button>
+          <article class="calc-panel" id="calc-collimation">
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Fiber output collimation</p>
@@ -1099,6 +1100,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=feedback-min-angle-formulas-1"></script>
+    <script src="app.js?v=home-navigation-1"></script>
   </body>
 </html>

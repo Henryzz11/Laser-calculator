@@ -1,5 +1,5 @@
 const state = {
-  activeCalculator: "collimation",
+  activeCalculator: null,
   telescopeSpacingMode: "auto",
   telescopeSignature: "",
 };
@@ -30,14 +30,31 @@ function radToDeg(value) {
   return (value * 180) / Math.PI;
 }
 
+function showHome() {
+  state.activeCalculator = null;
+  const shell = document.querySelector(".calculator-shell");
+  shell?.classList.add("home-mode");
+  shell?.classList.remove("detail-mode");
+  document.querySelectorAll(".calc-tab").forEach((button) => {
+    button.classList.remove("active");
+  });
+  document.querySelectorAll(".calc-panel").forEach((panel) => {
+    panel.classList.remove("active");
+  });
+}
+
 function switchCalculator(name) {
   state.activeCalculator = name;
+  const shell = document.querySelector(".calculator-shell");
+  shell?.classList.remove("home-mode");
+  shell?.classList.add("detail-mode");
   document.querySelectorAll(".calc-tab").forEach((button) => {
     button.classList.toggle("active", button.dataset.calculator === name);
   });
   document.querySelectorAll(".calc-panel").forEach((panel) => {
     panel.classList.toggle("active", panel.id === `calc-${name}`);
   });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function powerToW(value, unit) {
@@ -1006,6 +1023,8 @@ function bindEvents() {
     button.addEventListener("click", () => switchCalculator(button.dataset.calculator));
   });
 
+  document.querySelector("#backToHome")?.addEventListener("click", showHome);
+
   ["telType", "telF1", "telF2", "telWavelength", "telM2"].forEach((id) => {
     const control = document.querySelector(`#${id}`);
     const resetSpacing = () => {
@@ -1053,4 +1072,5 @@ function bindEvents() {
 }
 
 bindEvents();
+showHome();
 updateCalculators();
