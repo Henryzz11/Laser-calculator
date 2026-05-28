@@ -908,38 +908,104 @@ function updateDetector() {
   updateDetectorChart(beamDiameter, limit, profile.coefficient);
 }
 
-function updateGrating() {
-  const density = numberValue("graDensity");
-  const wavelengthMm = numberValue("graWavelength") * 1e-6;
-  const order = numberValue("graOrder");
-  const thetaI = degToRad(numberValue("graAlpha"));
 
-  if (density <= 0 || wavelengthMm <= 0 || order <= 0 || !Number.isFinite(thetaI)) {
-    ["graBeta", "graLittrow", "graPeriod", "graDispersion"].forEach((id) => setText(id, null));
+
+
+function syncGratingPair(sliderId, numberId, sourceId) {
+  const slider = document.querySelector(`#${sliderId}`);
+  const number = document.querySelector(`#${numberId}`);
+  if (!slider || !number) return;
+  if (sourceId === sliderId) number.value = slider.value;
+  if (sourceId === numberId) slider.value = number.value;
+}
+
+function updateGratingSvg(thetaIDeg, thetaMDeg, order, evanescent) {
+  const origin = { x: 130, y: 200 };
+  const origin2 = { x: 130, y: 250 };
+  const lineLength = 400;
+
+  const setLine = (id, x1, y1, x2, y2) => setSvgAttr(id, { x1, y1, x2, y2 });
+  const thetaIRad = degToRad(thetaIDeg);
+  const dxI = Math.cos(thetaIRad) * lineLength;
+  const dyI = -Math.sin(thetaIRad) * lineLength;
+
+  setLine("graRayIn1", origin.x + dxI, origin.y + dyI, origin.x, origin.y);
+  setLine("graRayIn2", origin2.x + dxI, origin2.y + dyI, origin2.x, origin2.y);
+
+  const arcRadius = 100;
+  const arcX = origin.x + arcRadius * Math.cos(thetaIRad);
+  const arcY = origin.y - arcRadius * Math.sin(thetaIRad);
+  setSvgAttr("graArcThetaI", { d: `M ${origin.x + arcRadius} ${origin.y} A ${arcRadius} ${arcRadius} 0 0 0 ${arcX} ${arcY}` });
+
+  const labelRadius = 140;
+  const labelX = origin.x + labelRadius * Math.cos(degToRad(thetaIDeg / 2));
+  const labelY = origin.y - labelRadius * Math.sin(degToRad(thetaIDeg / 2));
+  setSvgAttr("graThetaIBox", { x: labelX - 36, y: labelY - 15 });
+  setSvgAttr("graLabelThetaI", { x: labelX, y: labelY + 4 });
+  setSvgText("graLabelThetaI", `θi = ${fmt(thetaIDeg, 4)}°`);
+
+  const dx0 = Math.cos(thetaIRad) * lineLength;
+  const dy0 = Math.sin(thetaIRad) * lineLength;
+  setLine("graRayM01", origin.x, origin.y, origin.x + dx0, origin.y + dy0);
+  setLine("graRayM02", origin2.x, origin2.y, origin2.x + dx0, origin2.y + dy0);
+
+  setSvgText("graLegendDiffractedText", `Diffracted (m=${fmt(order, 3)})`);
+  const warning = document.querySelector("#graEvanescentNotice");
+  if (warning) warning.style.display = evanescent ? "block" : "none";
+  ["graRayDiff1", "graRayDiff2"].forEach((id) => setSvgVisible(id, !evanescent));
+  if (evanescent) return;
+
+  const thetaMRad = degToRad(thetaMDeg);
+  const dxM = Math.cos(thetaMRad) * lineLength;
+  const dyM = Math.sin(thetaMRad) * lineLength;
+  setLine("graRayDiff1", origin.x, origin.y, origin.x + dxM, origin.y + dyM);
+  setLine("graRayDiff2", origin2.x, origin2.y, origin2.x + dxM, origin2.y + dyM);
+}
+
+function updateGrating() {
+  const density = numberValue("graNumG");
+  const wavelengthNm = numberValue("graNumLambda");
+  const order = Math.max(1, Math.round(numberValue("graNumOrder")));
+  const thetaIDeg = numberValue("graNumThetaI");
+
+  syncGratingPair("graSlideG", "graNumG");
+  syncGratingPair("graSlideLambda", "graNumLambda");
+  syncGratingPair("graSlideThetaI", "graNumThetaI");
+
+  if (density <= 0 || wavelengthNm <= 0 || order <= 0 || !Number.isFinite(thetaIDeg)) {
+    setText("graOutA", null);
+    setText("graOutThetaM", null);
+    setText("graOutLittrow", null);
+    setText("graOutDispersion", null);
+    updateGratingSvg(0, 0, order || 1, true);
     return;
   }
 
-  const grooveSpacing = 1 / density;
-  const sinThetaM = (order * wavelengthMm) / grooveSpacing - Math.sin(thetaI);
-  const sinLittrow = (order * wavelengthMm) / (2 * grooveSpacing);
-  const spacingNm = grooveSpacing * 1e6;
+  const grooveSpacingNm = 1e6 / density;
+  const sinThetaI = Math.sin(degToRad(thetaIDeg));
+  const sinThetaM = (order * wavelengthNm) / grooveSpacingNm - sinThetaI;
+  const sinLittrow = (order * wavelengthNm) / (2 * grooveSpacingNm);
+  const evanescent = Math.abs(sinThetaM) > 1;
 
-  setText("graPeriod", fmt(spacingNm, 5), " nm");
+  setText("graOutA", fmt(grooveSpacingNm, 5));
 
-  if (Math.abs(sinThetaM) > 1) {
-    setText("graBeta", "no solution");
-    setText("graDispersion", null);
+  if (evanescent) {
+    setText("graOutThetaM", "Evanescent");
+    setText("graOutDispersion", "0.00");
+    updateGratingSvg(thetaIDeg, 0, order, true);
   } else {
     const thetaM = Math.asin(sinThetaM);
-    const dispersion = (order / (grooveSpacing * Math.cos(thetaM))) * 1e-3;
-    setText("graBeta", fmt(radToDeg(thetaM), 5), " deg");
-    setText("graDispersion", fmt(dispersion, 4), " mrad/nm");
+    const thetaMDeg = radToDeg(thetaM);
+    const dispersion = (order / (grooveSpacingNm * Math.cos(thetaM))) * 1000;
+    setText("graOutThetaM", fmt(thetaMDeg, 5), "°");
+    setText("graOutDispersion", fmt(dispersion, 4));
+    updateGratingSvg(thetaIDeg, thetaMDeg, order, false);
   }
 
   if (Math.abs(sinLittrow) > 1) {
-    setText("graLittrow", "no solution");
+    setText("graOutLittrow", "N/A");
   } else {
-    setText("graLittrow", fmt(radToDeg(Math.asin(sinLittrow)), 5), " deg");
+    setText("graOutLittrow", fmt(radToDeg(Math.asin(sinLittrow)), 5), "°");
   }
 }
 
@@ -983,6 +1049,25 @@ function bindEvents() {
     state.telescopeSignature = "";
     updateCalculators();
   });
+
+  [
+    ["graSlideG", "graNumG"],
+    ["graSlideLambda", "graNumLambda"],
+    ["graSlideThetaI", "graNumThetaI"],
+  ].forEach(([sliderId, numberId]) => {
+    const slider = document.querySelector(`#${sliderId}`);
+    const number = document.querySelector(`#${numberId}`);
+    slider?.addEventListener("input", () => {
+      syncGratingPair(sliderId, numberId, sliderId);
+      updateGrating();
+    });
+    number?.addEventListener("input", () => {
+      syncGratingPair(sliderId, numberId, numberId);
+      updateGrating();
+    });
+  });
+
+  document.querySelector("#graNumOrder")?.addEventListener("input", updateGrating);
 
   document.querySelectorAll(".calc-input").forEach((input) => {
     input.addEventListener("input", updateCalculators);

@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=focus-derivation-1">
+    <link rel="stylesheet" href="styles.css?v=grating-white-widget-1">
   </head>
   <body>
     <main class="app-shell">
@@ -67,7 +67,7 @@
 
               <div class="collimation-input-grid" data-col-method="na" hidden>
                 <div class="field-group">
-                  <label class="field-label" for="colWavelengthNa">Wavelength lambda (nm)</label>
+                  <label class="field-label" for="colWavelengthNa">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
                   <input id="colWavelengthNa" class="text-input calc-input" type="number" min="1" step="any" value="1030">
                 </div>
                 <div class="field-group">
@@ -86,7 +86,7 @@
 
               <div class="collimation-input-grid" data-col-method="mfd">
                 <div class="field-group">
-                  <label class="field-label" for="colWavelength">Wavelength lambda (nm)</label>
+                  <label class="field-label" for="colWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
                   <input id="colWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
                 </div>
                 <div class="field-group">
@@ -271,7 +271,7 @@
                 </div>
 
                 <div class="field-group">
-                  <label class="field-label" for="focWavelength">Wavelength &lambda; (nm)</label>
+                  <label class="field-label" for="focWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
                   <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1064">
                 </div>
 
@@ -676,93 +676,91 @@
 
           </article>
 
-          <article class="calc-panel" id="calc-grating">
-            <div class="calc-heading">
-              <div>
-                <p class="panel-kicker">Reflective grating equation</p>
-                <h2>Reflective Grating</h2>
+          <article class="calc-panel grating-widget-panel" id="calc-grating">
+            <section class="grating-widget" aria-label="Reflective grating diffraction interactive calculator">
+              <h2>Reflective Grating Diffraction</h2>
+
+              <div class="grating-widget-viz">
+                <div id="graEvanescentNotice" class="grating-evanescent-warning">EVANESCENT WAVE</div>
+                <div class="grating-widget-legend" aria-hidden="true">
+                  <span><i class="dot blue"></i>Incident Ray</span>
+                  <span><i class="dot green"></i>Specular (m=0)</span>
+                  <span><i class="dot orange"></i><span id="graLegendDiffractedText">Diffracted (m=1)</span></span>
+                </div>
+
+                <svg id="graDynamicSvg" class="grating-widget-svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Reflective grating ray diagram">
+                  <path class="gra-wave-body" d="M 100 20 L 100 380 L 130 380 L 130 20 Z"></path>
+                  <path class="gra-wave-grooves" d="M 130 20 Q 120 25 130 30 T 130 40 T 130 50 T 130 60 T 130 70 T 130 80 T 130 90 T 130 100 T 130 110 T 130 120 T 130 130 T 130 140 T 130 150 T 130 160 T 130 170 T 130 180 T 130 190 T 130 200 T 130 210 T 130 220 T 130 230 T 130 240 T 130 250 T 130 260 T 130 270 T 130 280 T 130 290 T 130 300 T 130 310 T 130 320 T 130 330 T 130 340 T 130 350 T 130 360 T 130 370 T 130 380"></path>
+
+                  <line class="gra-wave-normal" x1="130" y1="200" x2="350" y2="200"></line>
+                  <text class="gra-wave-normal-label" x="140" y="190">Normal</text>
+
+                  <g id="graDynamicRays">
+                    <line id="graRayIn1" class="gra-ray gra-ray-incident" x1="400" y1="0" x2="130" y2="200"></line>
+                    <line id="graRayIn2" class="gra-ray gra-ray-incident gra-ray-secondary" x1="400" y1="50" x2="130" y2="250"></line>
+
+                    <path id="graArcThetaI" class="gra-wave-angle" d=""></path>
+                    <rect id="graThetaIBox" class="gra-wave-angle-box" x="220" y="140" width="68" height="24" rx="12"></rect>
+                    <text id="graLabelThetaI" class="gra-wave-angle-label" x="254" y="156" text-anchor="middle">&theta;i = 50&deg;</text>
+
+                    <line id="graRayM01" class="gra-ray gra-ray-specular" x1="130" y1="200" x2="400" y2="400"></line>
+                    <line id="graRayM02" class="gra-ray gra-ray-specular gra-ray-secondary" x1="130" y1="250" x2="330" y2="400"></line>
+
+                    <line id="graRayDiff1" class="gra-ray gra-ray-diffracted" x1="130" y1="200" x2="400" y2="100"></line>
+                    <line id="graRayDiff2" class="gra-ray gra-ray-diffracted gra-ray-secondary" x1="130" y1="250" x2="400" y2="150"></line>
+                  </g>
+                </svg>
               </div>
-              <div class="math-pill" aria-label="a times sine theta m plus sine theta i equals m lambda">
-                <span class="math-formula math-formula-compact">
-                  <span class="math-var">a</span>
-                  <span class="formula-paren">[</span>
-                  <span>sin(&theta;<sub>m</sub>)&nbsp;+&nbsp;sin(&theta;<sub>i</sub>)</span>
-                  <span class="formula-paren">]</span>
-                  <span class="math-equals">=</span>
-                  <span>m&lambda;</span>
-                </span>
+
+              <div class="grating-widget-readouts">
+                <div class="grating-readout">
+                  <span>Groove Spacing (a)</span>
+                  <strong><span id="graOutA">--</span> nm</strong>
+                </div>
+                <div class="grating-readout">
+                  <span>Diffraction Angle (&theta;m)</span>
+                  <strong id="graOutThetaM">--</strong>
+                </div>
+                <div class="grating-readout">
+                  <span>Littrow Angle</span>
+                  <strong id="graOutLittrow">--</strong>
+                </div>
+                <div class="grating-readout">
+                  <span>Angular Dispersion</span>
+                  <strong><span id="graOutDispersion">--</span> mrad/nm</strong>
+                </div>
               </div>
-            </div>
 
-            <div class="calc-grid">
-              <div class="input-column">
-                <label class="field-label" for="graDensity">Groove density (lines/mm)</label>
-                <input id="graDensity" class="text-input calc-input" type="number" min="1" step="any" value="1200">
-
-                <label class="field-label" for="graWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
-                <input id="graWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
-
-                <label class="field-label" for="graOrder">Diffraction order m</label>
-                <input id="graOrder" class="text-input calc-input" type="number" min="1" step="1" value="1">
-
-                <label class="field-label" for="graAlpha">Incident angle <span class="math-inline-symbol">&theta;<sub>i</sub></span> (deg)</label>
-                <input id="graAlpha" class="text-input calc-input" type="number" step="any" value="35">
+              <div class="grating-widget-controls">
+                <div class="grating-control-row">
+                  <label for="graSlideG">Groove Density (g)</label>
+                  <div class="grating-slider-box">
+                    <input type="range" id="graSlideG" min="100" max="3000" step="1" value="1815">
+                    <input type="number" id="graNumG" value="1815" min="100" max="3000" step="1">
+                  </div>
+                </div>
+                <div class="grating-control-row">
+                  <label for="graSlideLambda">Wavelength (&lambda;) [nm]</label>
+                  <div class="grating-slider-box">
+                    <input type="range" id="graSlideLambda" min="200" max="2000" step="1" value="1030">
+                    <input type="number" id="graNumLambda" value="1030" min="200" max="2000" step="1">
+                  </div>
+                </div>
+                <div class="grating-control-row">
+                  <label for="graNumOrder">Diffraction Order (m)</label>
+                  <div class="grating-slider-box grating-number-only">
+                    <input type="number" id="graNumOrder" value="1" min="1" step="1">
+                  </div>
+                </div>
+                <div class="grating-control-row">
+                  <label for="graSlideThetaI">Incident Angle (&theta;i) [&deg;]</label>
+                  <div class="grating-slider-box">
+                    <input type="range" id="graSlideThetaI" min="0" max="90" step="0.1" value="50">
+                    <input type="number" id="graNumThetaI" value="50" min="0" max="90" step="0.1">
+                  </div>
+                </div>
               </div>
-              <div class="result-grid">
-                <div class="result-tile"><span>Diffraction angle <span class="math-inline-symbol">&theta;<sub>m</sub></span></span><strong id="graBeta">-- deg</strong></div>
-                <div class="result-tile"><span>Littrow angle <span class="math-inline-symbol">&theta;<sub>i</sub>=&theta;<sub>m</sub></span></span><strong id="graLittrow">-- deg</strong></div>
-                <div class="result-tile"><span>Groove spacing <span class="math-inline-symbol">a</span></span><strong id="graPeriod">-- nm</strong></div>
-                <div class="result-tile"><span>Angular dispersion</span><strong id="graDispersion">-- mrad/nm</strong></div>
-              </div>
-            </div>
-            <figure class="schematic grating-schematic" aria-label="Reflective grating diffraction orders">
-              <svg class="provided-grating-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 550" width="100%" height="100%" role="img">
-                <defs>
-                  <marker id="arrow-solid-mid" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                    <path d="M 0 1 L 8 5 L 0 9 Z" fill="#0ea5e9"></path>
-                  </marker>
-                  <marker id="arrow-solid-end" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                    <path d="M 0 1 L 8 5 L 0 9 Z" fill="#0ea5e9"></path>
-                  </marker>
-                </defs>
-
-                <rect width="550" height="550" fill="transparent"></rect>
-
-                <path d="M 50 50 L 150 50 L 150 105 A 15 15 0 0 0 150 135 L 150 205 A 15 15 0 0 0 150 235 L 150 305 A 15 15 0 0 0 150 335 L 150 405 A 15 15 0 0 0 150 435 L 150 500 L 50 500 Z" fill="#cbd5e1" stroke="#1e293b" stroke-width="3" stroke-linejoin="round"></path>
-
-                <line x1="150" y1="120" x2="190" y2="120" stroke="#475569" stroke-width="1.5"></line>
-                <line x1="150" y1="220" x2="190" y2="220" stroke="#475569" stroke-width="1.5"></line>
-                <line x1="180" y1="120" x2="180" y2="220" stroke="#475569" stroke-width="1.5"></line>
-                <path d="M 176 128 L 180 120 L 184 128 M 176 212 L 180 220 L 184 212" fill="none" stroke="#475569" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                <text x="170" y="176" text-anchor="end" font-family="'Times New Roman', serif" font-style="italic" font-size="22" fill="#1e293b">a</text>
-
-                <line x1="150" y1="220" x2="270" y2="220" stroke="#475569" stroke-width="1.5"></line>
-                <line x1="150" y1="320" x2="270" y2="320" stroke="#475569" stroke-width="1.5"></line>
-
-                <polyline points="400,75 275,147.5 150,220" fill="none" stroke="#0ea5e9" stroke-width="2.5" marker-mid="url(#arrow-solid-mid)"></polyline>
-                <line x1="150" y1="220" x2="400" y2="365" stroke="#0ea5e9" stroke-width="2.5" marker-end="url(#arrow-solid-end)"></line>
-                <line x1="150" y1="220" x2="350" y2="420" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-solid-end)"></line>
-
-                <text x="410" y="370" font-family="'Times New Roman', serif" font-style="italic" font-size="18" fill="#1e293b">m=0</text>
-                <text x="360" y="425" font-family="'Times New Roman', serif" font-style="italic" font-size="18" fill="#1e293b">m=1</text>
-
-                <path d="M 230 220 A 80 80 0 0 0 219.2 179.9" fill="none" stroke="#1e293b" stroke-width="1.5"></path>
-                <text x="236" y="195" font-family="'Times New Roman', serif" font-style="italic" font-size="22" fill="#1e293b">&#952;<tspan dy="0.3em" font-size="0.75em">i</tspan></text>
-
-                <polyline points="400,175 275,247.5 150,320" fill="none" stroke="#0ea5e9" stroke-width="2.5" marker-mid="url(#arrow-solid-mid)"></polyline>
-                <line x1="150" y1="320" x2="400" y2="465" stroke="#0ea5e9" stroke-width="2.5" marker-end="url(#arrow-solid-end)"></line>
-                <line x1="150" y1="320" x2="320" y2="490" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-solid-end)"></line>
-
-                <text x="410" y="470" font-family="'Times New Roman', serif" font-style="italic" font-size="18" fill="#1e293b">m=0</text>
-                <text x="330" y="495" font-family="'Times New Roman', serif" font-style="italic" font-size="18" fill="#1e293b">m=1</text>
-
-                <path d="M 220 320 A 70 70 0 0 1 210.6 355.1" fill="none" stroke="#1e293b" stroke-width="1.5"></path>
-                <text x="226" y="348" font-family="'Times New Roman', serif" font-style="italic" font-size="22" fill="#1e293b">&#952;<tspan dy="0.3em" font-size="0.75em">m=0</tspan></text>
-
-                <path d="M 250 320 A 100 100 0 0 1 220.7 390.7" fill="none" stroke="#1e293b" stroke-width="1.5"></path>
-                <text x="256" y="385" font-family="'Times New Roman', serif" font-style="italic" font-size="22" fill="#1e293b">&#952;<tspan dy="0.3em" font-size="0.75em">m=1</tspan></text>
-              </svg>
-            </figure>
+            </section>
           </article>
 
           <article class="calc-panel" id="calc-energy">
@@ -1131,6 +1129,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=no-air-na-1"></script>
+    <script src="app.js?v=grating-white-widget-1"></script>
   </body>
 </html>

@@ -432,79 +432,266 @@ h2 {
   stroke-linecap: round;
 }
 
-.grating-schematic {
+.grating-widget-panel {
   background: #ffffff;
+  border-color: #ded6c9;
+  color: #2d3138;
+  overflow: hidden;
+  padding: 0;
 }
 
-.grating-schematic svg {
-  max-height: 430px;
+.grating-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px;
 }
 
-.grating-schematic .provided-grating-svg {
+.grating-widget h2 {
+  color: #2d3138;
+  font-size: clamp(2rem, 7vw, 3.9rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.grating-widget-viz {
+  border-bottom: 1px solid #ded6c9;
+  height: min(54vw, 400px);
+  min-height: 300px;
+  position: relative;
+}
+
+.grating-widget-svg {
   display: block;
+  height: 100%;
   width: 100%;
-  max-height: 520px;
 }
 
-.grating-schematic .provided-grating-svg text {
-  fill: revert;
-  font-size: revert;
-  font-weight: revert;
-  font-family: revert;
+.grating-evanescent-warning {
+  color: #d92d2d;
+  display: none;
+  font-size: clamp(1.25rem, 3.8vw, 2rem);
+  font-weight: 800;
+  left: 37%;
+  letter-spacing: 0.05em;
+  position: absolute;
+  top: 25%;
+  z-index: 2;
 }
 
-.grating-schematic #arrow-solid-mid path,
-.grating-schematic #arrow-solid-end path {
-  fill: #0ea5e9;
+.grating-widget-legend {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid #ded6c9;
+  border-radius: 999px;
+  bottom: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  left: 20px;
+  padding: 8px 15px;
+  position: absolute;
+  z-index: 2;
 }
 
-.grating-body {
-  fill: #c8c8c8;
-  stroke: #101010;
-  stroke-width: 5;
+.grating-widget-legend span {
+  align-items: center;
+  color: #2d3138;
+  display: inline-flex;
+  font-size: 0.82rem;
+  gap: 6px;
+  white-space: nowrap;
 }
 
-.grating-rays line {
-  stroke: #21c8ff;
-  stroke-width: 5;
-  stroke-linecap: round;
+.grating-widget-legend .dot {
+  border-radius: 50%;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
 }
 
-.grating-rays .diffracted-dashed {
-  stroke-width: 4;
-  stroke-dasharray: 10 8;
-  opacity: 0.82;
+.grating-widget-legend .blue {
+  background: #3b82f6;
 }
 
-.grating-normal,
-.grating-period,
-.grating-period-tick {
-  stroke: #30343a;
-  stroke-width: 3;
-  stroke-linecap: round;
+.grating-widget-legend .green {
+  background: #22c55e;
 }
 
-.grating-angle {
-  fill: none;
-  stroke: #30343a;
-  stroke-width: 3;
+.grating-widget-legend .orange {
+  background: #f59e0b;
 }
 
-.grating-symbol,
-.grating-order {
-  fill: #243040;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 30px;
-  font-style: italic;
+.grating-widget-readouts {
+  border-bottom: 1px solid #ded6c9;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 20px 0;
+  text-align: center;
+}
+
+.grating-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.grating-readout span {
+  color: #69727c;
+  font-size: 0.95rem;
   font-weight: 700;
 }
 
-.grating-order {
-  font-size: 24px;
+.grating-readout strong {
+  color: #2d3138;
+  font-family: var(--font-mono);
+  font-size: clamp(1.2rem, 3.5vw, 2rem);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
-#arrow-gra-blue path {
-  fill: #21c8ff;
+.grating-widget-controls {
+  display: grid;
+  gap: 30px 50px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-top: 20px;
+}
+
+.grating-control-row {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+}
+
+.grating-control-row label {
+  color: #2d3138;
+  flex: 0 0 180px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
+  text-transform: none;
+}
+
+.grating-slider-box {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 15px;
+  min-width: 0;
+}
+
+.grating-slider-box input[type="range"] {
+  accent-color: #9ca3af;
+  min-width: 90px;
+  width: 100%;
+}
+
+.grating-slider-box input[type="number"] {
+  background: #ffffff;
+  border: 1px solid #ded6c9;
+  border-radius: 8px;
+  color: #2d3138;
+  font-size: 1rem;
+  height: 48px;
+  padding: 8px 12px;
+  text-align: center;
+  width: 90px;
+}
+
+.grating-number-only input[type="number"] {
+  width: 100%;
+}
+
+.gra-wave-body {
+  fill: #d9e2e8;
+  stroke: #6f7c85;
+  stroke-width: 2;
+}
+
+.gra-wave-grooves {
+  fill: none;
+  stroke: #2d3138;
+  stroke-width: 2;
+}
+
+.gra-wave-normal {
+  stroke: #8b949e;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+}
+
+.gra-wave-normal-label,
+.gra-wave-angle-label {
+  fill: #2d3138;
+  font-family: var(--font-sans);
+}
+
+.gra-wave-normal-label {
+  fill: #69727c;
+  font-size: 12px;
+}
+
+.gra-ray {
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.gra-ray-incident {
+  stroke: #3b82f6;
+}
+
+.gra-ray-specular {
+  stroke: #22c55e;
+}
+
+.gra-ray-diffracted {
+  stroke: #f59e0b;
+}
+
+.gra-ray-secondary {
+  opacity: 0.5;
+}
+
+.gra-wave-angle {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 1.5;
+}
+
+.gra-wave-angle-box {
+  fill: #ffffff;
+  stroke: #ded6c9;
+  stroke-width: 1;
+  opacity: 0.96;
+}
+
+.gra-wave-angle-label {
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .grating-widget {
+    padding: 28px 20px;
+  }
+
+  .grating-widget-readouts,
+  .grating-widget-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .grating-control-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .grating-control-row label {
+    flex: none;
+  }
 }
 
 .schematic marker path {
