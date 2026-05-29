@@ -820,20 +820,20 @@ h2 {
 
 .formula-lines {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   margin-top: 14px;
   color: var(--ink);
-  font-family: "Times New Roman", Georgia, serif;
-  font-size: clamp(1.38rem, 2.4vw, 2rem);
-  font-weight: 700;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
   letter-spacing: 0;
 }
 
 .math-display-lines .formula-line {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 44px;
+  gap: 8px;
+  min-height: 30px;
 }
 
 .math-display-lines .math-var {
@@ -841,7 +841,7 @@ h2 {
 }
 
 .math-display-lines .math-fraction {
-  font-size: 1.05em;
+  font-size: 1em;
 }
 
 .collimation-result-grid {
@@ -949,15 +949,15 @@ h2 {
   align-items: center;
   gap: 0.42em;
   color: var(--ink);
-  font-family: "Times New Roman", Georgia, serif;
-  font-weight: 700;
+  font-family: inherit;
+  font-weight: 500;
   letter-spacing: 0;
-  line-height: 1.05;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
 .math-formula-compact {
-  font-size: clamp(1.18rem, 1.8vw, 1.55rem);
+  font-size: 1rem;
 }
 
 .formula-note {
@@ -972,7 +972,7 @@ h2 {
 
 .math-formula-large {
   margin-top: 14px;
-  font-size: clamp(2.1rem, 5vw, 3.6rem);
+  font-size: 1rem;
 }
 
 .math-var,
@@ -981,7 +981,7 @@ h2 {
 }
 
 .math-var {
-  font-style: italic;
+  font-style: normal;
 }
 
 .math-formula sub,
@@ -1001,8 +1001,8 @@ h2 {
 .math-inline-symbol {
   display: inline-block;
   text-transform: none;
-  font-family: "Times New Roman", Georgia, serif;
-  font-style: italic;
+  font-family: inherit;
+  font-style: normal;
 }
 
 .math-fraction {
@@ -1016,21 +1016,21 @@ h2 {
 
 .math-numerator {
   display: block;
-  border-bottom: 3px solid currentColor;
-  padding: 0 0.36em 0.14em;
+  border-bottom: 2px solid currentColor;
+  padding: 0 0.26em 0.1em;
 }
 
 .math-denominator {
   display: block;
-  padding-top: 0.14em;
+  padding-top: 0.1em;
 }
 
 .formula-paren {
   display: inline-block;
-  font-family: "Times New Roman", Georgia, serif;
-  font-size: 2.15em;
-  font-weight: 700;
-  line-height: 0.58;
+  font-family: inherit;
+  font-size: 1.35em;
+  font-weight: 500;
+  line-height: 0.8;
   transform: translateY(-0.02em);
 }
 
@@ -1430,4 +1430,51 @@ h2 {
   .fnumber-warning-tile {
     grid-column: auto;
   }
+}
+
+
+.amp-input-area {
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.amp-input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.amp-result-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+
+.amp-result-main {
+  border-color: rgba(8, 127, 140, 0.28);
+  background: #fffdf9;
+}
+
+.amp-result-main strong {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+@media (max-width: 900px) {
+  .amp-input-grid,
+  .amp-result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .amp-input-grid,
+  .amp-result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.formula-warning-text {
+  color: #d22630;
+  font-weight: 800;
 }

@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=home-navigation-1">
+    <link rel="stylesheet" href="styles.css?v=b-integral-reference-note-1">
   </head>
   <body>
     <main class="app-shell">
@@ -29,6 +29,7 @@
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
           <button class="calc-tab" data-calculator="rayleigh" type="button">Rayleigh Length</button>
           <button class="calc-tab" data-calculator="feedback" type="button">Cleave Angle</button>
+          <button class="calc-tab" data-calculator="amplength" type="button">B-integral</button>
           <button class="calc-tab" data-calculator="fnumber" type="button">F-number</button>
           <button class="calc-tab" data-calculator="detector" type="button">Detector Limit</button>
           <button class="calc-tab" data-calculator="grating" type="button">Reflective Grating</button>
@@ -200,8 +201,14 @@
             </div>
 
             <div class="formula-area">
-              <section class="formula-panel" aria-label="Minimum cleave angle variables">
-                <p class="panel-kicker">Variables</p>
+              <section class="formula-panel" aria-label="Minimum cleave angle derivation">
+                <p class="panel-kicker">Short Derivation</p>
+                <div class="formula-lines math-display-lines derivation-lines">
+                  <div class="formula-line"><span>reflected angle</span><span class="math-equals">=</span><span>2&alpha;</span></div>
+                  <div class="formula-line"><span class="math-var">&theta;<sub>max</sub></span><span class="math-equals">=</span><span>sin<sup>&minus;1</sup></span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">NA<sub>clad</sub></span><span class="math-denominator">n<sub>fiber</sub></span></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span>set&nbsp;2&alpha;<sub>min</sub></span><span class="math-equals">=</span><span>&theta;<sub>max</sub></span><span>&nbsp;&rArr;&nbsp;</span><span class="math-var">&alpha;<sub>min</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&theta;<sub>max</sub></span><span class="math-denominator">2</span></span></div>
+                </div>
+                <p>When the reflected angle exceeds the cladding acceptance angle, the reflected light is no longer guided by the inner cladding.</p>
                 <dl class="variable-list">
                   <dt>&alpha;<sub>min</sub></dt><dd>Minimum facet angle relative to a normal cleave</dd>
                   <dt>NA<sub>clad</sub></dt><dd>Inner cladding numerical aperture</dd>
@@ -327,6 +334,135 @@
             </div>
           </article>
 
+
+          <article class="calc-panel" id="calc-amplength">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">SPM nonlinear phase</p>
+                <h2>B-integral</h2>
+              </div>
+              <div class="collimation-formula-stack" aria-label="B-integral formulas">
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">B</span>
+                    <span class="math-equals">&approx;</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">k<sub>0</sub> n<sub>2I</sub> P<sub>p,out</sub> L<sub>eff</sub></span>
+                      <span class="math-denominator">A<sub>eff</sub></span>
+                    </span>
+                  </span>
+                </div>
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-fraction">
+                      <span class="math-numerator">L<sub>eff</sub></span>
+                      <span class="math-denominator">L<sub>amplifier</sub></span>
+                    </span>
+                    <span class="math-equals">&approx;</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">4.34</span>
+                      <span class="math-denominator">&Gamma;<sub>ampl</sub><sup>total</sup>(dB)</span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="amp-input-area">
+              <div class="amp-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="ampEnergy">Output pulse energy E<sub>p,out</sub></label>
+                  <input id="ampEnergy" class="text-input calc-input" type="number" min="0.001" step="any" value="100">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampEnergyUnit">Energy unit</label>
+                  <select id="ampEnergyUnit" class="text-input calc-input">
+                    <option value="nj">nJ</option>
+                    <option value="uj" selected>uJ</option>
+                    <option value="mj">mJ</option>
+                    <option value="j">J</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampPulseDuration">Pulse duration &tau;<sub>p</sub></label>
+                  <input id="ampPulseDuration" class="text-input calc-input" type="number" min="0.001" step="any" value="81">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampDurationUnit">Duration unit</label>
+                  <select id="ampDurationUnit" class="text-input calc-input">
+                    <option value="fs">fs</option>
+                    <option value="ps">ps</option>
+                    <option value="ns" selected>ns</option>
+                    <option value="us">us</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampPumpGeometry">Pump geometry</label>
+                  <select id="ampPumpGeometry" class="text-input calc-input">
+                    <option value="counter" selected>Counter-pumped</option>
+                    <option value="co">Co-pumped</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampWavelength">Signal wavelength &lambda;<sub>s</sub> (nm)</label>
+                  <input id="ampWavelength" class="text-input calc-input" type="number" min="0.001" step="any" value="1035">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampGainDb">Total amplifier gain &Gamma;<sub>ampl</sub><sup>total</sup> (dB)</label>
+                  <input id="ampGainDb" class="text-input calc-input" type="number" min="0.001" step="any" value="13">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampLength">Amplifier length L (m)</label>
+                  <input id="ampLength" class="text-input calc-input" type="number" min="0.001" step="any" value="1.9">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampMfd">Mode field diameter MFD (um)</label>
+                  <input id="ampMfd" class="text-input calc-input" type="number" min="0.001" step="any" value="50">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampN2">n<sub>2I</sub> coefficient (10<sup>-20</sup> m<sup>2</sup> W<sup>-1</sup>)</label>
+                  <input id="ampN2" class="text-input calc-input" type="number" min="0.001" step="any" value="2.12">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="ampTargetB">Target B in &pi; units</label>
+                  <input id="ampTargetB" class="text-input calc-input" type="number" min="0.001" step="any" value="1">
+                </div>
+              </div>
+
+              <div class="result-grid amp-result-grid inline-result-grid">
+                <div class="result-tile amp-result-main"><span>B-integral</span><strong id="ampBIntegral">-- rad</strong></div>
+                <div class="result-tile"><span>B in &pi; units</span><strong id="ampBOverPi">--</strong></div>
+                <div class="result-tile"><span>Peak power <span class="math-inline-symbol">P<sub>p,out</sub></span></span><strong id="ampPeakPower">-- W</strong></div>
+                <div class="result-tile"><span>Effective length <span class="math-inline-symbol">L<sub>eff</sub></span></span><strong id="ampLeff">-- m</strong></div>
+                <div class="result-tile"><span>Effective length fraction</span><strong id="ampRatio">--</strong></div>
+                <div class="result-tile"><span>Effective area <span class="math-inline-symbol">A<sub>eff</sub></span></span><strong id="ampAeffResult">-- um^2</strong></div>
+                <div class="result-tile amp-result-main"><span>Energy at target B</span><strong id="ampTargetEnergy">-- uJ</strong></div>
+              </div>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="B-integral formulas from the CPSA supplement">
+                <p class="panel-kicker">Formula</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line"><span class="math-var">B</span><span class="math-equals">=</span><span>k<sub>0</sub> n<sub>2I</sub></span><span class="math-fraction"><span class="math-numerator">&int;<sub>0</sub><sup>L</sup>&nbsp;P<sub>p</sub>(z)&nbsp;dz</span><span class="math-denominator">A<sub>eff</sub></span></span></div>
+                  <div class="formula-line"><span class="math-var">B</span><span class="math-equals">&approx;</span><span class="math-fraction"><span class="math-numerator">k<sub>0</sub> n<sub>2I</sub> P<sub>p,out</sub> L<sub>eff</sub></span><span class="math-denominator">A<sub>eff</sub></span></span></div>
+                  <div class="formula-line"><span class="math-var">P<sub>p,out</sub></span><span class="math-equals">&approx;</span><span class="math-fraction"><span class="math-numerator">E<sub>p,out</sub></span><span class="math-denominator">&tau;<sub>p</sub></span></span></div>
+                  <div class="formula-line"><span>counter-pumped:</span><span class="math-fraction"><span class="math-numerator">L<sub>eff</sub></span><span class="math-denominator">L<sub>amplifier</sub></span></span><span class="math-equals">&approx;</span><span class="math-fraction"><span class="math-numerator">4.34</span><span class="math-denominator">&Gamma;<sub>ampl</sub><sup>total</sup>(dB)</span></span></div>
+                  <div class="formula-line"><span>co-pumped:</span><span class="math-fraction"><span class="math-numerator">L<sub>eff</sub></span><span class="math-denominator">L</span></span><span class="math-equals">&approx;</span><span>red-curve estimate</span></div>
+                  <div class="formula-line"><span class="math-var">A<sub>eff</sub></span><span class="math-equals">=</span><span>&pi;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">MFD</span><span class="math-denominator">2</span></span><span class="formula-paren">)</span><span><sup>2</sup></span></div>
+                  <div class="formula-line"><span class="math-var">E<sub>p,target</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">B<sub>target</sub> A<sub>eff</sub> &tau;<sub>p</sub></span><span class="math-denominator">k<sub>0</sub> n<sub>2I</sub> L<sub>eff</sub></span></span></div>
+                </div>
+                <p>The related formulas are from Google Drive CPSA - Spartial combining - calculations, and Alex Near-complete extraction of maximum stored energy from large-core fibers using coherent pulse stacking amplification of femtosecond pulses supplement.</p>
+                <p class="formula-warning-text">In general, counter-propagation increases nonlinearity threshold by 4 to 5 times.</p>
+                <dl class="variable-list">
+                  <dt>B</dt><dd>Peak nonlinear phase from SPM, in radians</dd>
+                  <dt>n<sub>2I</sub></dt><dd>Nonlinear refractive-index coefficient; default is from the CPSA supplement</dd>
+                  <dt>L<sub>eff</sub></dt><dd>Equivalent passive fiber length at the output peak power</dd>
+                  <dt>A<sub>eff</sub></dt><dd>Estimated from the input MFD as a Gaussian nonlinear effective area</dd>
+                </dl>
+              </section>
+            </div>
+          </article>
 
           <article class="calc-panel" id="calc-fnumber">
             <div class="calc-heading">
@@ -731,6 +867,21 @@
                   </div>
                 </div>
               </div>
+
+              <section class="formula-panel grating-formula-panel" aria-label="Reflective grating formulas">
+                <p class="panel-kicker">Formula</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line"><span>a</span><span class="formula-paren">[</span><span>sin(&theta;<sub>m</sub>)&nbsp;+&nbsp;sin(&theta;<sub>i</sub>)</span><span class="formula-paren">]</span><span class="math-equals">=</span><span>m&lambda;</span></div>
+                  <div class="formula-line"><span class="math-var">&theta;<sub>L</sub></span><span class="math-equals">=</span><span>sin<sup>&minus;1</sup></span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">m&lambda;</span><span class="math-denominator">2a</span></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="math-var">D<sub>ang</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">m</span><span class="math-denominator">a&nbsp;cos(&theta;<sub>m</sub>)</span></span></div>
+                </div>
+                <dl class="variable-list">
+                  <dt>a</dt><dd>Groove spacing, a = 1 / groove density</dd>
+                  <dt>&theta;<sub>i</sub></dt><dd>Incident angle measured from the grating normal</dd>
+                  <dt>&theta;<sub>m</sub></dt><dd>Diffracted angle for order m</dd>
+                  <dt>&theta;<sub>L</sub></dt><dd>Littrow angle where &theta;<sub>m</sub> = &theta;<sub>i</sub></dd>
+                </dl>
+              </section>
             </section>
           </article>
 
@@ -1100,6 +1251,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=home-navigation-1"></script>
+    <script src="app.js?v=b-integral-reference-note-1"></script>
   </body>
 </html>

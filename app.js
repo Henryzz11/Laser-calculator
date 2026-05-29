@@ -1003,10 +1003,73 @@ function updateGrating() {
   }
 }
 
+
+function amplifierEffectiveLengthRatio(pumpGeometry, gainDb) {
+  const gainLinear = 10 ** (gainDb / 10);
+  if (pumpGeometry === "co") {
+    const roughCoTrend = 0.91 - 0.004 * gainDb;
+    return Math.min(0.95, Math.max(0.75, roughCoTrend));
+  }
+  return (1 - 1 / gainLinear) / Math.log(gainLinear);
+}
+
+function updateAmplength() {
+  const pumpGeometry = document.querySelector("#ampPumpGeometry")?.value || "counter";
+  const energyJ = energyToJ(numberValue("ampEnergy"), document.querySelector("#ampEnergyUnit")?.value || "uj");
+  const durationS = timeToSeconds(numberValue("ampPulseDuration"), document.querySelector("#ampDurationUnit")?.value || "ns");
+  const wavelengthNm = numberValue("ampWavelength");
+  const gainDb = numberValue("ampGainDb");
+  const lengthM = numberValue("ampLength");
+  const mfdUm = numberValue("ampMfd");
+  const n2 = numberValue("ampN2") * 1e-20;
+  const targetB = numberValue("ampTargetB") * Math.PI;
+  const resultIds = [
+    "ampBIntegral",
+    "ampBOverPi",
+    "ampPeakPower",
+    "ampLeff",
+    "ampRatio",
+    "ampAeffResult",
+    "ampTargetEnergy",
+  ];
+
+  if (
+    energyJ <= 0 ||
+    durationS <= 0 ||
+    wavelengthNm <= 0 ||
+    gainDb <= 0 ||
+    lengthM <= 0 ||
+    mfdUm <= 0 ||
+    n2 <= 0 ||
+    targetB <= 0
+  ) {
+    resultIds.forEach((id) => setText(id, null));
+    return;
+  }
+
+  const leffRatio = amplifierEffectiveLengthRatio(pumpGeometry, gainDb);
+  const leffM = lengthM * leffRatio;
+  const aeffUm2 = Math.PI * (mfdUm / 2) ** 2;
+  const aeffM2 = aeffUm2 * 1e-12;
+  const k0 = (2 * Math.PI) / (wavelengthNm * 1e-9);
+  const peakPowerW = energyJ / durationS;
+  const bIntegral = (k0 * n2 * peakPowerW * leffM) / aeffM2;
+  const targetEnergyJ = (targetB * aeffM2 * durationS) / (k0 * n2 * leffM);
+
+  setText("ampBIntegral", fmt(bIntegral, 5), " rad");
+  setText("ampBOverPi", fmt(bIntegral / Math.PI, 5), " π");
+  setText("ampPeakPower", formatPowerAuto(peakPowerW));
+  setText("ampLeff", fmt(leffM, 5), " m");
+  setText("ampRatio", fmt(leffRatio, 5));
+  setText("ampAeffResult", fmt(aeffUm2, 5), " um^2");
+  setText("ampTargetEnergy", formatEnergyAuto(targetEnergyJ));
+}
+
 function updateCalculators() {
   updatePer();
   updateCollimation();
   updateFeedback();
+  updateAmplength();
   updateFNumber();
   updateEnergyPower();
   updatePulseBandwidth();
