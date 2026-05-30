@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=b-integral-reference-note-1">
+    <link rel="stylesheet" href="styles.css?v=b-default-10mj-mfd58-1">
   </head>
   <body>
     <main class="app-shell">
@@ -224,9 +224,9 @@
                 <p class="panel-kicker">Focused Gaussian beam</p>
                 <h2>Focus Spot Size</h2>
               </div>
-              <div class="math-pill" aria-label="S equals 1.27 M squared lambda f over D">
+              <div class="math-pill" aria-label="d equals 1.27 M squared lambda f over D">
                 <span class="math-formula math-formula-compact">
-                  <span class="math-var">S</span>
+                  <span class="math-var">d</span>
                   <span class="math-equals">=</span>
                   <span class="math-fraction">
                     <span class="math-numerator">1.27&nbsp;&middot;&nbsp;M<sup>2</sup>&nbsp;&middot;&nbsp;&lambda;&nbsp;&middot;&nbsp;f</span>
@@ -276,8 +276,8 @@
             <div class="focus-result-area">
               <section class="formula-panel" aria-label="Focus spot size formula">
                 <p class="panel-kicker">Formula</p>
-                <div class="math-formula math-formula-large" aria-label="S equals 1.27 M squared lambda f over D">
-                  <span class="math-var">S</span>
+                <div class="math-formula math-formula-large" aria-label="d equals 1.27 M squared lambda f over D">
+                  <span class="math-var">d</span>
                   <span class="math-equals">=</span>
                   <span class="math-fraction">
                     <span class="math-numerator">1.27&nbsp;&middot;&nbsp;M<sup>2</sup>&nbsp;&middot;&nbsp;&lambda;&nbsp;&middot;&nbsp;f</span>
@@ -285,7 +285,7 @@
                   </span>
                 </div>
                 <dl class="variable-list">
-                  <dt>S</dt>
+                  <dt>d</dt>
                   <dd>Focus spot diameter (um)</dd>
                   <dt>M<sup>2</sup></dt>
                   <dd>Laser beam parameter</dd>
@@ -318,7 +318,7 @@
                       <span class="math-fraction"><span class="math-numerator">M<sup>2</sup>&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">&pi;&nbsp;w<sub>L</sub></span></span>
                     </div>
                     <div class="formula-line">
-                      <span class="math-var">S</span>
+                      <span class="math-var">d</span>
                       <span class="math-equals">=</span>
                       <span>2&nbsp;w<sub>0</sub></span>
                       <span class="math-equals">=</span>
@@ -372,14 +372,14 @@
               <div class="amp-input-grid">
                 <div class="field-group">
                   <label class="field-label" for="ampEnergy">Output pulse energy E<sub>p,out</sub></label>
-                  <input id="ampEnergy" class="text-input calc-input" type="number" min="0.001" step="any" value="100">
+                  <input id="ampEnergy" class="text-input calc-input" type="number" min="0.001" step="any" value="10">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="ampEnergyUnit">Energy unit</label>
                   <select id="ampEnergyUnit" class="text-input calc-input">
                     <option value="nj">nJ</option>
-                    <option value="uj" selected>uJ</option>
-                    <option value="mj">mJ</option>
+                    <option value="uj">uJ</option>
+                    <option value="mj" selected>mJ</option>
                     <option value="j">J</option>
                   </select>
                 </div>
@@ -417,7 +417,7 @@
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="ampMfd">Mode field diameter MFD (um)</label>
-                  <input id="ampMfd" class="text-input calc-input" type="number" min="0.001" step="any" value="50">
+                  <input id="ampMfd" class="text-input calc-input" type="number" min="0.001" step="any" value="58">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="ampN2">n<sub>2I</sub> coefficient (10<sup>-20</sup> m<sup>2</sup> W<sup>-1</sup>)</label>
@@ -1251,6 +1251,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=b-integral-reference-note-1"></script>
+    <script src="app.js?v=b-default-10mj-mfd58-1"></script>
   </body>
 </html>
