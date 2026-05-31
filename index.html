@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=b-default-10mj-mfd58-1">
+    <link rel="stylesheet" href="styles.css?v=b-n2i-note-1">
   </head>
   <body>
     <main class="app-shell">
@@ -250,7 +250,7 @@
 
                 <div class="field-group">
                   <label class="field-label" for="focWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
-                  <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1064">
+                  <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1035">
                 </div>
 
                 <div class="field-group">
@@ -453,6 +453,7 @@
                   <div class="formula-line"><span class="math-var">E<sub>p,target</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">B<sub>target</sub> A<sub>eff</sub> &tau;<sub>p</sub></span><span class="math-denominator">k<sub>0</sub> n<sub>2I</sub> L<sub>eff</sub></span></span></div>
                 </div>
                 <p>The related formulas are from Google Drive CPSA - Spartial combining - calculations, and Alex Near-complete extraction of maximum stored energy from large-core fibers using coherent pulse stacking amplification of femtosecond pulses supplement.</p>
+                <p>The default n<sub>2I</sub> = 2.12 &times; 10<sup>-20</sup> m<sup>2</sup>/W follows the CPSA supplement: start from the standard fused-silica value 2.74 &times; 10<sup>-20</sup> m<sup>2</sup>/W, apply an electrostriction correction of 1.16 for ns pulses, then apply a circular-polarization correction of 2/3. This gives 2.74 &times; 1.16 &times; 2/3 &asymp; 2.12.</p>
                 <p class="formula-warning-text">In general, counter-propagation increases nonlinearity threshold by 4 to 5 times.</p>
                 <dl class="variable-list">
                   <dt>B</dt><dd>Peak nonlinear phase from SPM, in radians</dd>
@@ -562,7 +563,7 @@
                 <input id="telF2" class="text-input calc-input" type="number" min="0.01" step="any" value="150">
 
                 <label class="field-label" for="telWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
-                <input id="telWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+                <input id="telWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1035">
 
                 <label class="field-label" for="telM2">Beam quality M<sup>2</sup></label>
                 <input id="telM2" class="text-input calc-input" type="number" min="0.01" step="any" value="1">
@@ -673,7 +674,7 @@
                 <input id="rayDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="100">
 
                 <label class="field-label" for="rayWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
-                <input id="rayWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+                <input id="rayWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1035">
 
                 <label class="field-label" for="rayM2">Beam quality M<sup>2</sup></label>
                 <input id="rayM2" class="text-input calc-input" type="number" min="0.01" step="any" value="1">
@@ -1251,6 +1252,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=b-default-10mj-mfd58-1"></script>
+    <script src="app.js?v=b-n2i-note-1"></script>
   </body>
 </html>
