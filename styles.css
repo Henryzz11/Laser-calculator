@@ -1016,13 +1016,19 @@ h2 {
 
 .math-numerator {
   display: block;
+  justify-self: stretch;
   border-bottom: 2px solid currentColor;
   padding: 0 0.26em 0.1em;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .math-denominator {
   display: block;
+  justify-self: stretch;
   padding-top: 0.1em;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .formula-paren {

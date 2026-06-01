@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=b-n2i-note-1">
+    <link rel="stylesheet" href="styles.css?v=formula-fraction-bars-1">
   </head>
   <body>
     <main class="app-shell">
@@ -30,6 +30,7 @@
           <button class="calc-tab" data-calculator="rayleigh" type="button">Rayleigh Length</button>
           <button class="calc-tab" data-calculator="feedback" type="button">Cleave Angle</button>
           <button class="calc-tab" data-calculator="amplength" type="button">B-integral</button>
+          <button class="calc-tab" data-calculator="gainrecovery" type="button">Gain Recovery Time</button>
           <button class="calc-tab" data-calculator="fnumber" type="button">F-number</button>
           <button class="calc-tab" data-calculator="detector" type="button">Detector Limit</button>
           <button class="calc-tab" data-calculator="grating" type="button">Reflective Grating</button>
@@ -465,6 +466,111 @@
             </div>
           </article>
 
+          <article class="calc-panel" id="calc-gainrecovery">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Er-doped fiber pump recovery</p>
+                <h2>Gain Recovery Time</h2>
+              </div>
+              <div class="collimation-formula-stack" aria-label="Gain recovery time formulas">
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">&tau;<sub>eff</sub></span>
+                    <span class="math-equals">=</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">&tau;</span>
+                      <span class="math-denominator">1 + W<sub>p</sub>&tau;</span>
+                    </span>
+                  </span>
+                </div>
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">W<sub>p</sub></span>
+                    <span class="math-equals">=</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">&sigma;<sub>abs</sub> P<sub>p</sub></span>
+                      <span class="math-denominator">A<sub>clad</sub> h&nu;<sub>p</sub></span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="amp-input-area">
+              <div class="amp-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="grMedium">Gain medium</label>
+                  <select id="grMedium" class="text-input calc-input">
+                    <option value="er_zblan" selected>Er:ZBLAN</option>
+                    <option value="yb_fiber">Yb fiber</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="grPumpPreset">Pump preset</label>
+                  <select id="grPumpPreset" class="text-input calc-input">
+                    <option value="er965">965 nm pump, &sigma; = 0.60</option>
+                    <option value="er972" selected>972 nm pump, &sigma; = 1.75</option>
+                    <option value="er976">976 nm pump, &sigma; = 2.10</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="grPumpPower">Pump power P<sub>p</sub> (W)</label>
+                  <input id="grPumpPower" class="text-input calc-input" type="number" min="0" step="any" value="10">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="grAreaPreset">Pump area preset</label>
+                  <select id="grAreaPreset" class="text-input calc-input">
+                    <option value="er_clad_250" selected>250 um cladding</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="grPumpWavelength">Pump wavelength &lambda;<sub>p</sub> (nm)</label>
+                  <input id="grPumpWavelength" class="text-input calc-input" type="number" min="1" step="any" value="972">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="grSigmaAbs">Absorption cross section &sigma;<sub>a</sub> (10<sup>-25</sup> m<sup>2</sup>)</label>
+                  <input id="grSigmaAbs" class="text-input calc-input" type="number" min="0" step="any" value="1.75">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="grSigmaEm">Emission cross section &sigma;<sub>e</sub> (10<sup>-25</sup> m<sup>2</sup>)</label>
+                  <input id="grSigmaEm" class="text-input calc-input" type="number" min="0" step="any" value="0">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="grCladdingDiameter">Pump diameter D<sub>pump</sub> (um)</label>
+                  <input id="grCladdingDiameter" class="text-input calc-input" type="number" min="0.001" step="any" value="250">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="grLifetime">Upper-state lifetime &tau; (ms)</label>
+                  <input id="grLifetime" class="text-input calc-input" type="number" min="0.001" step="any" value="6.9">
+                </div>
+              </div>
+
+              <div class="result-grid inline-result-grid">
+                <div class="result-tile amp-result-main"><span>Gain recovery time <span class="math-inline-symbol">&tau;<sub>eff</sub></span></span><strong id="grTauEff">-- ms</strong></div>
+              </div>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="Gain recovery time formula">
+                <p class="panel-kicker">Formula</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line"><span class="math-var">I<sub>p</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">P<sub>p</sub></span><span class="math-denominator">A<sub>pump</sub></span></span></div>
+                  <div class="formula-line"><span class="math-var">A<sub>pump</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&pi;D<sub>pump</sub><sup>2</sup></span><span class="math-denominator">4</span></span></div>
+                  <div class="formula-line"><span class="math-var">&tau;<sub>recov.</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&hbar;&omega;<sub>p</sub></span><span class="math-denominator">I<sub>p</sub>[&sigma;<sub>e</sub>(&omega;<sub>p</sub>) + &sigma;<sub>a</sub>(&omega;<sub>p</sub>)] + &hbar;&omega;<sub>p</sub>&tau;<sub>21</sub><sup>-1</sup></span></span></div>
+                </div>
+                <p>Based on the supplied gain recovery time note. Er:ZBLAN uses the note absorption values: &sigma;<sub>a</sub> = 0.60, 1.75, or 2.10 in units of 10<sup>-25</sup> m<sup>2</sup> for 965 nm, 972 nm, or 976 nm pump light, with default &sigma;<sub>e</sub> = 0 and &tau;<sub>21</sub> = 6.9 ms. Yb fiber follows the supplied Yb plot: &lambda;<sub>p</sub> = 976 nm, &sigma;<sub>a</sub> = &sigma;<sub>e</sub> = 2.5 pm<sup>2</sup>, and &tau;<sub>21</sub> = 770 us. The Yb pump area presets are 6.6 um SM core pump, 250 um cladding, and 400 um cladding.</p>
+                <dl class="variable-list">
+                  <dt>P<sub>p</sub></dt><dd>Launched pump power over the selected pump area</dd>
+                  <dt>&sigma;<sub>a</sub>, &sigma;<sub>e</sub></dt><dd>Pump absorption and emission cross sections at the selected pump wavelength</dd>
+                  <dt>I<sub>p</sub></dt><dd>Pump intensity over the selected pump area</dd>
+                  <dt>&tau;<sub>recov.</sub></dt><dd>Effective gain recovery time under pumping</dd>
+                </dl>
+              </section>
+            </div>
+          </article>
+
           <article class="calc-panel" id="calc-fnumber">
             <div class="calc-heading">
               <div>
@@ -843,8 +949,8 @@
                 <div class="grating-control-row">
                   <label for="graSlideG">Groove Density (g)</label>
                   <div class="grating-slider-box">
-                    <input type="range" id="graSlideG" min="100" max="3000" step="1" value="1815">
-                    <input type="number" id="graNumG" value="1815" min="100" max="3000" step="1">
+                    <input type="range" id="graSlideG" min="100" max="3000" step="1" value="1800">
+                    <input type="number" id="graNumG" value="1800" min="100" max="3000" step="1">
                   </div>
                 </div>
                 <div class="grating-control-row">
@@ -1252,6 +1358,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=b-n2i-note-1"></script>
+    <script src="app.js?v=gain-recovery-exact-formula-1"></script>
   </body>
 </html>

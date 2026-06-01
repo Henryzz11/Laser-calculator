@@ -92,6 +92,32 @@ function updatePer() {
 }
 
 const SPEED_OF_LIGHT = 299792458;
+const PLANCK_CONSTANT = 6.62607015e-34;
+
+const GAIN_RECOVERY_MEDIA = {
+  er_zblan: {
+    lifetimeMs: 6.9,
+    presets: [
+      { value: "er965", label: "965 nm pump, σa = 0.60", wavelengthNm: 965, sigmaAbsE25: 0.6, sigmaEmE25: 0 },
+      { value: "er972", label: "972 nm pump, σa = 1.75", wavelengthNm: 972, sigmaAbsE25: 1.75, sigmaEmE25: 0 },
+      { value: "er976", label: "976 nm pump, σa = 2.10", wavelengthNm: 976, sigmaAbsE25: 2.1, sigmaEmE25: 0 },
+    ],
+    areaPresets: [
+      { value: "er_clad_250", label: "250 um cladding", diameterUm: 250 },
+    ],
+  },
+  yb_fiber: {
+    lifetimeMs: 0.77,
+    presets: [
+      { value: "yb976", label: "976 nm pump, σa = σe = 25", wavelengthNm: 976, sigmaAbsE25: 25, sigmaEmE25: 25 },
+    ],
+    areaPresets: [
+      { value: "yb_core_6_6", label: "6.6 um SM core pump", diameterUm: 6.6 },
+      { value: "yb_clad_250", label: "250 um cladding", diameterUm: 250 },
+      { value: "yb_clad_400", label: "400 um cladding", diameterUm: 400 },
+    ],
+  },
+};
 
 function timeToSeconds(value, unit) {
   if (unit === "fs") return value * 1e-15;
@@ -1013,6 +1039,119 @@ function amplifierEffectiveLengthRatio(pumpGeometry, gainDb) {
   return (1 - 1 / gainLinear) / Math.log(gainLinear);
 }
 
+function gainRecoveryMedium() {
+  const key = document.querySelector("#grMedium")?.value || "er_zblan";
+  return GAIN_RECOVERY_MEDIA[key] ? key : "er_zblan";
+}
+
+function renderGainRecoveryPresets(preferredValue = null) {
+  const presetSelect = document.querySelector("#grPumpPreset");
+  const medium = GAIN_RECOVERY_MEDIA[gainRecoveryMedium()];
+  if (!presetSelect || !medium) return;
+
+  const options = [...medium.presets, { value: "custom", label: "Custom" }];
+  presetSelect.innerHTML = "";
+  options.forEach((preset) => {
+    const option = document.createElement("option");
+    option.value = preset.value;
+    option.textContent = preset.label;
+    presetSelect.append(option);
+  });
+
+  const selected = options.some((preset) => preset.value === preferredValue)
+    ? preferredValue
+    : medium.presets[0]?.value;
+  if (selected) presetSelect.value = selected;
+}
+
+function renderGainRecoveryAreaPresets(preferredValue = null) {
+  const areaSelect = document.querySelector("#grAreaPreset");
+  const medium = GAIN_RECOVERY_MEDIA[gainRecoveryMedium()];
+  if (!areaSelect || !medium) return;
+
+  const options = [...medium.areaPresets, { value: "custom", label: "Custom" }];
+  areaSelect.innerHTML = "";
+  options.forEach((preset) => {
+    const option = document.createElement("option");
+    option.value = preset.value;
+    option.textContent = preset.label;
+    areaSelect.append(option);
+  });
+
+  const selected = options.some((preset) => preset.value === preferredValue)
+    ? preferredValue
+    : medium.areaPresets[0]?.value;
+  if (selected) areaSelect.value = selected;
+}
+
+function currentGainRecoveryPreset() {
+  const presetKey = document.querySelector("#grPumpPreset")?.value || "";
+  const medium = GAIN_RECOVERY_MEDIA[gainRecoveryMedium()];
+  return medium?.presets.find((preset) => preset.value === presetKey) || null;
+}
+
+function currentGainRecoveryAreaPreset() {
+  const presetKey = document.querySelector("#grAreaPreset")?.value || "";
+  const medium = GAIN_RECOVERY_MEDIA[gainRecoveryMedium()];
+  return medium?.areaPresets.find((preset) => preset.value === presetKey) || null;
+}
+
+function applyGainRecoveryMedium() {
+  const medium = GAIN_RECOVERY_MEDIA[gainRecoveryMedium()];
+  if (!medium) return;
+  renderGainRecoveryPresets();
+  renderGainRecoveryAreaPresets();
+  const lifetimeInput = document.querySelector("#grLifetime");
+  if (lifetimeInput) lifetimeInput.value = medium.lifetimeMs;
+  setGainRecoveryPreset();
+  setGainRecoveryAreaPreset();
+}
+
+function setGainRecoveryPreset() {
+  const preset = currentGainRecoveryPreset();
+  if (!preset) return;
+  const wavelengthInput = document.querySelector("#grPumpWavelength");
+  const sigmaAbsInput = document.querySelector("#grSigmaAbs");
+  const sigmaEmInput = document.querySelector("#grSigmaEm");
+  if (wavelengthInput) wavelengthInput.value = preset.wavelengthNm;
+  if (sigmaAbsInput) sigmaAbsInput.value = preset.sigmaAbsE25;
+  if (sigmaEmInput) sigmaEmInput.value = preset.sigmaEmE25;
+}
+
+function setGainRecoveryAreaPreset() {
+  const preset = currentGainRecoveryAreaPreset();
+  if (!preset) return;
+  const diameterInput = document.querySelector("#grCladdingDiameter");
+  if (diameterInput) diameterInput.value = preset.diameterUm;
+}
+
+function updateGainRecovery() {
+  const pumpPowerW = numberValue("grPumpPower");
+  const wavelengthNm = numberValue("grPumpWavelength");
+  const sigmaSumM2 = (numberValue("grSigmaAbs") + numberValue("grSigmaEm")) * 1e-25;
+  const claddingDiameterM = numberValue("grCladdingDiameter") * 1e-6;
+  const lifetimeS = numberValue("grLifetime") * 1e-3;
+
+  if (
+    pumpPowerW < 0 ||
+    wavelengthNm <= 0 ||
+    sigmaSumM2 <= 0 ||
+    claddingDiameterM <= 0 ||
+    lifetimeS <= 0
+  ) {
+    setText("grTauEff", null);
+    return;
+  }
+
+  const claddingAreaM2 = (Math.PI * claddingDiameterM * claddingDiameterM) / 4;
+  const photonEnergyJ = (PLANCK_CONSTANT * SPEED_OF_LIGHT) / (wavelengthNm * 1e-9);
+  const pumpIntensity = pumpPowerW / claddingAreaM2;
+  const denominator = pumpIntensity * sigmaSumM2 + photonEnergyJ / lifetimeS;
+  const recoveryS = photonEnergyJ / denominator;
+
+  setText("grTauEff", formatTimeAuto(recoveryS));
+}
+
 function updateAmplength() {
   const pumpGeometry = document.querySelector("#ampPumpGeometry")?.value || "counter";
   const energyJ = energyToJ(numberValue("ampEnergy"), document.querySelector("#ampEnergyUnit")?.value || "uj");
@@ -1070,6 +1209,7 @@ function updateCalculators() {
   updateCollimation();
   updateFeedback();
   updateAmplength();
+  updateGainRecovery();
   updateFNumber();
   updateEnergyPower();
   updatePulseBandwidth();
@@ -1128,6 +1268,21 @@ function bindEvents() {
 
   document.querySelector("#graNumOrder")?.addEventListener("input", updateGrating);
 
+  document.querySelector("#grMedium")?.addEventListener("change", () => {
+    applyGainRecoveryMedium();
+    updateCalculators();
+  });
+
+  document.querySelector("#grPumpPreset")?.addEventListener("change", () => {
+    setGainRecoveryPreset();
+    updateCalculators();
+  });
+
+  document.querySelector("#grAreaPreset")?.addEventListener("change", () => {
+    setGainRecoveryAreaPreset();
+    updateCalculators();
+  });
+
   document.querySelectorAll(".calc-input").forEach((input) => {
     input.addEventListener("input", updateCalculators);
     input.addEventListener("change", updateCalculators);
@@ -1135,5 +1290,7 @@ function bindEvents() {
 }
 
 bindEvents();
+renderGainRecoveryPresets("er972");
+renderGainRecoveryAreaPresets("er_clad_250");
 showHome();
 updateCalculators();
