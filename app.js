@@ -398,83 +398,113 @@ function updateRayleigh() {
   setText("rayDivergence", fmt(fullAngleMrad, 5), " mrad");
 }
 
-const ENDCAP_RIPPLE_RATIOS = {
-  ripple1: 2.29,
-  ripple17: 1.6,
-};
-
 function estimatedEndcapRipplePercent(fiberDiameterUm, beamDiameterUm) {
   if (fiberDiameterUm <= 0 || beamDiameterUm <= 0) return NaN;
   const apertureToBeamRatio = fiberDiameterUm / beamDiameterUm;
   return 200 * Math.exp(-(apertureToBeamRatio * apertureToBeamRatio));
 }
 
-function endcapLengthForDiameter(rayleighM, initialDiameterUm, targetDiameterUm) {
-  const targetRatio = targetDiameterUm / initialDiameterUm;
+function fusedSilicaIndex(wavelengthUm) {
+  const lambda2 = wavelengthUm * wavelengthUm;
+  const n2 = 1
+    + (0.6961663 * lambda2) / (lambda2 - 0.0684043 ** 2)
+    + (0.4079426 * lambda2) / (lambda2 - 0.1162414 ** 2)
+    + (0.8974794 * lambda2) / (lambda2 - 9.896161 ** 2);
+  return Math.sqrt(n2);
+}
+
+function endcapLengthForDiameter(rayleighM, fiberMfdUm, targetDiameterUm) {
+  const targetRatio = targetDiameterUm / fiberMfdUm;
   return targetRatio <= 1 ? 0 : rayleighM * Math.sqrt((targetRatio * targetRatio) - 1);
 }
 
+function setEndcapMode(mode) {
+  document.querySelectorAll("[data-end-mode]").forEach((panel) => {
+    panel.hidden = panel.dataset.endMode !== mode;
+  });
+}
+
 function updateEndcap() {
-  const wavelengthM = numberValue("endWavelength") * 1e-9;
-  const index = numberValue("endIndex");
-  const initialDiameterUm = numberValue("endInitialDiameter");
+  const wavelengthNm = numberValue("endWavelength");
+  const wavelengthM = wavelengthNm * 1e-9;
+  const wavelengthUm = wavelengthNm / 1000;
+  const index = fusedSilicaIndex(wavelengthUm);
+  const fiberMfdUm = numberValue("endInitialDiameter");
   const fiberDiameterUm = numberValue("endFiberDiameter");
-  const targetDiameterUm = numberValue("endTargetDiameter");
-  const checkLengthM = numberValue("endCheckLength") * 1e-3;
+  const mode = document.querySelector("#endMode")?.value || "cw";
   const outputIds = [
     "endLength",
-    "endRayleigh",
-    "endTargetRatio",
+    "endSafeDiameter",
     "endTargetRipple",
-    "endRipple1Length",
-    "endRipple17Length",
-    "endCheckDiameter",
-    "endCheckRipple",
     "endApertureCheck",
   ];
+  setEndcapMode(mode);
 
   if (
     wavelengthM <= 0 ||
-    index <= 0 ||
-    initialDiameterUm <= 0 ||
-    fiberDiameterUm <= 0 ||
-    targetDiameterUm <= 0 ||
-    checkLengthM < 0
+    !Number.isFinite(index) ||
+    fiberMfdUm <= 0 ||
+    fiberDiameterUm <= 0
   ) {
     outputIds.forEach((id) => setText(id, null));
     return;
   }
 
-  const waistRadiusM = (initialDiameterUm * 1e-6) / 2;
-  const rayleighM = (Math.PI * index * waistRadiusM * waistRadiusM) / wavelengthM;
-  const requiredLengthM = endcapLengthForDiameter(rayleighM, initialDiameterUm, targetDiameterUm);
-  const checkRatio = checkLengthM / rayleighM;
-  const checkDiameterUm = initialDiameterUm * Math.sqrt(1 + checkRatio * checkRatio);
-  const apertureToTargetRatio = fiberDiameterUm / targetDiameterUm;
-  const targetRipplePercent = estimatedEndcapRipplePercent(fiberDiameterUm, targetDiameterUm);
-  const checkRipplePercent = estimatedEndcapRipplePercent(fiberDiameterUm, checkDiameterUm);
-  const ripple1DiameterUm = fiberDiameterUm / ENDCAP_RIPPLE_RATIOS.ripple1;
-  const ripple17DiameterUm = fiberDiameterUm / ENDCAP_RIPPLE_RATIOS.ripple17;
-  const ripple1LengthM = endcapLengthForDiameter(rayleighM, initialDiameterUm, ripple1DiameterUm);
-  const ripple17LengthM = endcapLengthForDiameter(rayleighM, initialDiameterUm, ripple17DiameterUm);
+  let safeDiameterUm = NaN;
 
-  let apertureCheck = "Low clipping ripple";
-  if (apertureToTargetRatio < 1) {
-    apertureCheck = "Target beam is larger than the aperture";
-  } else if (apertureToTargetRatio < 1.6) {
+  if (mode === "pulse") {
+    const pulseEnergyJ = numberValue("endPulseEnergy") * 1e-3;
+    const effectiveDurationNs = numberValue("endPulseDuration");
+    const referenceDurationNs = 1;
+    const referenceThresholdJPerCm2 = numberValue("endPulseThreshold");
+    const safetyFactor = numberValue("endPulseSafetyFactor");
+    if (pulseEnergyJ < 0 || effectiveDurationNs <= 0 || referenceThresholdJPerCm2 <= 0 || safetyFactor < 1) {
+      outputIds.forEach((id) => setText(id, null));
+      return;
+    }
+    const burstThresholdJPerCm2 = referenceThresholdJPerCm2 * Math.sqrt(effectiveDurationNs / referenceDurationNs);
+    const allowedFluenceJPerCm2 = burstThresholdJPerCm2 / safetyFactor;
+    const allowedFluenceJPerM2 = allowedFluenceJPerCm2 * 1e4;
+    const safeRadiusM = Math.sqrt((2 * pulseEnergyJ) / (Math.PI * allowedFluenceJPerM2));
+    safeDiameterUm = safeRadiusM * 2 * 1e6;
+  } else {
+    const cwPowerW = numberValue("endCwPower");
+    const thresholdMwPerCm2 = numberValue("endCwThreshold");
+    const safetyFactor = numberValue("endCwSafetyFactor");
+    if (cwPowerW < 0 || thresholdMwPerCm2 <= 0 || safetyFactor < 1) {
+      outputIds.forEach((id) => setText(id, null));
+      return;
+    }
+    const allowedIntensityMwPerCm2 = thresholdMwPerCm2 / safetyFactor;
+    const allowedIntensityWPerM2 = allowedIntensityMwPerCm2 * 1e10;
+    const safeRadiusM = Math.sqrt((2 * cwPowerW) / (Math.PI * allowedIntensityWPerM2));
+    safeDiameterUm = safeRadiusM * 2 * 1e6;
+  }
+
+  if (!Number.isFinite(safeDiameterUm) || safeDiameterUm < 0) {
+    outputIds.forEach((id) => setText(id, null));
+    return;
+  }
+
+  const outputDiameterUm = Math.max(fiberMfdUm, safeDiameterUm);
+  const waistRadiusM = (fiberMfdUm * 1e-6) / 2;
+  const rayleighM = (Math.PI * index * waistRadiusM * waistRadiusM) / wavelengthM;
+  const requiredLengthM = endcapLengthForDiameter(rayleighM, fiberMfdUm, outputDiameterUm);
+  const apertureToOutputRatio = fiberDiameterUm / outputDiameterUm;
+  const outputRipplePercent = estimatedEndcapRipplePercent(fiberDiameterUm, outputDiameterUm);
+
+  let apertureCheck = safeDiameterUm <= fiberMfdUm ? "Already below threshold at fiber MFD" : "Low clipping ripple";
+  if (apertureToOutputRatio < 1) {
+    apertureCheck = "Required beam is larger than the aperture";
+  } else if (apertureToOutputRatio < 1.6) {
     apertureCheck = "High clipping ripple expected";
-  } else if (apertureToTargetRatio < 2.29) {
+  } else if (apertureToOutputRatio < 2.29) {
     apertureCheck = "Moderate clipping ripple expected";
   }
 
   setText("endLength", fmt(requiredLengthM * 1000, 5), " mm");
-  setText("endRayleigh", fmt(rayleighM * 1000, 5), " mm");
-  setText("endTargetRatio", fmt(apertureToTargetRatio, 5));
-  setText("endTargetRipple", `±${fmt(targetRipplePercent, 4)}`, " %");
-  setText("endRipple1Length", fmt(ripple1LengthM * 1000, 5), " mm");
-  setText("endRipple17Length", fmt(ripple17LengthM * 1000, 5), " mm");
-  setText("endCheckDiameter", fmt(checkDiameterUm, 5), " um");
-  setText("endCheckRipple", `±${fmt(checkRipplePercent, 4)}`, " %");
+  setText("endSafeDiameter", fmt(outputDiameterUm, 5), " um");
+  setText("endTargetRipple", `±${fmt(outputRipplePercent, 4)}`, " %");
   setText("endApertureCheck", apertureCheck);
 }
 

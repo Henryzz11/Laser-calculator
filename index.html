@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=endcap-no-custom-1">
+    <link rel="stylesheet" href="styles.css?v=endcap-pulse-safety-2">
   </head>
   <body>
     <main class="app-shell">
@@ -809,41 +809,28 @@
           <article class="calc-panel" id="calc-endcap">
             <div class="calc-heading">
               <div>
-                <p class="panel-kicker">Fused silica beam expansion</p>
+                <p class="panel-kicker">Fused silica damage threshold</p>
                 <h2>Endcap Length</h2>
               </div>
               <div class="collimation-formula-stack" aria-label="Endcap length formulas">
                 <div class="math-pill">
                   <span class="math-formula math-formula-compact">
-                    <span class="math-var">D(L)</span>
+                    <span class="math-var">I<sub>0</sub></span>
                     <span class="math-equals">=</span>
-                    <span>D<sub>0</sub>&nbsp;&radic;</span>
-                    <span class="formula-paren">(</span>
-                    <span>1&nbsp;+</span>
-                    <span class="formula-paren">(</span>
                     <span class="math-fraction">
-                      <span class="math-numerator">L</span>
-                      <span class="math-denominator">z<sub>R</sub></span>
+                      <span class="math-numerator">2P</span>
+                      <span class="math-denominator">&pi;&nbsp;w<sup>2</sup></span>
                     </span>
-                    <span class="formula-paren">)</span>
-                    <span><sup>2</sup></span>
-                    <span class="formula-paren">)</span>
                   </span>
                 </div>
                 <div class="math-pill">
                   <span class="math-formula math-formula-compact">
-                    <span class="math-var">L</span>
+                    <span class="math-var">F<sub>0</sub></span>
                     <span class="math-equals">=</span>
-                    <span>z<sub>R</sub>&nbsp;&radic;</span>
-                    <span class="formula-paren">(</span>
-                    <span class="formula-paren">(</span>
                     <span class="math-fraction">
-                      <span class="math-numerator">D<sub>target</sub></span>
-                      <span class="math-denominator">D<sub>0</sub></span>
+                      <span class="math-numerator">2E</span>
+                      <span class="math-denominator">&pi;&nbsp;w<sup>2</sup></span>
                     </span>
-                    <span class="formula-paren">)</span>
-                    <span><sup>2</sup>&nbsp;&minus;&nbsp;1</span>
-                    <span class="formula-paren">)</span>
                   </span>
                 </div>
               </div>
@@ -853,39 +840,63 @@
               <div class="endcap-input-grid">
                 <div class="field-group">
                   <label class="field-label" for="endWavelength">Wavelength <span class="math-inline-symbol">&lambda;<sub>0</sub></span> (nm)</label>
-                  <input id="endWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+                  <input id="endWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1035">
                 </div>
                 <div class="field-group">
-                  <label class="field-label" for="endIndex">Fused silica index n</label>
-                  <input id="endIndex" class="text-input calc-input" type="number" min="1" step="any" value="1.45">
-                </div>
-                <div class="field-group">
-                  <label class="field-label" for="endInitialDiameter">Initial beam diameter D<sub>0</sub> (um)</label>
-                  <input id="endInitialDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="45">
+                  <label class="field-label" for="endInitialDiameter">Fiber MFD (um)</label>
+                  <input id="endInitialDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="60">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="endFiberDiameter">Fiber / endcap diameter D<sub>fiber</sub> (um)</label>
                   <input id="endFiberDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="400">
                 </div>
                 <div class="field-group">
-                  <label class="field-label" for="endTargetDiameter">Target beam diameter D<sub>target</sub> (um)</label>
-                  <input id="endTargetDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="174.7">
+                  <label class="field-label" for="endMode">Damage mode</label>
+                  <select id="endMode" class="text-input calc-input">
+                    <option value="cw" selected>CW</option>
+                    <option value="pulse">Pulse</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="endcap-mode-grid" data-end-mode="cw">
+                <div class="field-group">
+                  <label class="field-label" for="endCwPower">CW power P (W)</label>
+                  <input id="endCwPower" class="text-input calc-input" type="number" min="0" step="any" value="100">
                 </div>
                 <div class="field-group">
-                  <label class="field-label" for="endCheckLength">Check endcap length L (mm)</label>
-                  <input id="endCheckLength" class="text-input calc-input" type="number" min="0" step="any" value="10">
+                  <label class="field-label" for="endCwThreshold">CW damage threshold I<sub>th</sub> (MW/cm<sup>2</sup>)</label>
+                  <input id="endCwThreshold" class="text-input calc-input" type="number" min="0.000001" step="any" value="1">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="endCwSafetyFactor">CW safety factor</label>
+                  <input id="endCwSafetyFactor" class="text-input calc-input" type="number" min="1" step="any" value="2">
+                </div>
+              </div>
+
+              <div class="endcap-mode-grid" data-end-mode="pulse" hidden>
+                <div class="field-group">
+                  <label class="field-label" for="endPulseEnergy">Burst energy E (mJ)</label>
+                  <input id="endPulseEnergy" class="text-input calc-input" type="number" min="0" step="any" value="10">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="endPulseDuration">Burst effective duration &tau;<sub>eff</sub> (ns)</label>
+                  <input id="endPulseDuration" class="text-input calc-input" type="number" min="0.000001" step="any" value="17">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="endPulseThreshold">Damage threshold U<sub>th,ref</sub> @ 1 ns (J/cm<sup>2</sup>)</label>
+                  <input id="endPulseThreshold" class="text-input calc-input" type="number" min="0.000001" step="any" value="50">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="endPulseSafetyFactor">Pulse safety factor N</label>
+                  <input id="endPulseSafetyFactor" class="text-input calc-input" type="number" min="1" step="any" value="2">
                 </div>
               </div>
 
               <div class="result-grid endcap-result-grid inline-result-grid">
                 <div class="result-tile endcap-result-main"><span>Required endcap length</span><strong id="endLength">-- mm</strong></div>
-                <div class="result-tile"><span>Rayleigh length in silica <span class="math-inline-symbol">z<sub>R</sub></span></span><strong id="endRayleigh">-- mm</strong></div>
-                <div class="result-tile"><span>Target aperture / beam ratio</span><strong id="endTargetRatio">--</strong></div>
-                <div class="result-tile"><span>Estimated ripple at target</span><strong id="endTargetRipple">-- %</strong></div>
-                <div class="result-tile"><span>&plusmn;1% guideline length</span><strong id="endRipple1Length">-- mm</strong></div>
-                <div class="result-tile"><span>&plusmn;17% guideline length</span><strong id="endRipple17Length">-- mm</strong></div>
-                <div class="result-tile"><span>Beam diameter at check length</span><strong id="endCheckDiameter">-- um</strong></div>
-                <div class="result-tile"><span>Ripple at check length</span><strong id="endCheckRipple">-- %</strong></div>
+                <div class="result-tile"><span>Damage-limited beam diameter</span><strong id="endSafeDiameter">-- um</strong></div>
+                <div class="result-tile"><span>Estimated clipping ripple</span><strong id="endTargetRipple">-- %</strong></div>
                 <div class="result-tile wide-result endcap-warning-tile"><span>Aperture check</span><strong id="endApertureCheck">--</strong></div>
               </div>
             </div>
@@ -893,19 +904,39 @@
             <div class="formula-area">
               <section class="formula-panel" aria-label="Endcap length derivation">
                 <p class="panel-kicker">Endcap length derivation</p>
-                <p>The endcap is treated as free-space Gaussian propagation inside fused silica. The wavelength in the medium is shorter by the refractive index, so the Rayleigh length becomes larger by the same index when the input wavelength is the vacuum wavelength.</p>
+                <p>The endcap is treated as free-space Gaussian propagation inside fused silica. The fused silica refractive index is calculated from the wavelength, so it is not entered by hand.</p>
                 <div class="formula-lines math-display-lines">
-                  <div class="formula-line"><span class="math-var">w<sub>0</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">D<sub>0</sub></span><span class="math-denominator">2</span></span></div>
+                  <div class="formula-line"><span class="math-var">w<sub>0</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">MFD</span><span class="math-denominator">2</span></span></div>
                   <div class="formula-line"><span class="math-var">z<sub>R</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&pi;&nbsp;n&nbsp;w<sub>0</sub><sup>2</sup></span><span class="math-denominator">&lambda;<sub>0</sub></span></span></div>
-                  <div class="formula-line"><span class="math-var">D(L)</span><span class="math-equals">=</span><span>D<sub>0</sub>&nbsp;&radic;</span><span class="formula-paren">(</span><span>1&nbsp;+</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">L</span><span class="math-denominator">z<sub>R</sub></span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
-                  <div class="formula-line"><span class="math-var">L</span><span class="math-equals">=</span><span>z<sub>R</sub>&nbsp;&radic;</span><span class="formula-paren">(</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">D<sub>target</sub></span><span class="math-denominator">D<sub>0</sub></span></span><span class="formula-paren">)</span><span><sup>2</sup>&nbsp;&minus;&nbsp;1</span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="math-var">D(L)</span><span class="math-equals">=</span><span>MFD&nbsp;&radic;</span><span class="formula-paren">(</span><span>1&nbsp;+</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">L</span><span class="math-denominator">z<sub>R</sub></span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="math-var">L</span><span class="math-equals">=</span><span>z<sub>R</sub>&nbsp;&radic;</span><span class="formula-paren">(</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">D<sub>safe</sub></span><span class="math-denominator">MFD</span></span><span class="formula-paren">)</span><span><sup>2</sup>&nbsp;&minus;&nbsp;1</span><span class="formula-paren">)</span></div>
                 </div>
                 <dl class="variable-list">
-                  <dt>D<sub>0</sub></dt><dd>Initial 1/e<sup>2</sup> beam diameter at the fiber/endcap interface</dd>
+                  <dt>MFD</dt><dd>Fiber mode field diameter, used as the starting 1/e<sup>2</sup> beam diameter at the fiber/endcap interface</dd>
                   <dt>D(L)</dt><dd>1/e<sup>2</sup> beam diameter at the endcap output face</dd>
-                  <dt>D<sub>target</sub></dt><dd>Manually selected output beam diameter for the required length calculation</dd>
-                  <dt>n</dt><dd>Fused silica refractive index near the operating wavelength</dd>
+                  <dt>D<sub>safe</sub></dt><dd>Output beam diameter required to keep the peak intensity or peak fluence below the safety-adjusted threshold</dd>
+                  <dt>n</dt><dd>Fused silica refractive index calculated from wavelength</dd>
                   <dt>&lambda;<sub>0</sub></dt><dd>Vacuum wavelength</dd>
+                </dl>
+              </section>
+
+              <section class="formula-panel" aria-label="Endcap damage threshold formulas">
+                <p class="panel-kicker">Damage threshold calculation</p>
+                <p>The safety factor divides the material threshold. For example, a factor of 2 means the calculator designs for half of the entered threshold.</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line"><span class="math-var">I<sub>allow</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">I<sub>th</sub></span><span class="math-denominator">S</span></span></div>
+                  <div class="formula-line"><span class="math-var">D<sub>CW</sub></span><span class="math-equals">=</span><span>2&nbsp;&radic;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">2P</span><span class="math-denominator">&pi;&nbsp;I<sub>allow</sub></span></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="math-var">U<sub>th,b</sub></span><span class="math-equals">=</span><span>U<sub>th,ref</sub>&nbsp;&radic;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">&tau;<sub>eff</sub></span><span class="math-denominator">&tau;<sub>ref</sub></span></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="math-var">U<sub>allow</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">U<sub>th,b</sub></span><span class="math-denominator">N</span></span></div>
+                  <div class="formula-line"><span class="math-var">D<sub>pulse</sub></span><span class="math-equals">=</span><span>2&nbsp;&radic;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">2E</span><span class="math-denominator">&pi;&nbsp;U<sub>allow</sub></span></span><span class="formula-paren">)</span></div>
+                </div>
+                <dl class="variable-list">
+                  <dt>P</dt><dd>CW optical power</dd>
+                  <dt>E</dt><dd>Burst or pulse energy</dd>
+                  <dt>I<sub>th</sub></dt><dd>CW damage threshold as peak intensity</dd>
+                  <dt>U<sub>th,ref</sub></dt><dd>Reference fused silica damage threshold at &tau;<sub>ref</sub> = 1 ns</dd>
+                  <dt>&tau;<sub>eff</sub></dt><dd>Effective burst duration used for square-root damage-threshold scaling</dd>
+                  <dt>N</dt><dd>Pulse safety factor</dd>
                 </dl>
               </section>
 
@@ -1474,6 +1505,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=endcap-no-custom-1"></script>
+    <script src="app.js?v=endcap-pulse-safety-2"></script>
   </body>
 </html>

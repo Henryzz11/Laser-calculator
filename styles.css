@@ -888,6 +888,17 @@ h2 {
   gap: 12px;
 }
 
+.endcap-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.endcap-mode-grid[hidden] {
+  display: none;
+}
+
 .endcap-result-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -1383,6 +1394,7 @@ h2 {
   .fnumber-input-grid,
   .fnumber-result-grid,
   .endcap-input-grid,
+  .endcap-mode-grid,
   .endcap-result-grid,
   .feedback-input-grid,
   .feedback-result-grid {
@@ -1424,6 +1436,7 @@ h2 {
   .fnumber-input-grid,
   .fnumber-result-grid,
   .endcap-input-grid,
+  .endcap-mode-grid,
   .endcap-result-grid,
   .collimation-result-grid,
   .input-grid-2,
