@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=formula-fraction-bars-1">
+    <link rel="stylesheet" href="styles.css?v=endcap-no-custom-1">
   </head>
   <body>
     <main class="app-shell">
@@ -28,6 +28,7 @@
           <button class="calc-tab" data-calculator="telescope" type="button">Beam Telescope</button>
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
           <button class="calc-tab" data-calculator="rayleigh" type="button">Rayleigh Length</button>
+          <button class="calc-tab" data-calculator="endcap" type="button">Endcap Length</button>
           <button class="calc-tab" data-calculator="feedback" type="button">Cleave Angle</button>
           <button class="calc-tab" data-calculator="amplength" type="button">B-integral</button>
           <button class="calc-tab" data-calculator="gainrecovery" type="button">Gain Recovery Time</button>
@@ -501,17 +502,14 @@
                 <div class="field-group">
                   <label class="field-label" for="grMedium">Gain medium</label>
                   <select id="grMedium" class="text-input calc-input">
-                    <option value="er_zblan" selected>Er:ZBLAN</option>
-                    <option value="yb_fiber">Yb fiber</option>
+                    <option value="yb_fiber" selected>Yb fiber</option>
+                    <option value="er_zblan">Er:ZBLAN</option>
                   </select>
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="grPumpPreset">Pump preset</label>
                   <select id="grPumpPreset" class="text-input calc-input">
-                    <option value="er965">965 nm pump, &sigma; = 0.60</option>
-                    <option value="er972" selected>972 nm pump, &sigma; = 1.75</option>
-                    <option value="er976">976 nm pump, &sigma; = 2.10</option>
-                    <option value="custom">Custom</option>
+                    <option value="yb976" selected>976 nm pump, &sigma;<sub>a</sub> = &sigma;<sub>e</sub> = 25</option>
                   </select>
                 </div>
                 <div class="field-group">
@@ -521,21 +519,22 @@
                 <div class="field-group">
                   <label class="field-label" for="grAreaPreset">Pump area preset</label>
                   <select id="grAreaPreset" class="text-input calc-input">
-                    <option value="er_clad_250" selected>250 um cladding</option>
-                    <option value="custom">Custom</option>
+                    <option value="yb_clad_250" selected>250 um cladding</option>
+                    <option value="yb_clad_400">400 um cladding</option>
+                    <option value="yb_core_6_6">6.6 um SM core pump</option>
                   </select>
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="grPumpWavelength">Pump wavelength &lambda;<sub>p</sub> (nm)</label>
-                  <input id="grPumpWavelength" class="text-input calc-input" type="number" min="1" step="any" value="972">
+                  <input id="grPumpWavelength" class="text-input calc-input" type="number" min="1" step="any" value="976">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="grSigmaAbs">Absorption cross section &sigma;<sub>a</sub> (10<sup>-25</sup> m<sup>2</sup>)</label>
-                  <input id="grSigmaAbs" class="text-input calc-input" type="number" min="0" step="any" value="1.75">
+                  <input id="grSigmaAbs" class="text-input calc-input" type="number" min="0" step="any" value="25">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="grSigmaEm">Emission cross section &sigma;<sub>e</sub> (10<sup>-25</sup> m<sup>2</sup>)</label>
-                  <input id="grSigmaEm" class="text-input calc-input" type="number" min="0" step="any" value="0">
+                  <input id="grSigmaEm" class="text-input calc-input" type="number" min="0" step="any" value="25">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="grCladdingDiameter">Pump diameter D<sub>pump</sub> (um)</label>
@@ -543,7 +542,7 @@
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="grLifetime">Upper-state lifetime &tau; (ms)</label>
-                  <input id="grLifetime" class="text-input calc-input" type="number" min="0.001" step="any" value="6.9">
+                  <input id="grLifetime" class="text-input calc-input" type="number" min="0.001" step="any" value="0.77">
                 </div>
               </div>
 
@@ -560,7 +559,7 @@
                   <div class="formula-line"><span class="math-var">A<sub>pump</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&pi;D<sub>pump</sub><sup>2</sup></span><span class="math-denominator">4</span></span></div>
                   <div class="formula-line"><span class="math-var">&tau;<sub>recov.</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&hbar;&omega;<sub>p</sub></span><span class="math-denominator">I<sub>p</sub>[&sigma;<sub>e</sub>(&omega;<sub>p</sub>) + &sigma;<sub>a</sub>(&omega;<sub>p</sub>)] + &hbar;&omega;<sub>p</sub>&tau;<sub>21</sub><sup>-1</sup></span></span></div>
                 </div>
-                <p>Based on the supplied gain recovery time note. Er:ZBLAN uses the note absorption values: &sigma;<sub>a</sub> = 0.60, 1.75, or 2.10 in units of 10<sup>-25</sup> m<sup>2</sup> for 965 nm, 972 nm, or 976 nm pump light, with default &sigma;<sub>e</sub> = 0 and &tau;<sub>21</sub> = 6.9 ms. Yb fiber follows the supplied Yb plot: &lambda;<sub>p</sub> = 976 nm, &sigma;<sub>a</sub> = &sigma;<sub>e</sub> = 2.5 pm<sup>2</sup>, and &tau;<sub>21</sub> = 770 us. The Yb pump area presets are 6.6 um SM core pump, 250 um cladding, and 400 um cladding.</p>
+                <p>Yb fiber is the default and follows the supplied Yb plot: &lambda;<sub>p</sub> = 976 nm, &sigma;<sub>a</sub> = &sigma;<sub>e</sub> = 2.5 pm<sup>2</sup>, and &tau;<sub>21</sub> = 770 us. The Yb pump area presets are 6.6 um SM core pump, 250 um cladding, and 400 um cladding. Er:ZBLAN remains available in the gain medium menu and uses the supplied note absorption values: &sigma;<sub>a</sub> = 0.60, 1.75, or 2.10 in units of 10<sup>-25</sup> m<sup>2</sup>, with default &sigma;<sub>e</sub> = 0 and &tau;<sub>21</sub> = 6.9 ms.</p>
                 <dl class="variable-list">
                   <dt>P<sub>p</sub></dt><dd>Launched pump power over the selected pump area</dd>
                   <dt>&sigma;<sub>a</sub>, &sigma;<sub>e</sub></dt><dd>Pump absorption and emission cross sections at the selected pump wavelength</dd>
@@ -803,6 +802,123 @@
                   <dt>&lambda;</dt><dd>Wavelength</dd>
                   <dt>M<sup>2</sup></dt><dd>Beam quality factor</dd>
                 </dl>
+              </section>
+            </div>
+          </article>
+
+          <article class="calc-panel" id="calc-endcap">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Fused silica beam expansion</p>
+                <h2>Endcap Length</h2>
+              </div>
+              <div class="collimation-formula-stack" aria-label="Endcap length formulas">
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">D(L)</span>
+                    <span class="math-equals">=</span>
+                    <span>D<sub>0</sub>&nbsp;&radic;</span>
+                    <span class="formula-paren">(</span>
+                    <span>1&nbsp;+</span>
+                    <span class="formula-paren">(</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">L</span>
+                      <span class="math-denominator">z<sub>R</sub></span>
+                    </span>
+                    <span class="formula-paren">)</span>
+                    <span><sup>2</sup></span>
+                    <span class="formula-paren">)</span>
+                  </span>
+                </div>
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">L</span>
+                    <span class="math-equals">=</span>
+                    <span>z<sub>R</sub>&nbsp;&radic;</span>
+                    <span class="formula-paren">(</span>
+                    <span class="formula-paren">(</span>
+                    <span class="math-fraction">
+                      <span class="math-numerator">D<sub>target</sub></span>
+                      <span class="math-denominator">D<sub>0</sub></span>
+                    </span>
+                    <span class="formula-paren">)</span>
+                    <span><sup>2</sup>&nbsp;&minus;&nbsp;1</span>
+                    <span class="formula-paren">)</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="endcap-input-area">
+              <div class="endcap-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="endWavelength">Wavelength <span class="math-inline-symbol">&lambda;<sub>0</sub></span> (nm)</label>
+                  <input id="endWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="endIndex">Fused silica index n</label>
+                  <input id="endIndex" class="text-input calc-input" type="number" min="1" step="any" value="1.45">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="endInitialDiameter">Initial beam diameter D<sub>0</sub> (um)</label>
+                  <input id="endInitialDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="45">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="endFiberDiameter">Fiber / endcap diameter D<sub>fiber</sub> (um)</label>
+                  <input id="endFiberDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="400">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="endTargetDiameter">Target beam diameter D<sub>target</sub> (um)</label>
+                  <input id="endTargetDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="174.7">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="endCheckLength">Check endcap length L (mm)</label>
+                  <input id="endCheckLength" class="text-input calc-input" type="number" min="0" step="any" value="10">
+                </div>
+              </div>
+
+              <div class="result-grid endcap-result-grid inline-result-grid">
+                <div class="result-tile endcap-result-main"><span>Required endcap length</span><strong id="endLength">-- mm</strong></div>
+                <div class="result-tile"><span>Rayleigh length in silica <span class="math-inline-symbol">z<sub>R</sub></span></span><strong id="endRayleigh">-- mm</strong></div>
+                <div class="result-tile"><span>Target aperture / beam ratio</span><strong id="endTargetRatio">--</strong></div>
+                <div class="result-tile"><span>Estimated ripple at target</span><strong id="endTargetRipple">-- %</strong></div>
+                <div class="result-tile"><span>&plusmn;1% guideline length</span><strong id="endRipple1Length">-- mm</strong></div>
+                <div class="result-tile"><span>&plusmn;17% guideline length</span><strong id="endRipple17Length">-- mm</strong></div>
+                <div class="result-tile"><span>Beam diameter at check length</span><strong id="endCheckDiameter">-- um</strong></div>
+                <div class="result-tile"><span>Ripple at check length</span><strong id="endCheckRipple">-- %</strong></div>
+                <div class="result-tile wide-result endcap-warning-tile"><span>Aperture check</span><strong id="endApertureCheck">--</strong></div>
+              </div>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="Endcap length derivation">
+                <p class="panel-kicker">Endcap length derivation</p>
+                <p>The endcap is treated as free-space Gaussian propagation inside fused silica. The wavelength in the medium is shorter by the refractive index, so the Rayleigh length becomes larger by the same index when the input wavelength is the vacuum wavelength.</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line"><span class="math-var">w<sub>0</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">D<sub>0</sub></span><span class="math-denominator">2</span></span></div>
+                  <div class="formula-line"><span class="math-var">z<sub>R</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&pi;&nbsp;n&nbsp;w<sub>0</sub><sup>2</sup></span><span class="math-denominator">&lambda;<sub>0</sub></span></span></div>
+                  <div class="formula-line"><span class="math-var">D(L)</span><span class="math-equals">=</span><span>D<sub>0</sub>&nbsp;&radic;</span><span class="formula-paren">(</span><span>1&nbsp;+</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">L</span><span class="math-denominator">z<sub>R</sub></span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="math-var">L</span><span class="math-equals">=</span><span>z<sub>R</sub>&nbsp;&radic;</span><span class="formula-paren">(</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">D<sub>target</sub></span><span class="math-denominator">D<sub>0</sub></span></span><span class="formula-paren">)</span><span><sup>2</sup>&nbsp;&minus;&nbsp;1</span><span class="formula-paren">)</span></div>
+                </div>
+                <dl class="variable-list">
+                  <dt>D<sub>0</sub></dt><dd>Initial 1/e<sup>2</sup> beam diameter at the fiber/endcap interface</dd>
+                  <dt>D(L)</dt><dd>1/e<sup>2</sup> beam diameter at the endcap output face</dd>
+                  <dt>D<sub>target</sub></dt><dd>Manually selected output beam diameter for the required length calculation</dd>
+                  <dt>n</dt><dd>Fused silica refractive index near the operating wavelength</dd>
+                  <dt>&lambda;<sub>0</sub></dt><dd>Vacuum wavelength</dd>
+                </dl>
+              </section>
+
+              <section class="formula-panel" aria-label="Endcap ripple estimate">
+                <p class="panel-kicker">Ripple estimate</p>
+                <p>Ripple comes from clipping diffraction. When the Gaussian beam becomes large compared with the fiber/endcap aperture, the field at the aperture edge is no longer negligible. That edge field diffracts and interferes with the main beam.</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line"><span class="math-var">I(r)</span><span class="math-equals">=</span><span>I<sub>0</sub>&nbsp;exp</span><span class="formula-paren">(</span><span>&minus;2</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">r</span><span class="math-denominator">w</span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="math-var">E(r)</span><span class="math-equals">=</span><span>E<sub>0</sub>&nbsp;exp</span><span class="formula-paren">(</span><span>&minus;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">r</span><span class="math-denominator">w</span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="math-var">R</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">D<sub>fiber</sub></span><span class="math-denominator">D<sub>beam</sub></span></span></div>
+                  <div class="formula-line"><span class="math-var">ripple</span><span class="math-equals">&asymp;</span><span>&plusmn;&nbsp;2&nbsp;exp</span><span class="formula-paren">(</span><span>&minus;R<sup>2</sup></span><span class="formula-paren">)</span></div>
+                </div>
+                <p>For a 400 um fiber/endcap diameter, a 250 um beam gives R = 1.6 and ripple about &plusmn;15-17%. A 175 um beam gives R = 2.29 and ripple about &plusmn;1%. This is an aperture-edge estimate, so it should be used as a practical design guideline rather than a full diffraction simulation.</p>
               </section>
             </div>
           </article>
@@ -1358,6 +1474,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=gain-recovery-exact-formula-1"></script>
+    <script src="app.js?v=endcap-no-custom-1"></script>
   </body>
 </html>

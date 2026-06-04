@@ -97,6 +97,8 @@ const PLANCK_CONSTANT = 6.62607015e-34;
 const GAIN_RECOVERY_MEDIA = {
   er_zblan: {
     lifetimeMs: 6.9,
+    defaultPresetValue: "er972",
+    defaultAreaValue: "er_clad_250",
     presets: [
       { value: "er965", label: "965 nm pump, σa = 0.60", wavelengthNm: 965, sigmaAbsE25: 0.6, sigmaEmE25: 0 },
       { value: "er972", label: "972 nm pump, σa = 1.75", wavelengthNm: 972, sigmaAbsE25: 1.75, sigmaEmE25: 0 },
@@ -108,6 +110,8 @@ const GAIN_RECOVERY_MEDIA = {
   },
   yb_fiber: {
     lifetimeMs: 0.77,
+    defaultPresetValue: "yb976",
+    defaultAreaValue: "yb_clad_250",
     presets: [
       { value: "yb976", label: "976 nm pump, σa = σe = 25", wavelengthNm: 976, sigmaAbsE25: 25, sigmaEmE25: 25 },
     ],
@@ -392,6 +396,86 @@ function updateRayleigh() {
   setText("rayConfocal", formatLengthAuto(2 * rayleighM));
   setText("rayRadius", fmt(radiusM * 1e6, 5), " um");
   setText("rayDivergence", fmt(fullAngleMrad, 5), " mrad");
+}
+
+const ENDCAP_RIPPLE_RATIOS = {
+  ripple1: 2.29,
+  ripple17: 1.6,
+};
+
+function estimatedEndcapRipplePercent(fiberDiameterUm, beamDiameterUm) {
+  if (fiberDiameterUm <= 0 || beamDiameterUm <= 0) return NaN;
+  const apertureToBeamRatio = fiberDiameterUm / beamDiameterUm;
+  return 200 * Math.exp(-(apertureToBeamRatio * apertureToBeamRatio));
+}
+
+function endcapLengthForDiameter(rayleighM, initialDiameterUm, targetDiameterUm) {
+  const targetRatio = targetDiameterUm / initialDiameterUm;
+  return targetRatio <= 1 ? 0 : rayleighM * Math.sqrt((targetRatio * targetRatio) - 1);
+}
+
+function updateEndcap() {
+  const wavelengthM = numberValue("endWavelength") * 1e-9;
+  const index = numberValue("endIndex");
+  const initialDiameterUm = numberValue("endInitialDiameter");
+  const fiberDiameterUm = numberValue("endFiberDiameter");
+  const targetDiameterUm = numberValue("endTargetDiameter");
+  const checkLengthM = numberValue("endCheckLength") * 1e-3;
+  const outputIds = [
+    "endLength",
+    "endRayleigh",
+    "endTargetRatio",
+    "endTargetRipple",
+    "endRipple1Length",
+    "endRipple17Length",
+    "endCheckDiameter",
+    "endCheckRipple",
+    "endApertureCheck",
+  ];
+
+  if (
+    wavelengthM <= 0 ||
+    index <= 0 ||
+    initialDiameterUm <= 0 ||
+    fiberDiameterUm <= 0 ||
+    targetDiameterUm <= 0 ||
+    checkLengthM < 0
+  ) {
+    outputIds.forEach((id) => setText(id, null));
+    return;
+  }
+
+  const waistRadiusM = (initialDiameterUm * 1e-6) / 2;
+  const rayleighM = (Math.PI * index * waistRadiusM * waistRadiusM) / wavelengthM;
+  const requiredLengthM = endcapLengthForDiameter(rayleighM, initialDiameterUm, targetDiameterUm);
+  const checkRatio = checkLengthM / rayleighM;
+  const checkDiameterUm = initialDiameterUm * Math.sqrt(1 + checkRatio * checkRatio);
+  const apertureToTargetRatio = fiberDiameterUm / targetDiameterUm;
+  const targetRipplePercent = estimatedEndcapRipplePercent(fiberDiameterUm, targetDiameterUm);
+  const checkRipplePercent = estimatedEndcapRipplePercent(fiberDiameterUm, checkDiameterUm);
+  const ripple1DiameterUm = fiberDiameterUm / ENDCAP_RIPPLE_RATIOS.ripple1;
+  const ripple17DiameterUm = fiberDiameterUm / ENDCAP_RIPPLE_RATIOS.ripple17;
+  const ripple1LengthM = endcapLengthForDiameter(rayleighM, initialDiameterUm, ripple1DiameterUm);
+  const ripple17LengthM = endcapLengthForDiameter(rayleighM, initialDiameterUm, ripple17DiameterUm);
+
+  let apertureCheck = "Low clipping ripple";
+  if (apertureToTargetRatio < 1) {
+    apertureCheck = "Target beam is larger than the aperture";
+  } else if (apertureToTargetRatio < 1.6) {
+    apertureCheck = "High clipping ripple expected";
+  } else if (apertureToTargetRatio < 2.29) {
+    apertureCheck = "Moderate clipping ripple expected";
+  }
+
+  setText("endLength", fmt(requiredLengthM * 1000, 5), " mm");
+  setText("endRayleigh", fmt(rayleighM * 1000, 5), " mm");
+  setText("endTargetRatio", fmt(apertureToTargetRatio, 5));
+  setText("endTargetRipple", `±${fmt(targetRipplePercent, 4)}`, " %");
+  setText("endRipple1Length", fmt(ripple1LengthM * 1000, 5), " mm");
+  setText("endRipple17Length", fmt(ripple17LengthM * 1000, 5), " mm");
+  setText("endCheckDiameter", fmt(checkDiameterUm, 5), " um");
+  setText("endCheckRipple", `±${fmt(checkRipplePercent, 4)}`, " %");
+  setText("endApertureCheck", apertureCheck);
 }
 
 
@@ -1040,8 +1124,8 @@ function amplifierEffectiveLengthRatio(pumpGeometry, gainDb) {
 }
 
 function gainRecoveryMedium() {
-  const key = document.querySelector("#grMedium")?.value || "er_zblan";
-  return GAIN_RECOVERY_MEDIA[key] ? key : "er_zblan";
+  const key = document.querySelector("#grMedium")?.value || "yb_fiber";
+  return GAIN_RECOVERY_MEDIA[key] ? key : "yb_fiber";
 }
 
 function renderGainRecoveryPresets(preferredValue = null) {
@@ -1049,7 +1133,7 @@ function renderGainRecoveryPresets(preferredValue = null) {
   const medium = GAIN_RECOVERY_MEDIA[gainRecoveryMedium()];
   if (!presetSelect || !medium) return;
 
-  const options = [...medium.presets, { value: "custom", label: "Custom" }];
+  const options = [...medium.presets];
   presetSelect.innerHTML = "";
   options.forEach((preset) => {
     const option = document.createElement("option");
@@ -1060,7 +1144,7 @@ function renderGainRecoveryPresets(preferredValue = null) {
 
   const selected = options.some((preset) => preset.value === preferredValue)
     ? preferredValue
-    : medium.presets[0]?.value;
+    : medium.defaultPresetValue || medium.presets[0]?.value;
   if (selected) presetSelect.value = selected;
 }
 
@@ -1069,7 +1153,7 @@ function renderGainRecoveryAreaPresets(preferredValue = null) {
   const medium = GAIN_RECOVERY_MEDIA[gainRecoveryMedium()];
   if (!areaSelect || !medium) return;
 
-  const options = [...medium.areaPresets, { value: "custom", label: "Custom" }];
+  const options = [...medium.areaPresets];
   areaSelect.innerHTML = "";
   options.forEach((preset) => {
     const option = document.createElement("option");
@@ -1080,7 +1164,7 @@ function renderGainRecoveryAreaPresets(preferredValue = null) {
 
   const selected = options.some((preset) => preset.value === preferredValue)
     ? preferredValue
-    : medium.areaPresets[0]?.value;
+    : medium.defaultAreaValue || medium.areaPresets[0]?.value;
   if (selected) areaSelect.value = selected;
 }
 
@@ -1216,6 +1300,7 @@ function updateCalculators() {
   updateCavity();
   updateTelescope();
   updateRayleigh();
+  updateEndcap();
   updateFocus();
   updateDetector();
   updateGrating();
@@ -1290,7 +1375,6 @@ function bindEvents() {
 }
 
 bindEvents();
-renderGainRecoveryPresets("er972");
-renderGainRecoveryAreaPresets("er_clad_250");
+applyGainRecoveryMedium();
 showHome();
 updateCalculators();

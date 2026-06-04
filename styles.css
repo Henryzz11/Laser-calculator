@@ -870,10 +870,35 @@ h2 {
   background: #ffffff;
 }
 
+.endcap-input-area {
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
 .fnumber-input-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+}
+
+.endcap-input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.endcap-result-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.endcap-result-main {
+  border-color: rgba(8, 127, 140, 0.28);
+  background: #fffdf9;
+}
+
+.endcap-result-main strong {
+  font-size: clamp(1.8rem, 3.2vw, 2.7rem);
 }
 
 .fnumber-result-grid {
@@ -1357,6 +1382,8 @@ h2 {
   .collimation-input-grid,
   .fnumber-input-grid,
   .fnumber-result-grid,
+  .endcap-input-grid,
+  .endcap-result-grid,
   .feedback-input-grid,
   .feedback-result-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1396,6 +1423,8 @@ h2 {
   .feedback-result-grid,
   .fnumber-input-grid,
   .fnumber-result-grid,
+  .endcap-input-grid,
+  .endcap-result-grid,
   .collimation-result-grid,
   .input-grid-2,
   .power-ratio-input-grid,
@@ -1415,6 +1444,7 @@ h2 {
   .collimation-result-area,
   .feedback-input-area,
   .fnumber-input-area,
+  .endcap-input-area,
   .detector-layout,
   .detector-spec-band,
   .detector-model-select,
