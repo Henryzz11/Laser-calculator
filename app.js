@@ -388,23 +388,21 @@ function formatLengthAuto(valueM) {
 }
 
 function updateRayleigh() {
-  const diameterUm = numberValue("rayDiameter");
+  const diameterMm = numberValue("rayDiameter");
   const wavelengthM = numberValue("rayWavelength") * 1e-9;
   const m2 = numberValue("rayM2");
 
-  if (diameterUm <= 0 || wavelengthM <= 0 || m2 <= 0) {
-    ["rayLength", "rayConfocal", "rayRadius", "rayDivergence"].forEach((id) => setText(id, null));
+  if (diameterMm <= 0 || wavelengthM <= 0 || m2 <= 0) {
+    ["rayLength", "rayConfocal"].forEach((id) => setText(id, null));
     return;
   }
 
-  const radiusM = (diameterUm * 1e-6) / 2;
+  const radiusM = (diameterMm * 1e-3) / 2;
   const rayleighM = (Math.PI * radiusM * radiusM) / (m2 * wavelengthM);
-  const fullAngleMrad = ((2 * m2 * wavelengthM) / (Math.PI * radiusM)) * 1000;
+  const diameterAtRayleighMm = diameterMm * Math.sqrt(2);
 
   setText("rayLength", formatLengthAuto(rayleighM));
-  setText("rayConfocal", formatLengthAuto(2 * rayleighM));
-  setText("rayRadius", fmt(radiusM * 1e6, 5), " um");
-  setText("rayDivergence", fmt(fullAngleMrad, 5), " mrad");
+  setText("rayConfocal", fmt(diameterAtRayleighMm, 5), " mm");
 }
 
 function estimatedEndcapRipplePercent(fiberDiameterUm, beamDiameterUm) {
@@ -943,7 +941,7 @@ function updateFocus() {
   const wavelengthNm = numberValue("focWavelength");
   const fMm = numberValue("focFocal");
   const clearAperture = numberValue("focClearAperture");
-  const outputIds = ["focSpotSize", "focFNumber", "focHalfAngle", "focLensFill", "focLensWarning"];
+  const outputIds = ["focSpotSize", "focLensFill"];
 
   if (beamDiameter <= 0 || m2 <= 0 || wavelengthNm <= 0 || fMm <= 0 || clearAperture <= 0) {
     outputIds.forEach((id) => setText(id, null));
@@ -955,10 +953,7 @@ function updateFocus() {
   const analysis = fNumberAnalysis(fMm, beamDiameter, clearAperture);
 
   setText("focSpotSize", fmt(spotSizeUm, 4), " um");
-  setText("focFNumber", analysis ? fmt(analysis.effectiveFNumber, 5) : null);
-  setText("focHalfAngle", analysis ? fmt(analysis.halfAngleDeg, 5) : null, analysis ? " deg" : "");
   setText("focLensFill", analysis ? fmt(analysis.fill, 5) : null, analysis ? " %" : "");
-  setText("focLensWarning", fNumberWarning(analysis));
 }
 
 const detectorProfiles = {
