@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=endcap-pulse-safety-2">
+    <link rel="stylesheet" href="styles.css?v=collimation-defaults-1">
   </head>
   <body>
     <main class="app-shell">
@@ -63,43 +63,46 @@
                     <option value="na">NA geometric approximation</option>
                   </select>
                 </div>
-                <div class="field-group">
-                  <label class="field-label" for="colClearAperture">Collimator clear aperture (mm)</label>
-                  <input id="colClearAperture" class="text-input calc-input" type="number" min="0.01" step="any" value="25.4">
-                </div>
               </div>
 
               <div class="collimation-input-grid" data-col-method="na" hidden>
                 <div class="field-group">
-                  <label class="field-label" for="colWavelengthNa">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
-                  <input id="colWavelengthNa" class="text-input calc-input" type="number" min="1" step="any" value="1030">
-                </div>
-                <div class="field-group">
                   <label class="field-label" for="colNaInput">Numerical aperture (NA)</label>
-                  <input id="colNaInput" class="text-input calc-input" type="number" min="0.001" step="any" value="0.12">
+                  <input id="colNaInput" class="text-input calc-input" type="number" min="0.001" step="any" value="0.22">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="colCore">Fiber core diameter d (um)</label>
-                  <input id="colCore" class="text-input calc-input" type="number" min="0.01" step="any" value="10.0">
+                  <input id="colCore" class="text-input calc-input" type="number" min="0.01" step="any" value="200">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="colFocalNa">Collimating focal length f (mm)</label>
                   <input id="colFocalNa" class="text-input calc-input" type="number" min="0.1" step="any" value="11.0">
                 </div>
+                <div class="field-group">
+                  <label class="field-label" for="colWavelengthNa">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
+                  <input id="colWavelengthNa" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+                </div>
               </div>
 
               <div class="collimation-input-grid" data-col-method="mfd">
-                <div class="field-group">
-                  <label class="field-label" for="colWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
-                  <input id="colWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
-                </div>
                 <div class="field-group">
                   <label class="field-label" for="colMfd">Mode field diameter MFD (um)</label>
                   <input id="colMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="10.4">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="colFocalMfd">Collimating focal length f (mm)</label>
-                  <input id="colFocalMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="11.0">
+                  <input id="colFocalMfd" class="text-input calc-input" type="number" min="0.1" step="any" value="30">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="colWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
+                  <input id="colWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
+                </div>
+              </div>
+
+              <div class="collimation-clear-row">
+                <div class="field-group">
+                  <label class="field-label" for="colClearAperture">Collimator clear aperture (mm)</label>
+                  <input id="colClearAperture" class="text-input calc-input" type="number" min="0.01" step="any" value="25.4">
                 </div>
               </div>
 
@@ -107,9 +110,7 @@
                 <div class="result-tile collimation-result-main"><span>Collimated beam diameter</span><strong id="colDiameter">-- mm</strong></div>
                 <div class="result-tile"><span>Full-angle divergence</span><strong id="colDivergence">-- mrad</strong></div>
                 <div class="result-tile"><span>Rayleigh length <span class="math-inline-symbol">z<sub>R</sub></span></span><strong id="colRayleigh">-- m</strong></div>
-                <div class="result-tile"><span>Collimator F-number</span><strong id="colFNumber">--</strong></div>
                 <div class="result-tile"><span>Clear aperture fill</span><strong id="colLensFill">-- %</strong></div>
-                <div class="result-tile collimation-warning-tile"><span>Lens warning</span><strong id="colLensWarning">--</strong></div>
               </div>
             </div>
 
@@ -1505,6 +1506,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=endcap-pulse-safety-2"></script>
+    <script src="app.js?v=collimation-defaults-1"></script>
   </body>
 </html>

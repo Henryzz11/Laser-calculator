@@ -541,7 +541,7 @@ function setCollimationMethod(method) {
 function updateCollimation() {
   const method = document.querySelector("#colMethod")?.value || "mfd";
   const clearAperture = numberValue("colClearAperture");
-  const outputIds = ["colDiameter", "colDivergence", "colRayleigh", "colFNumber", "colLensFill", "colLensWarning"];
+  const outputIds = ["colDiameter", "colDivergence", "colRayleigh", "colLensFill"];
   setCollimationMethod(method);
 
   let diameter;
@@ -590,9 +590,7 @@ function updateCollimation() {
   setText("colDiameter", fmt(diameter, 4), " mm");
   setText("colDivergence", fmt(divergenceMrad, 4), " mrad");
   setText("colRayleigh", fmt(rayleighLengthM, 4), " m");
-  setText("colFNumber", analysis ? fmt(analysis.effectiveFNumber, 5) : null);
   setText("colLensFill", analysis ? fmt(analysis.fill, 5) : null, analysis ? " %" : "");
-  setText("colLensWarning", fNumberWarning(analysis));
 }
 
 function setSvgText(id, value) {

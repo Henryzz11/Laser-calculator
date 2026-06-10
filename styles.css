@@ -765,6 +765,13 @@ h2 {
   gap: 12px;
 }
 
+.collimation-clear-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
 .collimation-input-grid[hidden],
 .formula-panel[hidden] {
   display: none;
@@ -1143,7 +1150,6 @@ h2 {
 }
 
 .focus-warning-tile strong,
-.collimation-warning-tile strong,
 .telescope-warning-tile strong {
   font-size: clamp(0.95rem, 1.45vw, 1.18rem);
 }
