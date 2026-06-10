@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=collimation-defaults-1">
+    <link rel="stylesheet" href="styles.css?v=beam-tools-layout-1">
   </head>
   <body>
     <main class="app-shell">
@@ -23,8 +23,10 @@
 
       <section class="calculator-shell home-mode" aria-label="Optics calculators">
         <aside class="calculator-tabs" aria-label="Calculators">
-          <button class="calc-tab" data-calculator="collimation" type="button">Fiber Collimation</button>
-          <button class="calc-tab" data-calculator="focus" type="button">Focus Spot Size</button>
+          <button class="calc-tab" data-calculator="collimation" type="button">
+            <span>Collimation / Focus</span>
+            <small>Choose collimation or focus inside</small>
+          </button>
           <button class="calc-tab" data-calculator="telescope" type="button">Beam Telescope</button>
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
           <button class="calc-tab" data-calculator="rayleigh" type="button">Rayleigh Length</button>
@@ -43,6 +45,11 @@
         <div class="calculator-stack">
           <button id="backToHome" class="back-home-button" type="button">Back to calculators</button>
           <article class="calc-panel" id="calc-collimation">
+            <div class="beam-mode-tabs" aria-label="Beam setup mode">
+              <button class="beam-mode-tab active" data-calculator-target="collimation" type="button" aria-pressed="true">Collimation</button>
+              <button class="beam-mode-tab" data-calculator-target="focus" type="button" aria-pressed="false">Focus</button>
+            </div>
+
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Fiber output collimation</p>
@@ -222,10 +229,15 @@
           </article>
 
           <article class="calc-panel" id="calc-focus">
+            <div class="beam-mode-tabs" aria-label="Beam setup mode">
+              <button class="beam-mode-tab" data-calculator-target="collimation" type="button" aria-pressed="false">Collimation</button>
+              <button class="beam-mode-tab active" data-calculator-target="focus" type="button" aria-pressed="true">Focus</button>
+            </div>
+
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Focused Gaussian beam</p>
-                <h2>Focus Spot Size</h2>
+                <h2>Focus</h2>
               </div>
               <div class="math-pill" aria-label="d equals 1.27 M squared lambda f over D">
                 <span class="math-formula math-formula-compact">
@@ -243,7 +255,7 @@
               <div class="focus-input-grid">
                 <div class="field-group">
                   <label class="field-label" for="focBeamDiameter">Beam Diameter (mm)</label>
-                  <input id="focBeamDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="10.00">
+                  <input id="focBeamDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="1">
                 </div>
 
                 <div class="field-group">
@@ -253,12 +265,12 @@
 
                 <div class="field-group">
                   <label class="field-label" for="focWavelength">Wavelength <span class="math-inline-symbol">&lambda;</span> (nm)</label>
-                  <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1035">
+                  <input id="focWavelength" class="text-input calc-input" type="number" min="1" step="any" value="1030">
                 </div>
 
                 <div class="field-group">
                   <label class="field-label" for="focFocal">Lens Focal Length (mm)</label>
-                  <input id="focFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="100.00">
+                  <input id="focFocal" class="text-input calc-input" type="number" min="0.1" step="any" value="30">
                 </div>
 
                 <div class="field-group">
@@ -301,35 +313,72 @@
                 </dl>
                 <div class="derivation-note">
                   <p class="panel-kicker">Derivation</p>
-                  <p>For Gaussian beam diameters defined at 1/e<sup>2</sup> intensity, the input beam radius at the lens is</p>
+                  <p>This derivation uses 1/e<sup>2</sup> Gaussian beam diameters. First convert the measurable diameters into radii:</p>
                   <div class="formula-lines math-display-lines derivation-lines">
                     <div class="formula-line">
                       <span class="math-var">w<sub>L</sub></span>
                       <span class="math-equals">=</span>
                       <span class="math-fraction"><span class="math-numerator">D</span><span class="math-denominator">2</span></span>
+                      <span>,</span>
+                      <span class="math-var">w<sub>0</sub></span>
+                      <span class="math-equals">=</span>
+                      <span class="math-fraction"><span class="math-numerator">d</span><span class="math-denominator">2</span></span>
                     </div>
+                  </div>
+                  <p>The lens maps the input beam radius into a focusing cone. For a small half-angle, the geometric angle is approximately</p>
+                  <div class="formula-lines math-display-lines derivation-lines">
                     <div class="formula-line">
                       <span class="math-var">&theta;</span>
                       <span class="math-equals">=</span>
                       <span class="math-fraction"><span class="math-numerator">w<sub>L</sub></span><span class="math-denominator">f</span></span>
+                    </div>
+                  </div>
+                  <p>The diffraction-limited Gaussian half-angle is</p>
+                  <div class="formula-lines math-display-lines derivation-lines">
+                    <div class="formula-line">
+                      <span class="math-var">&theta;</span>
                       <span class="math-equals">=</span>
                       <span class="math-fraction"><span class="math-numerator">M<sup>2</sup>&nbsp;&lambda;</span><span class="math-denominator">&pi;&nbsp;w<sub>0</sub></span></span>
                     </div>
+                  </div>
+                  <p>Both expressions describe the same focusing half-angle, so set them equal:</p>
+                  <div class="formula-lines math-display-lines derivation-lines">
+                    <div class="formula-line">
+                      <span class="math-fraction"><span class="math-numerator">w<sub>L</sub></span><span class="math-denominator">f</span></span>
+                      <span class="math-equals">=</span>
+                      <span class="math-fraction"><span class="math-numerator">M<sup>2</sup>&nbsp;&lambda;</span><span class="math-denominator">&pi;&nbsp;w<sub>0</sub></span></span>
+                    </div>
+                  </div>
+                  <p>Solving for the focused beam radius gives</p>
+                  <div class="formula-lines math-display-lines derivation-lines">
                     <div class="formula-line">
                       <span class="math-var">w<sub>0</sub></span>
                       <span class="math-equals">=</span>
                       <span class="math-fraction"><span class="math-numerator">M<sup>2</sup>&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">&pi;&nbsp;w<sub>L</sub></span></span>
                     </div>
+                  </div>
+                  <p>Replace the radii with the corresponding diameters:</p>
+                  <div class="formula-lines math-display-lines derivation-lines">
+                    <div class="formula-line">
+                      <span class="math-fraction"><span class="math-numerator">d</span><span class="math-denominator">2</span></span>
+                      <span class="math-equals">=</span>
+                      <span class="math-fraction">
+                        <span class="math-numerator">M<sup>2</sup>&nbsp;&lambda;&nbsp;f</span>
+                        <span class="math-denominator">&pi;&nbsp;&middot;&nbsp;<span class="math-fraction math-fraction-inline"><span class="math-numerator">D</span><span class="math-denominator">2</span></span></span>
+                      </span>
+                    </div>
+                  </div>
+                  <p>Multiplying both sides by 2 gives the diameter form:</p>
+                  <div class="formula-lines math-display-lines derivation-lines">
                     <div class="formula-line">
                       <span class="math-var">d</span>
-                      <span class="math-equals">=</span>
-                      <span>2&nbsp;w<sub>0</sub></span>
                       <span class="math-equals">=</span>
                       <span class="math-fraction"><span class="math-numerator">4&nbsp;M<sup>2</sup>&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">&pi;&nbsp;D</span></span>
                       <span class="math-equals">≈</span>
                       <span class="math-fraction"><span class="math-numerator">1.27&nbsp;M<sup>2</sup>&nbsp;&lambda;&nbsp;f</span><span class="math-denominator">D</span></span>
                     </div>
                   </div>
+                  <p>The factor 1.27 is the rounded engineering form of 4 over &pi;, which is 1.273. In this calculator, &lambda; is converted from nm to um, while f and D are both in mm, so the ratio between f and D is unitless and the result d is in um.</p>
                 </div>
               </section>
 
@@ -1506,6 +1555,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=collimation-defaults-1"></script>
+    <script src="app.js?v=beam-tools-layout-1"></script>
   </body>
 </html>

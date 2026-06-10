@@ -103,6 +103,10 @@ h2 {
   border-radius: var(--radius);
   background: #fffaf2;
   color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
   padding: 22px 26px;
   text-align: left;
   font-size: clamp(1.28rem, 2.4vw, 2rem);
@@ -111,12 +115,24 @@ h2 {
   line-height: 1.08;
 }
 
+.calc-tab small {
+  color: var(--muted);
+  font-size: 0.48em;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
 .calc-tab:hover,
 .calc-tab.active {
   border-color: rgba(8, 127, 140, 0.28);
   background: #ffffff;
   color: var(--teal-dark);
   box-shadow: 0 5px 16px rgba(55, 49, 42, 0.08);
+}
+
+.calc-tab:hover small,
+.calc-tab.active small {
+  color: var(--teal-dark);
 }
 
 .calculator-shell.home-mode .calculator-stack {
@@ -201,6 +217,40 @@ h2 {
   padding: 8px 10px;
   white-space: normal;
   overflow-wrap: anywhere;
+}
+
+.beam-mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.beam-mode-tab {
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fffaf2;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 850;
+}
+
+.beam-mode-tab:hover,
+.beam-mode-tab.active {
+  border-color: rgba(8, 127, 140, 0.32);
+  background: #ffffff;
+  color: var(--teal-dark);
+  box-shadow: 0 5px 16px rgba(55, 49, 42, 0.08);
+}
+
+.beam-mode-tab:focus-visible {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(8, 127, 140, 0.16);
 }
 
 
@@ -1072,6 +1122,20 @@ h2 {
   padding-top: 0.1em;
   text-align: center;
   white-space: nowrap;
+}
+
+.math-fraction-inline {
+  font-size: 0.78em;
+  margin: 0 0.02em;
+}
+
+.math-fraction-inline .math-numerator {
+  border-bottom-width: 1px;
+  padding: 0 0.18em 0.06em;
+}
+
+.math-fraction-inline .math-denominator {
+  padding-top: 0.04em;
 }
 
 .formula-paren {

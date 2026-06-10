@@ -43,6 +43,14 @@ function showHome() {
   });
 }
 
+function setBeamModeTabState(name) {
+  document.querySelectorAll(".beam-mode-tab").forEach((button) => {
+    const active = button.dataset.calculatorTarget === name;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+}
+
 function switchCalculator(name) {
   state.activeCalculator = name;
   const shell = document.querySelector(".calculator-shell");
@@ -54,6 +62,7 @@ function switchCalculator(name) {
   document.querySelectorAll(".calc-panel").forEach((panel) => {
     panel.classList.toggle("active", panel.id === `calc-${name}`);
   });
+  setBeamModeTabState(name);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -1340,6 +1349,10 @@ function bindEvents() {
   });
 
   document.querySelector("#backToHome")?.addEventListener("click", showHome);
+
+  document.querySelectorAll(".beam-mode-tab").forEach((button) => {
+    button.addEventListener("click", () => switchCalculator(button.dataset.calculatorTarget));
+  });
 
   ["telType", "telF1", "telF2", "telWavelength", "telM2"].forEach((id) => {
     const control = document.querySelector(`#${id}`);
