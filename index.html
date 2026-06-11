@@ -25,14 +25,13 @@
         <aside class="calculator-tabs" aria-label="Calculators">
           <button class="calc-tab" data-calculator="collimation" type="button">
             <span>Collimation / Focus / Telescope</span>
-            <small>Includes Rayleigh length</small>
+            <small>Includes Rayleigh length and F-number</small>
           </button>
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
           <button class="calc-tab" data-calculator="endcap" type="button">Endcap Length</button>
           <button class="calc-tab" data-calculator="feedback" type="button">Cleave Angle</button>
           <button class="calc-tab" data-calculator="amplength" type="button">B-integral</button>
           <button class="calc-tab" data-calculator="gainrecovery" type="button">Gain Recovery Time</button>
-          <button class="calc-tab" data-calculator="fnumber" type="button">F-number</button>
           <button class="calc-tab" data-calculator="detector" type="button">Detector Limit</button>
           <button class="calc-tab" data-calculator="grating" type="button">Reflective Grating</button>
           <button class="calc-tab" data-calculator="energy" type="button">Pulse Energy &harr; Power</button>
@@ -48,6 +47,7 @@
               <button class="beam-mode-tab" data-calculator-target="focus" type="button" aria-pressed="false">Focus</button>
               <button class="beam-mode-tab" data-calculator-target="telescope" type="button" aria-pressed="false">Telescope</button>
               <button class="beam-mode-tab" data-calculator-target="rayleigh" type="button" aria-pressed="false">Rayleigh Length</button>
+              <button class="beam-mode-tab" data-calculator-target="fnumber" type="button" aria-pressed="false">F-number</button>
             </div>
 
             <div class="calc-heading">
@@ -234,6 +234,7 @@
               <button class="beam-mode-tab active" data-calculator-target="focus" type="button" aria-pressed="true">Focus</button>
               <button class="beam-mode-tab" data-calculator-target="telescope" type="button" aria-pressed="false">Telescope</button>
               <button class="beam-mode-tab" data-calculator-target="rayleigh" type="button" aria-pressed="false">Rayleigh Length</button>
+              <button class="beam-mode-tab" data-calculator-target="fnumber" type="button" aria-pressed="false">F-number</button>
             </div>
 
             <div class="calc-heading">
@@ -620,6 +621,14 @@
           </article>
 
           <article class="calc-panel" id="calc-fnumber">
+            <div class="beam-mode-tabs" aria-label="Beam setup mode">
+              <button class="beam-mode-tab" data-calculator-target="collimation" type="button" aria-pressed="false">Collimation</button>
+              <button class="beam-mode-tab" data-calculator-target="focus" type="button" aria-pressed="false">Focus</button>
+              <button class="beam-mode-tab" data-calculator-target="telescope" type="button" aria-pressed="false">Telescope</button>
+              <button class="beam-mode-tab" data-calculator-target="rayleigh" type="button" aria-pressed="false">Rayleigh Length</button>
+              <button class="beam-mode-tab active" data-calculator-target="fnumber" type="button" aria-pressed="true">F-number</button>
+            </div>
+
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Focusing speed and lens fill</p>
@@ -687,6 +696,7 @@
               <button class="beam-mode-tab" data-calculator-target="focus" type="button" aria-pressed="false">Focus</button>
               <button class="beam-mode-tab active" data-calculator-target="telescope" type="button" aria-pressed="true">Telescope</button>
               <button class="beam-mode-tab" data-calculator-target="rayleigh" type="button" aria-pressed="false">Rayleigh Length</button>
+              <button class="beam-mode-tab" data-calculator-target="fnumber" type="button" aria-pressed="false">F-number</button>
             </div>
 
             <div class="calc-heading">
@@ -803,6 +813,7 @@
               <button class="beam-mode-tab" data-calculator-target="focus" type="button" aria-pressed="false">Focus</button>
               <button class="beam-mode-tab" data-calculator-target="telescope" type="button" aria-pressed="false">Telescope</button>
               <button class="beam-mode-tab active" data-calculator-target="rayleigh" type="button" aria-pressed="true">Rayleigh Length</button>
+              <button class="beam-mode-tab" data-calculator-target="fnumber" type="button" aria-pressed="false">F-number</button>
             </div>
 
             <div class="calc-heading">
