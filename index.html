@@ -24,10 +24,9 @@
       <section class="calculator-shell home-mode" aria-label="Optics calculators">
         <aside class="calculator-tabs" aria-label="Calculators">
           <button class="calc-tab" data-calculator="collimation" type="button">
-            <span>Collimation / Focus</span>
+            <span>Collimation / Focus / Telescope</span>
             <small>Includes Rayleigh length</small>
           </button>
-          <button class="calc-tab" data-calculator="telescope" type="button">Beam Telescope</button>
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
           <button class="calc-tab" data-calculator="endcap" type="button">Endcap Length</button>
           <button class="calc-tab" data-calculator="feedback" type="button">Cleave Angle</button>
@@ -47,6 +46,7 @@
             <div class="beam-mode-tabs" aria-label="Beam setup mode">
               <button class="beam-mode-tab active" data-calculator-target="collimation" type="button" aria-pressed="true">Collimation</button>
               <button class="beam-mode-tab" data-calculator-target="focus" type="button" aria-pressed="false">Focus</button>
+              <button class="beam-mode-tab" data-calculator-target="telescope" type="button" aria-pressed="false">Telescope</button>
               <button class="beam-mode-tab" data-calculator-target="rayleigh" type="button" aria-pressed="false">Rayleigh Length</button>
             </div>
 
@@ -232,6 +232,7 @@
             <div class="beam-mode-tabs" aria-label="Beam setup mode">
               <button class="beam-mode-tab" data-calculator-target="collimation" type="button" aria-pressed="false">Collimation</button>
               <button class="beam-mode-tab active" data-calculator-target="focus" type="button" aria-pressed="true">Focus</button>
+              <button class="beam-mode-tab" data-calculator-target="telescope" type="button" aria-pressed="false">Telescope</button>
               <button class="beam-mode-tab" data-calculator-target="rayleigh" type="button" aria-pressed="false">Rayleigh Length</button>
             </div>
 
@@ -681,6 +682,13 @@
           </article>
 
           <article class="calc-panel" id="calc-telescope">
+            <div class="beam-mode-tabs" aria-label="Beam setup mode">
+              <button class="beam-mode-tab" data-calculator-target="collimation" type="button" aria-pressed="false">Collimation</button>
+              <button class="beam-mode-tab" data-calculator-target="focus" type="button" aria-pressed="false">Focus</button>
+              <button class="beam-mode-tab active" data-calculator-target="telescope" type="button" aria-pressed="true">Telescope</button>
+              <button class="beam-mode-tab" data-calculator-target="rayleigh" type="button" aria-pressed="false">Rayleigh Length</button>
+            </div>
+
             <div class="calc-heading">
               <div>
                 <p class="panel-kicker">Afocal beam relay</p>
@@ -726,8 +734,6 @@
                 <div class="result-tile"><span>Output diameter</span><strong id="telDout">-- mm</strong></div>
                 <div class="result-tile"><span>Ideal lens spacing</span><strong id="telLength">-- mm</strong></div>
                 <div class="result-tile"><span>Output Rayleigh length <span class="math-inline-symbol">z<sub>R</sub></span></span><strong id="telRayleigh">-- m</strong></div>
-                <div class="result-tile"><span>L1 F-number</span><strong id="telFNumberL1">--</strong></div>
-                <div class="result-tile"><span>L2 F-number</span><strong id="telFNumberL2">--</strong></div>
                 <div class="result-tile"><span>1 inch aperture fill</span><strong id="telLensFill">-- %</strong></div>
                 <div class="result-tile telescope-warning-tile wide-result"><span>Aperture warning</span><strong id="telLensWarning">--</strong></div>
               </div>
@@ -795,6 +801,7 @@
             <div class="beam-mode-tabs" aria-label="Beam setup mode">
               <button class="beam-mode-tab" data-calculator-target="collimation" type="button" aria-pressed="false">Collimation</button>
               <button class="beam-mode-tab" data-calculator-target="focus" type="button" aria-pressed="false">Focus</button>
+              <button class="beam-mode-tab" data-calculator-target="telescope" type="button" aria-pressed="false">Telescope</button>
               <button class="beam-mode-tab active" data-calculator-target="rayleigh" type="button" aria-pressed="true">Rayleigh Length</button>
             </div>
 

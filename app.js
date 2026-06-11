@@ -904,7 +904,7 @@ function updateTelescope() {
   const f2 = numberValue("telF2");
   const wavelengthM = numberValue("telWavelength") * 1e-9;
   const m2 = numberValue("telM2");
-  const outputIds = ["telMag", "telDout", "telLength", "telRayleigh", "telFNumberL1", "telFNumberL2", "telLensFill", "telLensWarning"];
+  const outputIds = ["telMag", "telDout", "telLength", "telRayleigh", "telLensFill", "telLensWarning"];
   if (din <= 0 || f1 <= 0 || f2 <= 0 || wavelengthM <= 0 || m2 <= 0) {
     outputIds.forEach((id) => setText(id, null));
     return;
@@ -923,8 +923,6 @@ function updateTelescope() {
   setText("telDout", fmt(outputDiameterMm, 4), " mm");
   setText("telLength", idealLength > 0 ? fmt(idealLength, 4) : "check focal lengths", idealLength > 0 ? " mm" : "");
   setText("telRayleigh", formatLengthAuto(outputRayleighM));
-  setText("telFNumberL1", l1Analysis ? fmt(l1Analysis.effectiveFNumber, 5) : null);
-  setText("telFNumberL2", l2Analysis ? fmt(l2Analysis.effectiveFNumber, 5) : null);
   setText(
     "telLensFill",
     l1Analysis && l2Analysis ? `L1: ${fmt(l1Analysis.fill, 4)}%, L2: ${fmt(l2Analysis.fill, 4)}%` : null,
