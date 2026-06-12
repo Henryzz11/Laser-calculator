@@ -30,6 +30,7 @@
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
           <button class="calc-tab" data-calculator="endcap" type="button">Endcap Length</button>
           <button class="calc-tab" data-calculator="feedback" type="button">Cleave Angle</button>
+          <button class="calc-tab" data-calculator="anglecleave" type="button">Angled Fiber Positioning</button>
           <button class="calc-tab" data-calculator="amplength" type="button">B-integral</button>
           <button class="calc-tab" data-calculator="gainrecovery" type="button">Gain Recovery Time</button>
           <button class="calc-tab" data-calculator="detector" type="button">Detector Limit</button>
@@ -616,6 +617,71 @@
                   <dt>I<sub>p</sub></dt><dd>Pump intensity over the selected pump area</dd>
                   <dt>&tau;<sub>recov.</sub></dt><dd>Effective gain recovery time under pumping</dd>
                 </dl>
+              </section>
+            </div>
+          </article>
+
+          <article class="calc-panel" id="calc-anglecleave">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Angled fiber positioning</p>
+                <h2>Angled Fiber Positioning</h2>
+              </div>
+              <div class="collimation-formula-stack" aria-label="Angled fiber positioning formulas">
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span>sin&nbsp;&theta;<sub>air</sub></span>
+                    <span class="math-equals">=</span>
+                    <span>n&nbsp;sin&nbsp;&theta;<sub>fiber</sub></span>
+                  </span>
+                </div>
+                <div class="math-pill">
+                  <span class="math-formula math-formula-compact">
+                    <span class="math-var">&theta;<sub>tilt</sub></span>
+                    <span class="math-equals">=</span>
+                    <span>&theta;<sub>air</sub>&nbsp;&minus;&nbsp;&theta;<sub>fiber</sub></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="angle-cleave-input-area">
+              <div class="angle-cleave-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="acThetaFiber">Fiber polish angle &theta;<sub>fiber</sub> (deg)</label>
+                  <input id="acThetaFiber" class="text-input calc-input" type="number" min="0" max="89" step="any" value="12">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="acDirection">Fiber rotation direction</label>
+                  <select id="acDirection" class="text-input calc-input">
+                    <option value="up">Upward</option>
+                    <option value="down">Downward</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="result-grid angle-cleave-result-grid inline-result-grid">
+                <div class="result-tile angle-cleave-result-main"><span>Required fiber tilt &theta;<sub>tilt</sub></span><strong id="acThetaTilt">-- deg</strong></div>
+                <div class="result-tile"><span>Mount-end center offset</span><strong id="acEndOffset">-- mm</strong></div>
+              </div>
+            </div>
+
+            <div class="angle-cleave-visuals" aria-label="Angled fiber mount diagram">
+              <figure class="angle-cleave-figure">
+                <figcaption>HFV002 mount fixed; fiber rotates around the left endpoint</figcaption>
+                <svg id="acSvg" class="angle-cleave-svg" viewBox="0 0 620 340" role="img" aria-label="Angled fiber on HFV002-style holder"></svg>
+              </figure>
+            </div>
+
+            <div class="formula-area">
+              <section class="formula-panel" aria-label="Angled fiber positioning derivation">
+                <p class="panel-kicker">Derivation</p>
+                <div class="formula-lines math-display-lines derivation-lines">
+                  <div class="formula-line"><span>Snell:</span><span>sin&nbsp;&theta;<sub>air</sub></span><span class="math-equals">=</span><span>n&nbsp;sin&nbsp;&theta;<sub>fiber</sub></span></div>
+                  <div class="formula-line"><span class="math-var">&theta;<sub>air</sub></span><span class="math-equals">=</span><span>sin<sup>&minus;1</sup></span><span class="formula-paren">(</span><span>n&nbsp;sin&nbsp;&theta;<sub>fiber</sub></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="math-var">&theta;<sub>tilt</sub></span><span class="math-equals">=</span><span>&theta;<sub>air</sub>&nbsp;&minus;&nbsp;&theta;<sub>fiber</sub></span></div>
+                </div>
+                <p>The refractive index is fixed at n = 1.45. The beam is drawn horizontal. The HFV002-style mount stays fixed, and only the fiber rotates so the refracted beam inside the polished fiber follows the fiber axis. For &theta;<sub>fiber</sub> = 12&deg;, &theta;<sub>air</sub> = 17.55&deg; and &theta;<sub>tilt</sub> = 5.55&deg;.</p>
               </section>
             </div>
           </article>

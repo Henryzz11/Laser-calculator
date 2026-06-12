@@ -536,6 +536,189 @@ function updateFeedback() {
   setText("fbAlphaMin", fmt(alphaMin, 5), " deg");
 }
 
+function anglePoint(origin, length, angleDeg) {
+  const rad = degToRad(angleDeg);
+  return {
+    x: origin.x + length * Math.cos(rad),
+    y: origin.y - length * Math.sin(rad),
+  };
+}
+
+function oppositeAnglePoint(origin, length, angleDeg) {
+  const rad = degToRad(angleDeg);
+  return {
+    x: origin.x - length * Math.cos(rad),
+    y: origin.y + length * Math.sin(rad),
+  };
+}
+
+function arcPoints(origin, radius, startDeg, endDeg, steps = 24) {
+  const points = [];
+  for (let index = 0; index <= steps; index += 1) {
+    const t = index / steps;
+    const angle = startDeg + (endDeg - startDeg) * t;
+    const point = anglePoint(origin, radius, angle);
+    points.push(`${fmt(point.x, 6)},${fmt(point.y, 6)}`);
+  }
+  return points.join(" ");
+}
+
+const ANGLED_CLEAVE_INDEX = 1.45;
+const HFV002_LENGTH_MM = 82.5;
+const HFV002_SCALE_PX_PER_MM = 5;
+
+function renderAngledCleaveSvg(id, direction, thetaFiber, thetaAir, thetaTilt) {
+  const svg = document.querySelector(`#${id}`);
+  if (!svg) return;
+
+  const directionSign = direction === "up" ? 1 : -1;
+  const origin = { x: 70, y: 170 };
+  const holderEndX = origin.x + HFV002_LENGTH_MM * HFV002_SCALE_PX_PER_MM;
+  const fiberAngle = directionSign * thetaTilt;
+  const fiberEnd = anglePoint(origin, HFV002_LENGTH_MM * HFV002_SCALE_PX_PER_MM, fiberAngle);
+  const referenceFaceAngle = fiberAngle + 90;
+  const polishedFaceAngle = referenceFaceAngle + directionSign * thetaFiber;
+  const bodyHalf = 13;
+  const shadowHalf = 16;
+  const fiberRad = degToRad(fiberAngle);
+  const axisUnit = { x: Math.cos(fiberRad), y: -Math.sin(fiberRad) };
+  const normalUnit = { x: -axisUnit.y, y: axisUnit.x };
+  const shiftPoint = (point, unit, amount) => ({
+    x: point.x + unit.x * amount,
+    y: point.y + unit.y * amount,
+  });
+  const projectOnNormal = (point) => (point.x - origin.x) * normalUnit.x + (point.y - origin.y) * normalUnit.y;
+  const pointsAttr = (points) => points.map((point) => `${fmt(point.x, 6)},${fmt(point.y, 6)}`).join(" ");
+  const faceBodyA = anglePoint(origin, bodyHalf, polishedFaceAngle);
+  const faceBodyB = oppositeAnglePoint(origin, bodyHalf, polishedFaceAngle);
+  const [bodyStartTop, bodyStartBottom] =
+    projectOnNormal(faceBodyA) < projectOnNormal(faceBodyB)
+      ? [faceBodyA, faceBodyB]
+      : [faceBodyB, faceBodyA];
+  const bodyEndTop = shiftPoint(fiberEnd, normalUnit, -bodyHalf);
+  const bodyEndBottom = shiftPoint(fiberEnd, normalUnit, bodyHalf);
+  const bodyPoints = pointsAttr([bodyStartTop, bodyEndTop, bodyEndBottom, bodyStartBottom]);
+  const faceShadowA = anglePoint(origin, shadowHalf, polishedFaceAngle);
+  const faceShadowB = oppositeAnglePoint(origin, shadowHalf, polishedFaceAngle);
+  const [shadowStartTop, shadowStartBottom] =
+    projectOnNormal(faceShadowA) < projectOnNormal(faceShadowB)
+      ? [faceShadowA, faceShadowB]
+      : [faceShadowB, faceShadowA];
+  const shadowEndTop = shiftPoint(fiberEnd, normalUnit, -shadowHalf);
+  const shadowEndBottom = shiftPoint(fiberEnd, normalUnit, shadowHalf);
+  const shadowPoints = pointsAttr([shadowStartTop, shadowEndTop, shadowEndBottom, shadowStartBottom]);
+  const referenceFaceA = shiftPoint(origin, normalUnit, -(bodyHalf + 8));
+  const referenceFaceB = shiftPoint(origin, normalUnit, bodyHalf + 8);
+  const facetA = bodyStartTop;
+  const facetB = bodyStartBottom;
+  const offsetMm = HFV002_LENGTH_MM * Math.tan(degToRad(thetaTilt));
+  const offsetLabel = `${fmt(offsetMm, 5)} mm`;
+  const statusText = Math.abs(thetaTilt) < 0.001 ? "Fiber aligned to fixed mount axis" : `Mount fixed; fiber rotates ${direction}`;
+  const gridDots = [];
+
+  for (let x = 24; x <= 590; x += 28) {
+    for (let y = 40; y <= 300; y += 28) {
+      gridDots.push(`<circle class="ac-grid-dot" cx="${x}" cy="${y}" r="1.45"></circle>`);
+    }
+  }
+
+  svg.innerHTML = `
+    <defs>
+      <marker id="${id}-arrow-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 Z" fill="#30363d"></path>
+      </marker>
+    </defs>
+    <rect class="ac-stage" x="0" y="0" width="620" height="340" rx="12"></rect>
+    <g aria-hidden="true">${gridDots.join("")}</g>
+
+    <polygon class="ac-mount-body" points="
+      ${origin.x},${origin.y - 25}
+      ${origin.x + 50},${origin.y - 25}
+      ${origin.x + 257},${origin.y - 90}
+      ${holderEndX},${origin.y - 90}
+      ${holderEndX},${origin.y + 90}
+      ${origin.x + 257},${origin.y + 90}
+      ${origin.x + 50},${origin.y + 25}
+      ${origin.x},${origin.y + 25}
+    "></polygon>
+    <polygon class="ac-mount-top" points="
+      ${origin.x + 8},${origin.y - 14}
+      ${origin.x + 58},${origin.y - 14}
+      ${origin.x + 265},${origin.y - 70}
+      ${holderEndX - 10},${origin.y - 70}
+      ${holderEndX - 10},${origin.y + 70}
+      ${origin.x + 265},${origin.y + 70}
+      ${origin.x + 58},${origin.y + 14}
+      ${origin.x + 8},${origin.y + 14}
+    "></polygon>
+    <line class="ac-groove" x1="${origin.x}" y1="${origin.y}" x2="${holderEndX}" y2="${origin.y}"></line>
+    <line class="ac-reference-line" x1="${origin.x}" y1="${origin.y}" x2="${holderEndX + 28}" y2="${origin.y}"></line>
+    <g>
+      <rect class="ac-clamp" x="${origin.x + 292}" y="${origin.y - 18}" width="36" height="36" rx="8"></rect>
+      <circle class="ac-clamp-hole" cx="${origin.x + 310}" cy="${origin.y}" r="8"></circle>
+      <rect class="ac-clamp" x="${origin.x + 362}" y="${origin.y - 18}" width="36" height="36" rx="8"></rect>
+      <circle class="ac-clamp-hole" cx="${origin.x + 380}" cy="${origin.y}" r="8"></circle>
+    </g>
+
+    <line class="ac-incident-beam" x1="18" y1="${origin.y}" x2="${origin.x - 10}" y2="${origin.y}"></line>
+    <text class="ac-label" x="24" y="${origin.y - 18}">incident beam</text>
+
+    <polygon class="ac-fiber-shadow" points="${shadowPoints}"></polygon>
+    <polygon class="ac-fiber-body" points="${bodyPoints}"></polygon>
+    <line class="ac-fiber-core" x1="${origin.x}" y1="${origin.y}" x2="${fiberEnd.x}" y2="${fiberEnd.y}"></line>
+    <line class="ac-endface-reference" x1="${referenceFaceA.x}" y1="${referenceFaceA.y}" x2="${referenceFaceB.x}" y2="${referenceFaceB.y}"></line>
+    <line class="ac-facet" x1="${facetA.x}" y1="${facetA.y}" x2="${facetB.x}" y2="${facetB.y}"></line>
+    <circle class="ac-pivot" cx="${origin.x}" cy="${origin.y}" r="5"></circle>
+
+    <line class="ac-dimension-line" x1="${fiberEnd.x}" y1="${origin.y}" x2="${fiberEnd.x}" y2="${fiberEnd.y}"></line>
+    <line class="ac-dimension-tick" x1="${fiberEnd.x - 10}" y1="${origin.y}" x2="${fiberEnd.x + 10}" y2="${origin.y}"></line>
+    <line class="ac-dimension-tick" x1="${fiberEnd.x - 10}" y1="${fiberEnd.y}" x2="${fiberEnd.x + 10}" y2="${fiberEnd.y}"></line>
+    <text class="ac-dimension-text" x="${fiberEnd.x + 14}" y="${(origin.y + fiberEnd.y) / 2 + 4}">${offsetLabel}</text>
+
+    <polyline class="ac-arc-polish" points="${arcPoints(origin, 40, referenceFaceAngle, polishedFaceAngle)}"></polyline>
+    <text class="ac-label" x="${fiberEnd.x - 138}" y="${fiberEnd.y + (direction === "up" ? -16 : 26)}">rotating fiber on mount</text>
+    <text class="ac-label" x="${origin.x + 36}" y="${origin.y + (direction === "up" ? -54 : 68)}">polish angle &theta;<tspan baseline-shift="sub" font-size="0.72em">fiber</tspan> = ${fmt(thetaFiber, 5)} deg</text>
+    <text class="ac-muted" x="${origin.x + 20}" y="${origin.y + (direction === "up" ? 48 : -40)}">dashed: 0 deg end face</text>
+    <text class="ac-label" x="24" y="30">HFV002-style mount fixed, 82.5 mm long</text>
+    <text class="ac-muted" x="24" y="54">${statusText}; n = ${ANGLED_CLEAVE_INDEX}</text>
+    <g class="ac-legend" transform="translate(24 304)">
+      <circle class="ac-legend-incident" cx="0" cy="0" r="5"></circle>
+      <text x="12" y="5">incident beam</text>
+      <circle class="ac-legend-axis" cx="122" cy="0" r="5"></circle>
+      <text x="134" y="5">fiber on mount</text>
+      <circle class="ac-legend-facet" cx="244" cy="0" r="5"></circle>
+      <text x="256" y="5">polished end face</text>
+    </g>
+  `;
+}
+
+function updateAngledCleave() {
+  const thetaFiber = numberValue("acThetaFiber");
+  const direction = document.querySelector("#acDirection")?.value || "up";
+
+  if (thetaFiber < 0) {
+    setText("acThetaTilt", null);
+    setText("acEndOffset", null);
+    return;
+  }
+
+  const sinAir = ANGLED_CLEAVE_INDEX * Math.sin(degToRad(thetaFiber));
+  if (sinAir > 1) {
+    setText("acThetaTilt", "no solution");
+    setText("acEndOffset", "no solution");
+    return;
+  }
+
+  const thetaAir = radToDeg(Math.asin(sinAir));
+  const thetaTilt = Math.abs(thetaAir - thetaFiber);
+  const signedPrefix = direction === "up" ? "+" : "-";
+  const endOffset = HFV002_LENGTH_MM * Math.tan(degToRad(thetaTilt));
+
+  setText("acThetaTilt", `${signedPrefix}${fmt(thetaTilt, 5)}`, " deg");
+  setText("acEndOffset", fmt(endOffset, 5), " mm");
+  renderAngledCleaveSvg("acSvg", direction, thetaFiber, thetaAir, thetaTilt);
+}
+
 function setCollimationMethod(method) {
   document.querySelectorAll("[data-col-method]").forEach((panel) => {
     panel.hidden = panel.dataset.colMethod !== method;
@@ -1322,6 +1505,7 @@ function updateCalculators() {
   updatePer();
   updateCollimation();
   updateFeedback();
+  updateAngledCleave();
   updateAmplength();
   updateGainRecovery();
   updateFNumber();

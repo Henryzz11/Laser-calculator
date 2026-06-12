@@ -1011,6 +1011,217 @@ h2 {
   font-size: clamp(1.8rem, 3vw, 2.5rem);
 }
 
+.angle-cleave-input-area {
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.angle-cleave-input-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.angle-cleave-result-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.angle-cleave-result-main {
+  border-color: rgba(8, 127, 140, 0.28);
+  background: #fffdf9;
+}
+
+.angle-cleave-visuals {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.angle-cleave-figure {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  overflow: hidden;
+}
+
+.angle-cleave-figure figcaption {
+  padding: 12px 14px 0;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 850;
+}
+
+.angle-cleave-svg {
+  display: block;
+  width: 100%;
+  min-height: 330px;
+}
+
+.ac-stage {
+  fill: #f6f1e8;
+}
+
+.ac-grid-dot {
+  fill: #d8d1c7;
+}
+
+.ac-mount-body {
+  fill: #c9c9c4;
+  stroke: #6f777a;
+  stroke-width: 2.4;
+}
+
+.ac-mount-top {
+  fill: #e8e5dd;
+  stroke: #8a8f90;
+  stroke-width: 1.4;
+}
+
+.ac-groove {
+  stroke: #777f82;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ac-reference-line {
+  stroke: #676c70;
+  stroke-width: 2;
+  stroke-dasharray: 8 8;
+}
+
+.ac-fiber-shadow {
+  fill: rgba(18, 24, 32, 0.13);
+}
+
+.ac-fiber-body {
+  fill: rgba(176, 221, 255, 0.78);
+  stroke: rgba(47, 128, 237, 0.48);
+  stroke-width: 1.6;
+}
+
+.ac-fiber-core {
+  stroke: rgba(47, 128, 237, 0.68);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.ac-clamp {
+  fill: #23272d;
+  stroke: #050608;
+  stroke-width: 1.5;
+}
+
+.ac-clamp-hole {
+  fill: #f6f1e8;
+  stroke: #050608;
+  stroke-width: 1.2;
+}
+
+.ac-incident-beam {
+  stroke: #d9232e;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.ac-axis {
+  stroke: #2f80ed;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ac-facet {
+  stroke: #30363d;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.ac-endface-reference {
+  stroke: #596168;
+  stroke-width: 2.2;
+  stroke-dasharray: 6 5;
+  stroke-linecap: round;
+}
+
+.ac-arc-air {
+  fill: none;
+  stroke: #2f80ed;
+  stroke-width: 2.5;
+}
+
+.ac-arc-fiber {
+  fill: none;
+  stroke: #0d6971;
+  stroke-width: 2.5;
+}
+
+.ac-arc-polish {
+  fill: none;
+  stroke: #c48b20;
+  stroke-width: 2.5;
+}
+
+.ac-arc-tilt {
+  fill: none;
+  stroke: #c48b20;
+  stroke-width: 2.5;
+}
+
+.ac-pivot {
+  fill: #ffffff;
+  stroke: #30363d;
+  stroke-width: 2;
+}
+
+.ac-dimension-line,
+.ac-dimension-tick {
+  stroke: #c48b20;
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+}
+
+.ac-dimension-text {
+  fill: #a66f05;
+  font-weight: 850;
+}
+
+.ac-legend text {
+  fill: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.ac-legend-axis {
+  fill: #2f80ed;
+}
+
+.ac-legend-facet {
+  fill: #30363d;
+}
+
+.ac-legend-incident {
+  fill: #d9232e;
+}
+
+.ac-legend-reference {
+  fill: #676c70;
+}
+
+.ac-label,
+.angle-cleave-svg text {
+  fill: var(--ink);
+  font-weight: 800;
+}
+
+.ac-muted {
+  fill: var(--muted);
+  font-weight: 750;
+}
+
 
 .focus-input-area {
   padding: 18px;
@@ -1465,6 +1676,8 @@ h2 {
   .focus-input-grid,
   .collimation-method-row,
   .collimation-input-grid,
+  .angle-cleave-input-grid,
+  .angle-cleave-result-grid,
   .fnumber-input-grid,
   .fnumber-result-grid,
   .endcap-input-grid,
@@ -1473,6 +1686,14 @@ h2 {
   .feedback-input-grid,
   .feedback-result-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .angle-cleave-visuals {
+    grid-template-columns: 1fr;
+  }
+
+  .angle-cleave-result-grid {
+    grid-template-columns: 1fr;
   }
 
   .calculator-tabs {
