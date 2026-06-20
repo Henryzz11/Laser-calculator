@@ -1222,6 +1222,116 @@ h2 {
   font-weight: 750;
 }
 
+.angle-derivation-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: 18px;
+  align-items: stretch;
+  margin-top: 12px;
+}
+
+.angle-derivation-figure {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.angle-derivation-svg {
+  display: block;
+  width: 100%;
+  min-height: 300px;
+}
+
+.angle-derivation-math {
+  align-self: center;
+}
+
+.angle-derivation-math p {
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.45;
+  margin: 14px 0 0;
+}
+
+.angle-derivation-math span[id^="acDeriv"] {
+  color: var(--result-blue);
+  font-weight: 850;
+}
+
+.ad-bg {
+  fill: #ffffff;
+}
+
+.ad-lens {
+  fill: rgba(47, 128, 237, 0.72);
+  stroke: #173b87;
+  stroke-width: 2;
+}
+
+.ad-fiber {
+  fill: rgba(176, 221, 255, 0.78);
+  stroke: rgba(47, 128, 237, 0.72);
+  stroke-width: 1.7;
+}
+
+.ad-fiber-edge {
+  stroke: #30363d;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ad-incident,
+.ad-ray {
+  stroke: #e00012;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.ad-normal,
+.ad-baseline {
+  stroke: #e00012;
+  stroke-width: 1.5;
+  stroke-dasharray: 7 6;
+  opacity: 0.68;
+}
+
+.ad-arc-air,
+.ad-arc-fiber,
+.ad-arc-tilt {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.ad-arc-air {
+  stroke: #e00012;
+  stroke-width: 3.4;
+}
+
+.ad-arc-fiber {
+  stroke: #0d6971;
+  stroke-width: 1.1;
+}
+
+.ad-arc-tilt {
+  stroke: #c48b20;
+  stroke-width: 3.2;
+}
+
+.ad-label {
+  fill: var(--ink);
+  font-weight: 800;
+}
+
+.ad-title {
+  font-size: 1.65rem;
+}
+
+.angle-derivation-svg text {
+  font-size: 1rem;
+}
+
 
 .focus-input-area {
   padding: 18px;
@@ -1689,6 +1799,10 @@ h2 {
   }
 
   .angle-cleave-visuals {
+    grid-template-columns: 1fr;
+  }
+
+  .angle-derivation-layout {
     grid-template-columns: 1fr;
   }
 

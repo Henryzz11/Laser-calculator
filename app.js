@@ -425,12 +425,6 @@ function endcapLengthForDiameter(rayleighM, fiberMfdUm, targetDiameterUm) {
   return targetRatio <= 1 ? 0 : rayleighM * Math.sqrt((targetRatio * targetRatio) - 1);
 }
 
-function setEndcapMode(mode) {
-  document.querySelectorAll("[data-end-mode]").forEach((panel) => {
-    panel.hidden = panel.dataset.endMode !== mode;
-  });
-}
-
 function updateEndcap() {
   const wavelengthNm = numberValue("endWavelength");
   const wavelengthM = wavelengthNm * 1e-9;
@@ -438,14 +432,12 @@ function updateEndcap() {
   const index = fusedSilicaIndex(wavelengthUm);
   const fiberMfdUm = numberValue("endInitialDiameter");
   const fiberDiameterUm = numberValue("endFiberDiameter");
-  const mode = document.querySelector("#endMode")?.value || "cw";
   const outputIds = [
     "endLength",
     "endSafeDiameter",
     "endTargetRipple",
     "endApertureCheck",
   ];
-  setEndcapMode(mode);
 
   if (
     wavelengthM <= 0 ||
@@ -457,36 +449,20 @@ function updateEndcap() {
     return;
   }
 
-  let safeDiameterUm = NaN;
-
-  if (mode === "pulse") {
-    const pulseEnergyJ = numberValue("endPulseEnergy") * 1e-3;
-    const effectiveDurationNs = numberValue("endPulseDuration");
-    const referenceDurationNs = 1;
-    const referenceThresholdJPerCm2 = numberValue("endPulseThreshold");
-    const safetyFactor = numberValue("endPulseSafetyFactor");
-    if (pulseEnergyJ < 0 || effectiveDurationNs <= 0 || referenceThresholdJPerCm2 <= 0 || safetyFactor < 1) {
-      outputIds.forEach((id) => setText(id, null));
-      return;
-    }
-    const burstThresholdJPerCm2 = referenceThresholdJPerCm2 * Math.sqrt(effectiveDurationNs / referenceDurationNs);
-    const allowedFluenceJPerCm2 = burstThresholdJPerCm2 / safetyFactor;
-    const allowedFluenceJPerM2 = allowedFluenceJPerCm2 * 1e4;
-    const safeRadiusM = Math.sqrt((2 * pulseEnergyJ) / (Math.PI * allowedFluenceJPerM2));
-    safeDiameterUm = safeRadiusM * 2 * 1e6;
-  } else {
-    const cwPowerW = numberValue("endCwPower");
-    const thresholdMwPerCm2 = numberValue("endCwThreshold");
-    const safetyFactor = numberValue("endCwSafetyFactor");
-    if (cwPowerW < 0 || thresholdMwPerCm2 <= 0 || safetyFactor < 1) {
-      outputIds.forEach((id) => setText(id, null));
-      return;
-    }
-    const allowedIntensityMwPerCm2 = thresholdMwPerCm2 / safetyFactor;
-    const allowedIntensityWPerM2 = allowedIntensityMwPerCm2 * 1e10;
-    const safeRadiusM = Math.sqrt((2 * cwPowerW) / (Math.PI * allowedIntensityWPerM2));
-    safeDiameterUm = safeRadiusM * 2 * 1e6;
+  const pulseEnergyJ = numberValue("endPulseEnergy") * 1e-3;
+  const effectiveDurationNs = numberValue("endPulseDuration");
+  const referenceDurationNs = 1;
+  const referenceThresholdJPerCm2 = numberValue("endPulseThreshold");
+  const safetyFactor = numberValue("endPulseSafetyFactor");
+  if (pulseEnergyJ < 0 || effectiveDurationNs <= 0 || referenceThresholdJPerCm2 <= 0 || safetyFactor < 1) {
+    outputIds.forEach((id) => setText(id, null));
+    return;
   }
+  const burstThresholdJPerCm2 = referenceThresholdJPerCm2 * Math.sqrt(effectiveDurationNs / referenceDurationNs);
+  const allowedFluenceJPerCm2 = burstThresholdJPerCm2 / safetyFactor;
+  const allowedFluenceJPerM2 = allowedFluenceJPerCm2 * 1e4;
+  const safeRadiusM = Math.sqrt((2 * pulseEnergyJ) / (Math.PI * allowedFluenceJPerM2));
+  const safeDiameterUm = safeRadiusM * 2 * 1e6;
 
   if (!Number.isFinite(safeDiameterUm) || safeDiameterUm < 0) {
     outputIds.forEach((id) => setText(id, null));
@@ -692,6 +668,82 @@ function renderAngledCleaveSvg(id, direction, thetaFiber, thetaAir, thetaTilt) {
   `;
 }
 
+function renderAngledDerivationSvg(id, direction, thetaFiber, thetaAir, thetaTilt) {
+  const svg = document.querySelector(`#${id}`);
+  if (!svg) return;
+
+  const directionSign = direction === "up" ? 1 : -1;
+  const origin = { x: 175, y: 172 };
+  const fiberAngle = directionSign * thetaTilt;
+  const normalAngle = directionSign * thetaAir;
+  const referenceFaceAngle = fiberAngle + 90;
+  const polishedFaceAngle = referenceFaceAngle + directionSign * thetaFiber;
+  const fiberLength = 330;
+  const bodyHalf = 26;
+  const fiberEnd = anglePoint(origin, fiberLength, fiberAngle);
+  const rayEnd = anglePoint(origin, fiberLength + 40, fiberAngle);
+  const normalEnd = anglePoint(origin, 170, normalAngle);
+  const normalBack = oppositeAnglePoint(origin, 95, normalAngle);
+  const fiberRad = degToRad(fiberAngle);
+  const axisUnit = { x: Math.cos(fiberRad), y: -Math.sin(fiberRad) };
+  const normalUnit = { x: -axisUnit.y, y: axisUnit.x };
+  const shiftPoint = (point, unit, amount) => ({
+    x: point.x + unit.x * amount,
+    y: point.y + unit.y * amount,
+  });
+  const projectOnNormal = (point) => (point.x - origin.x) * normalUnit.x + (point.y - origin.y) * normalUnit.y;
+  const pointsAttr = (points) => points.map((point) => `${fmt(point.x, 6)},${fmt(point.y, 6)}`).join(" ");
+  const faceA = anglePoint(origin, bodyHalf, polishedFaceAngle);
+  const faceB = oppositeAnglePoint(origin, bodyHalf, polishedFaceAngle);
+  const [startTop, startBottom] =
+    projectOnNormal(faceA) < projectOnNormal(faceB) ? [faceA, faceB] : [faceB, faceA];
+  const fiberBodyPoints = pointsAttr([
+    startTop,
+    shiftPoint(fiberEnd, normalUnit, -bodyHalf),
+    shiftPoint(fiberEnd, normalUnit, bodyHalf),
+    startBottom,
+  ]);
+  const labelY = direction === "up" ? -1 : 1;
+  const airArcStart = 180;
+  const airArcEnd = 180 + normalAngle;
+  const thetaAirLabel = anglePoint(origin, 58, 180 + normalAngle / 2);
+  const thetaTiltLabel = anglePoint(origin, 142, fiberAngle / 2);
+  const thetaFiberLabel = anglePoint(origin, 86, (normalAngle + fiberAngle) / 2);
+
+  svg.innerHTML = `
+    <defs>
+      <marker id="${id}-red-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 Z" fill="#e00012"></path>
+      </marker>
+    </defs>
+    <rect class="ad-bg" x="0" y="0" width="660" height="340" rx="10"></rect>
+    <ellipse class="ad-lens" cx="72" cy="${origin.y}" rx="10" ry="44"></ellipse>
+    <text class="ad-label" x="32" y="${origin.y + 70}">Collimating lens</text>
+
+    <line class="ad-baseline" x1="30" y1="${origin.y}" x2="625" y2="${origin.y}"></line>
+    <line class="ad-incident" x1="30" y1="${origin.y}" x2="${origin.x}" y2="${origin.y}"></line>
+
+    <polygon class="ad-fiber" points="${fiberBodyPoints}"></polygon>
+    <line class="ad-fiber-edge" x1="${startTop.x}" y1="${startTop.y}" x2="${startBottom.x}" y2="${startBottom.y}"></line>
+    <line class="ad-ray" x1="${origin.x}" y1="${origin.y}" x2="${rayEnd.x}" y2="${rayEnd.y}" marker-end="url(#${id}-red-arrow)"></line>
+    <line class="ad-normal" x1="${normalBack.x}" y1="${normalBack.y}" x2="${normalEnd.x}" y2="${normalEnd.y}"></line>
+
+    <polyline class="ad-arc-air" points="${arcPoints(origin, 46, airArcStart, airArcEnd)}"></polyline>
+    <polyline class="ad-arc-fiber" points="${arcPoints(origin, 74, fiberAngle, normalAngle)}"></polyline>
+    <polyline class="ad-arc-tilt" points="${arcPoints(origin, 128, 0, fiberAngle)}"></polyline>
+
+    <text class="ad-label ad-title" x="24" y="36">Schematic</text>
+    <text class="ad-label" x="360" y="40">Normal of the angled fiber tip</text>
+    <text class="ad-label" x="388" y="${origin.y + labelY * -54}">
+      <tspan x="388" dy="0">Refracted beam follows</tspan>
+      <tspan x="388" dy="18">the fiber axis</tspan>
+    </text>
+    <text class="ad-label" x="${thetaAirLabel.x - 18}" y="${thetaAirLabel.y + (direction === "up" ? 18 : -10)}">&theta;<tspan baseline-shift="sub" font-size="0.72em">air</tspan></text>
+    <text class="ad-label" x="${thetaFiberLabel.x + 6}" y="${thetaFiberLabel.y + (direction === "up" ? -8 : 18)}">&theta;<tspan baseline-shift="sub" font-size="0.72em">fiber</tspan></text>
+    <text class="ad-label" x="${thetaTiltLabel.x + 8}" y="${thetaTiltLabel.y + (direction === "up" ? -8 : 18)}">&theta;<tspan baseline-shift="sub" font-size="0.72em">tilt</tspan></text>
+  `;
+}
+
 function updateAngledCleave() {
   const thetaFiber = numberValue("acThetaFiber");
   const direction = document.querySelector("#acDirection")?.value || "up";
@@ -699,6 +751,9 @@ function updateAngledCleave() {
   if (thetaFiber < 0) {
     setText("acThetaTilt", null);
     setText("acEndOffset", null);
+    ["acDerivThetaFiber", "acDerivThetaAir", "acDerivThetaAirCopy", "acDerivThetaFiberCopy", "acDerivThetaTilt"].forEach((id) =>
+      setText(id, null),
+    );
     return;
   }
 
@@ -706,6 +761,9 @@ function updateAngledCleave() {
   if (sinAir > 1) {
     setText("acThetaTilt", "no solution");
     setText("acEndOffset", "no solution");
+    ["acDerivThetaFiber", "acDerivThetaAir", "acDerivThetaAirCopy", "acDerivThetaFiberCopy", "acDerivThetaTilt"].forEach((id) =>
+      setText(id, "no solution"),
+    );
     return;
   }
 
@@ -717,6 +775,13 @@ function updateAngledCleave() {
   setText("acThetaTilt", `${signedPrefix}${fmt(thetaTilt, 5)}`, " deg");
   setText("acEndOffset", fmt(endOffset, 5), " mm");
   renderAngledCleaveSvg("acSvg", direction, thetaFiber, thetaAir, thetaTilt);
+  renderAngledDerivationSvg("acDerivationSvg", direction, thetaFiber, thetaAir, thetaTilt);
+  setText("acDerivIndex", fmt(ANGLED_CLEAVE_INDEX, 4));
+  setText("acDerivThetaFiber", fmt(thetaFiber, 5), " deg");
+  setText("acDerivThetaAir", fmt(thetaAir, 5), " deg");
+  setText("acDerivThetaAirCopy", fmt(thetaAir, 5), " deg");
+  setText("acDerivThetaFiberCopy", fmt(thetaFiber, 5), " deg");
+  setText("acDerivThetaTilt", fmt(thetaTilt, 5), " deg");
 }
 
 function setCollimationMethod(method) {

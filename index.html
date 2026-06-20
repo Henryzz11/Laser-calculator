@@ -676,12 +676,30 @@
             <div class="formula-area">
               <section class="formula-panel" aria-label="Angled fiber positioning derivation">
                 <p class="panel-kicker">Derivation</p>
-                <div class="formula-lines math-display-lines derivation-lines">
-                  <div class="formula-line"><span>Snell:</span><span>sin&nbsp;&theta;<sub>air</sub></span><span class="math-equals">=</span><span>n&nbsp;sin&nbsp;&theta;<sub>fiber</sub></span></div>
-                  <div class="formula-line"><span class="math-var">&theta;<sub>air</sub></span><span class="math-equals">=</span><span>sin<sup>&minus;1</sup></span><span class="formula-paren">(</span><span>n&nbsp;sin&nbsp;&theta;<sub>fiber</sub></span><span class="formula-paren">)</span></div>
-                  <div class="formula-line"><span class="math-var">&theta;<sub>tilt</sub></span><span class="math-equals">=</span><span>&theta;<sub>air</sub>&nbsp;&minus;&nbsp;&theta;<sub>fiber</sub></span></div>
+                <div class="angle-derivation-layout">
+                  <div class="angle-derivation-figure" aria-label="Angled fiber positioning schematic">
+                    <svg id="acDerivationSvg" class="angle-derivation-svg" viewBox="0 0 660 340" role="img" aria-label="Snell law schematic for angled fiber positioning"></svg>
+                  </div>
+                  <div class="angle-derivation-math">
+                    <div class="formula-lines math-display-lines derivation-lines">
+                      <div class="formula-line"><span>Snell:</span><span>sin&nbsp;&theta;<sub>air</sub></span><span class="math-equals">=</span><span>n&nbsp;sin&nbsp;&theta;<sub>fiber</sub></span></div>
+                      <div class="formula-line"><span class="math-var">&theta;<sub>air</sub></span><span class="math-equals">=</span><span>sin<sup>&minus;1</sup></span><span class="formula-paren">(</span><span>n&nbsp;sin&nbsp;&theta;<sub>fiber</sub></span><span class="formula-paren">)</span></div>
+                      <div class="formula-line"><span class="math-var">&theta;<sub>tilt</sub></span><span class="math-equals">=</span><span>&theta;<sub>air</sub>&nbsp;&minus;&nbsp;&theta;<sub>fiber</sub></span></div>
+                    </div>
+                    <p>
+                      With n = <span id="acDerivIndex">1.45</span> and
+                      &theta;<sub>fiber</sub> = <span id="acDerivThetaFiber">-- deg</span>,
+                      &theta;<sub>air</sub> = <span id="acDerivThetaAir">-- deg</span>.
+                    </p>
+                    <p>
+                      Therefore the fiber axis should be tilted by
+                      &theta;<sub>tilt</sub> = <span id="acDerivThetaAirCopy">-- deg</span>
+                      &minus; <span id="acDerivThetaFiberCopy">-- deg</span>
+                      = <span id="acDerivThetaTilt">-- deg</span>.
+                    </p>
+                  </div>
                 </div>
-                <p>The refractive index is fixed at n = 1.45. The beam is drawn horizontal. The HFV002-style mount stays fixed, and only the fiber rotates so the refracted beam inside the polished fiber follows the fiber axis. For &theta;<sub>fiber</sub> = 12&deg;, &theta;<sub>air</sub> = 17.55&deg; and &theta;<sub>tilt</sub> = 5.55&deg;.</p>
+                <p>The refractive index is fixed at n = 1.45. The incident beam is drawn horizontal. The HFV002-style mount stays fixed, and only the fiber rotates so the refracted beam inside the polished fiber follows the fiber axis.</p>
               </section>
             </div>
           </article>
@@ -935,20 +953,10 @@
           <article class="calc-panel" id="calc-endcap">
             <div class="calc-heading">
               <div>
-                <p class="panel-kicker">Fused silica damage threshold</p>
+                <p class="panel-kicker">Fused silica pulse damage threshold</p>
                 <h2>Endcap Length</h2>
               </div>
               <div class="collimation-formula-stack" aria-label="Endcap length formulas">
-                <div class="math-pill">
-                  <span class="math-formula math-formula-compact">
-                    <span class="math-var">I<sub>0</sub></span>
-                    <span class="math-equals">=</span>
-                    <span class="math-fraction">
-                      <span class="math-numerator">2P</span>
-                      <span class="math-denominator">&pi;&nbsp;w<sup>2</sup></span>
-                    </span>
-                  </span>
-                </div>
                 <div class="math-pill">
                   <span class="math-formula math-formula-compact">
                     <span class="math-var">F<sub>0</sub></span>
@@ -976,31 +984,9 @@
                   <label class="field-label" for="endFiberDiameter">Fiber / endcap diameter D<sub>fiber</sub> (um)</label>
                   <input id="endFiberDiameter" class="text-input calc-input" type="number" min="0.01" step="any" value="400">
                 </div>
-                <div class="field-group">
-                  <label class="field-label" for="endMode">Damage mode</label>
-                  <select id="endMode" class="text-input calc-input">
-                    <option value="cw" selected>CW</option>
-                    <option value="pulse">Pulse</option>
-                  </select>
-                </div>
               </div>
 
-              <div class="endcap-mode-grid" data-end-mode="cw">
-                <div class="field-group">
-                  <label class="field-label" for="endCwPower">CW power P (W)</label>
-                  <input id="endCwPower" class="text-input calc-input" type="number" min="0" step="any" value="100">
-                </div>
-                <div class="field-group">
-                  <label class="field-label" for="endCwThreshold">CW damage threshold I<sub>th</sub> (MW/cm<sup>2</sup>)</label>
-                  <input id="endCwThreshold" class="text-input calc-input" type="number" min="0.000001" step="any" value="1">
-                </div>
-                <div class="field-group">
-                  <label class="field-label" for="endCwSafetyFactor">CW safety factor</label>
-                  <input id="endCwSafetyFactor" class="text-input calc-input" type="number" min="1" step="any" value="2">
-                </div>
-              </div>
-
-              <div class="endcap-mode-grid" data-end-mode="pulse" hidden>
+              <div class="endcap-mode-grid">
                 <div class="field-group">
                   <label class="field-label" for="endPulseEnergy">Burst energy E (mJ)</label>
                   <input id="endPulseEnergy" class="text-input calc-input" type="number" min="0" step="any" value="10">
@@ -1040,26 +1026,22 @@
                 <dl class="variable-list">
                   <dt>MFD</dt><dd>Fiber mode field diameter, used as the starting 1/e<sup>2</sup> beam diameter at the fiber/endcap interface</dd>
                   <dt>D(L)</dt><dd>1/e<sup>2</sup> beam diameter at the endcap output face</dd>
-                  <dt>D<sub>safe</sub></dt><dd>Output beam diameter required to keep the peak intensity or peak fluence below the safety-adjusted threshold</dd>
+                  <dt>D<sub>safe</sub></dt><dd>Output beam diameter required to keep the peak fluence below the safety-adjusted threshold</dd>
                   <dt>n</dt><dd>Fused silica refractive index calculated from wavelength</dd>
                   <dt>&lambda;<sub>0</sub></dt><dd>Vacuum wavelength</dd>
                 </dl>
               </section>
 
-              <section class="formula-panel" aria-label="Endcap damage threshold formulas">
-                <p class="panel-kicker">Damage threshold calculation</p>
-                <p>The safety factor divides the material threshold. For example, a factor of 2 means the calculator designs for half of the entered threshold.</p>
+              <section class="formula-panel" aria-label="Endcap pulse damage threshold formulas">
+                <p class="panel-kicker">Pulse damage threshold calculation</p>
+                <p>The safety factor divides the pulse fluence threshold. For example, a factor of 2 means the calculator designs for half of the duration-scaled threshold.</p>
                 <div class="formula-lines math-display-lines">
-                  <div class="formula-line"><span class="math-var">I<sub>allow</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">I<sub>th</sub></span><span class="math-denominator">S</span></span></div>
-                  <div class="formula-line"><span class="math-var">D<sub>CW</sub></span><span class="math-equals">=</span><span>2&nbsp;&radic;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">2P</span><span class="math-denominator">&pi;&nbsp;I<sub>allow</sub></span></span><span class="formula-paren">)</span></div>
                   <div class="formula-line"><span class="math-var">U<sub>th,b</sub></span><span class="math-equals">=</span><span>U<sub>th,ref</sub>&nbsp;&radic;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">&tau;<sub>eff</sub></span><span class="math-denominator">&tau;<sub>ref</sub></span></span><span class="formula-paren">)</span></div>
                   <div class="formula-line"><span class="math-var">U<sub>allow</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">U<sub>th,b</sub></span><span class="math-denominator">N</span></span></div>
                   <div class="formula-line"><span class="math-var">D<sub>pulse</sub></span><span class="math-equals">=</span><span>2&nbsp;&radic;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">2E</span><span class="math-denominator">&pi;&nbsp;U<sub>allow</sub></span></span><span class="formula-paren">)</span></div>
                 </div>
                 <dl class="variable-list">
-                  <dt>P</dt><dd>CW optical power</dd>
                   <dt>E</dt><dd>Burst or pulse energy</dd>
-                  <dt>I<sub>th</sub></dt><dd>CW damage threshold as peak intensity</dd>
                   <dt>U<sub>th,ref</sub></dt><dd>Reference fused silica damage threshold at &tau;<sub>ref</sub> = 1 ns</dd>
                   <dt>&tau;<sub>eff</sub></dt><dd>Effective burst duration used for square-root damage-threshold scaling</dd>
                   <dt>N</dt><dd>Pulse safety factor</dd>
