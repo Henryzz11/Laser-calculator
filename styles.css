@@ -896,10 +896,20 @@ h2 {
   align-items: center;
   gap: 8px;
   min-height: 30px;
+  flex-wrap: wrap;
 }
 
 .math-display-lines .math-var {
   min-width: 1.2em;
+}
+
+.formula-purpose {
+  color: var(--muted);
+  flex: 0 0 150px;
+  font-size: 0.84em;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 .math-display-lines .math-fraction {
@@ -1462,6 +1472,38 @@ h2 {
 
 .math-fraction-inline .math-denominator {
   padding-top: 0.04em;
+}
+
+.math-root {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0;
+  vertical-align: middle;
+}
+
+.math-root-symbol {
+  font-size: 1.45em;
+  font-weight: 500;
+  line-height: 0.95;
+  transform: translateY(0.03em);
+}
+
+.math-radicand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 2px solid currentColor;
+  margin-left: -0.04em;
+  min-height: 1.15em;
+  padding: 2px 4px 0 6px;
+}
+
+.formula-unit {
+  color: var(--muted);
+  font-size: 0.84em;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-left: 8px;
 }
 
 .formula-paren {

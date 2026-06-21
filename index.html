@@ -959,11 +959,11 @@
               <div class="collimation-formula-stack" aria-label="Endcap length formulas">
                 <div class="math-pill">
                   <span class="math-formula math-formula-compact">
-                    <span class="math-var">F<sub>0</sub></span>
+                    <span class="math-var">U<sub>allow</sub></span>
                     <span class="math-equals">=</span>
                     <span class="math-fraction">
-                      <span class="math-numerator">2E</span>
-                      <span class="math-denominator">&pi;&nbsp;w<sup>2</sup></span>
+                      <span class="math-numerator">8E</span>
+                      <span class="math-denominator">&pi;&nbsp;D<sub>damage</sub><sup>2</sup></span>
                     </span>
                   </span>
                 </div>
@@ -993,7 +993,7 @@
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="endPulseDuration">Burst effective duration &tau;<sub>eff</sub> (ns)</label>
-                  <input id="endPulseDuration" class="text-input calc-input" type="number" min="0.000001" step="any" value="17">
+                  <input id="endPulseDuration" class="text-input calc-input" type="number" min="0.000001" step="any" value="81">
                 </div>
                 <div class="field-group">
                   <label class="field-label" for="endPulseThreshold">Damage threshold U<sub>th,ref</sub> @ 1 ns (J/cm<sup>2</sup>)</label>
@@ -1014,37 +1014,38 @@
             </div>
 
             <div class="formula-area">
-              <section class="formula-panel" aria-label="Endcap length derivation">
-                <p class="panel-kicker">Endcap length derivation</p>
-                <p>The endcap is treated as free-space Gaussian propagation inside fused silica. The fused silica refractive index is calculated from the wavelength, so it is not entered by hand.</p>
+              <section class="formula-panel" aria-label="Endcap pulse damage threshold formulas">
+                <p class="panel-kicker">Safe beam diameter from pulse fluence</p>
+                <p>First calculate the output beam diameter required by the pulse damage threshold. The Gaussian peak fluence must stay below the safety-adjusted threshold.</p>
                 <div class="formula-lines math-display-lines">
-                  <div class="formula-line"><span class="math-var">w<sub>0</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">MFD</span><span class="math-denominator">2</span></span></div>
-                  <div class="formula-line"><span class="math-var">z<sub>R</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&pi;&nbsp;n&nbsp;w<sub>0</sub><sup>2</sup></span><span class="math-denominator">&lambda;<sub>0</sub></span></span></div>
-                  <div class="formula-line"><span class="math-var">D(L)</span><span class="math-equals">=</span><span>MFD&nbsp;&radic;</span><span class="formula-paren">(</span><span>1&nbsp;+</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">L</span><span class="math-denominator">z<sub>R</sub></span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
-                  <div class="formula-line"><span class="math-var">L</span><span class="math-equals">=</span><span>z<sub>R</sub>&nbsp;&radic;</span><span class="formula-paren">(</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">D<sub>safe</sub></span><span class="math-denominator">MFD</span></span><span class="formula-paren">)</span><span><sup>2</sup>&nbsp;&minus;&nbsp;1</span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="formula-purpose">Scale threshold</span><span class="math-var">U<sub>th,b</sub></span><span class="math-equals">=</span><span>U<sub>th,ref</sub></span><span class="math-root"><span class="math-root-symbol">&radic;</span><span class="math-radicand"><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">&tau;<sub>eff</sub></span><span class="math-denominator">&tau;<sub>ref</sub></span></span><span class="formula-paren">)</span></span></span><span class="formula-unit">J/cm<sup>2</sup></span></div>
+                  <div class="formula-line"><span class="formula-purpose">Apply safety factor</span><span class="math-var">U<sub>allow</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">U<sub>th,b</sub></span><span class="math-denominator">N</span></span><span class="formula-unit">J/cm<sup>2</sup></span></div>
+                  <div class="formula-line"><span class="formula-purpose">General fluence</span><span class="math-var">U</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">E</span><span class="math-denominator">A</span></span></div>
+                  <div class="formula-line"><span class="formula-purpose">Gaussian fluence</span><span class="math-var">U(r)</span><span class="math-equals">=</span><span>U<sub>0</sub>&nbsp;exp</span><span class="formula-paren">(</span><span class="math-fraction math-fraction-inline"><span class="math-numerator">&minus;2r<sup>2</sup></span><span class="math-denominator">w<sup>2</sup></span></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="formula-purpose">Peak fluence limit</span><span class="math-var">U<sub>allow</sub></span><span class="math-equals">=</span><span>U<sub>0</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">2E</span><span class="math-denominator">&pi;&nbsp;w<sup>2</sup></span></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">8E</span><span class="math-denominator">&pi;&nbsp;D<sup>2</sup></span></span><span class="formula-unit">J/cm<sup>2</sup></span></div>
+                  <div class="formula-line"><span class="formula-purpose">Solve diameter</span><span class="math-var">D<sub>damage</sub></span><span class="math-equals">=</span><span class="math-root"><span class="math-root-symbol">&radic;</span><span class="math-radicand"><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">8E</span><span class="math-denominator">&pi;&nbsp;U<sub>allow</sub></span></span><span class="formula-paren">)</span></span></span></div>
                 </div>
                 <dl class="variable-list">
-                  <dt>MFD</dt><dd>Fiber mode field diameter, used as the starting 1/e<sup>2</sup> beam diameter at the fiber/endcap interface</dd>
-                  <dt>D(L)</dt><dd>1/e<sup>2</sup> beam diameter at the endcap output face</dd>
-                  <dt>D<sub>safe</sub></dt><dd>Output beam diameter required to keep the peak fluence below the safety-adjusted threshold</dd>
-                  <dt>n</dt><dd>Fused silica refractive index calculated from wavelength</dd>
-                  <dt>&lambda;<sub>0</sub></dt><dd>Vacuum wavelength</dd>
+                  <dt>E</dt><dd>Burst or pulse energy; input shown as mJ and converted to J in the formula</dd>
+                  <dt>U</dt><dd>Pulse fluence, kept in J/cm<sup>2</sup> throughout this displayed derivation</dd>
+                  <dt>D</dt><dd>1/e<sup>2</sup> beam diameter. The calculator reports D<sub>damage</sub> in um</dd>
+                  <dt>N</dt><dd>Pulse safety factor</dd>
                 </dl>
               </section>
 
-              <section class="formula-panel" aria-label="Endcap pulse damage threshold formulas">
-                <p class="panel-kicker">Pulse damage threshold calculation</p>
-                <p>The safety factor divides the pulse fluence threshold. For example, a factor of 2 means the calculator designs for half of the duration-scaled threshold.</p>
+              <section class="formula-panel" aria-label="Endcap length derivation">
+                <p class="panel-kicker">Endcap length from Gaussian expansion</p>
+                <p>Then solve the endcap length that expands the beam from the fiber MFD to the damage-limited diameter D<sub>damage</sub>. If D<sub>damage</sub> is already smaller than the MFD, the required length is zero. If D<sub>damage</sub> is larger than the endcap aperture, the aperture check reports the conflict.</p>
                 <div class="formula-lines math-display-lines">
-                  <div class="formula-line"><span class="math-var">U<sub>th,b</sub></span><span class="math-equals">=</span><span>U<sub>th,ref</sub>&nbsp;&radic;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">&tau;<sub>eff</sub></span><span class="math-denominator">&tau;<sub>ref</sub></span></span><span class="formula-paren">)</span></div>
-                  <div class="formula-line"><span class="math-var">U<sub>allow</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">U<sub>th,b</sub></span><span class="math-denominator">N</span></span></div>
-                  <div class="formula-line"><span class="math-var">D<sub>pulse</sub></span><span class="math-equals">=</span><span>2&nbsp;&radic;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">2E</span><span class="math-denominator">&pi;&nbsp;U<sub>allow</sub></span></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="formula-purpose">Convert radius</span><span class="math-var">w<sub>0</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">MFD</span><span class="math-denominator">2</span></span></div>
+                  <div class="formula-line"><span class="formula-purpose">Rayleigh length</span><span class="math-var">z<sub>R</sub></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&pi;&nbsp;n&nbsp;w<sub>0</sub><sup>2</sup></span><span class="math-denominator">&lambda;<sub>0</sub></span></span></div>
+                  <div class="formula-line"><span class="formula-purpose">Beam expansion</span><span class="math-var">D<sub>damage</sub></span><span class="math-equals">=</span><span>MFD</span><span class="math-root"><span class="math-root-symbol">&radic;</span><span class="math-radicand"><span class="formula-paren">(</span><span>1&nbsp;+</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">L</span><span class="math-denominator">z<sub>R</sub></span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></span></span></div>
+                  <div class="formula-line"><span class="formula-purpose">Solve length</span><span class="math-var">L</span><span class="math-equals">=</span><span>z<sub>R</sub></span><span class="math-root"><span class="math-root-symbol">&radic;</span><span class="math-radicand"><span class="formula-paren">(</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">D<sub>damage</sub></span><span class="math-denominator">MFD</span></span><span class="formula-paren">)</span><span><sup>2</sup>&nbsp;&minus;&nbsp;1</span><span class="formula-paren">)</span></span></span></div>
                 </div>
                 <dl class="variable-list">
-                  <dt>E</dt><dd>Burst or pulse energy</dd>
-                  <dt>U<sub>th,ref</sub></dt><dd>Reference fused silica damage threshold at &tau;<sub>ref</sub> = 1 ns</dd>
-                  <dt>&tau;<sub>eff</sub></dt><dd>Effective burst duration used for square-root damage-threshold scaling</dd>
-                  <dt>N</dt><dd>Pulse safety factor</dd>
+                  <dt>MFD</dt><dd>Starting 1/e<sup>2</sup> beam diameter at the fiber/endcap interface</dd>
+                  <dt>D<sub>damage</sub></dt><dd>Minimum 1/e<sup>2</sup> beam diameter required by the safety-adjusted pulse damage threshold</dd>
+                  <dt>n</dt><dd>Fused silica refractive index calculated from wavelength</dd>
                 </dl>
               </section>
 
@@ -1052,11 +1053,16 @@
                 <p class="panel-kicker">Ripple estimate</p>
                 <p>Ripple comes from clipping diffraction. When the Gaussian beam becomes large compared with the fiber/endcap aperture, the field at the aperture edge is no longer negligible. That edge field diffracts and interferes with the main beam.</p>
                 <div class="formula-lines math-display-lines">
-                  <div class="formula-line"><span class="math-var">I(r)</span><span class="math-equals">=</span><span>I<sub>0</sub>&nbsp;exp</span><span class="formula-paren">(</span><span>&minus;2</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">r</span><span class="math-denominator">w</span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
-                  <div class="formula-line"><span class="math-var">E(r)</span><span class="math-equals">=</span><span>E<sub>0</sub>&nbsp;exp</span><span class="formula-paren">(</span><span>&minus;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">r</span><span class="math-denominator">w</span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
-                  <div class="formula-line"><span class="math-var">R</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">D<sub>fiber</sub></span><span class="math-denominator">D<sub>beam</sub></span></span></div>
-                  <div class="formula-line"><span class="math-var">ripple</span><span class="math-equals">&asymp;</span><span>&plusmn;&nbsp;2&nbsp;exp</span><span class="formula-paren">(</span><span>&minus;R<sup>2</sup></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="formula-purpose">Intensity edge</span><span class="math-var">I(r)</span><span class="math-equals">=</span><span>I<sub>0</sub>&nbsp;exp</span><span class="formula-paren">(</span><span>&minus;2</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">r</span><span class="math-denominator">w</span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="formula-purpose">Field edge</span><span class="math-var">E(r)</span><span class="math-equals">=</span><span>E<sub>0</sub>&nbsp;exp</span><span class="formula-paren">(</span><span>&minus;</span><span class="formula-paren">(</span><span class="math-fraction"><span class="math-numerator">r</span><span class="math-denominator">w</span></span><span class="formula-paren">)</span><span><sup>2</sup></span><span class="formula-paren">)</span></div>
+                  <div class="formula-line"><span class="formula-purpose">Aperture ratio</span><span class="math-var">R</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">D<sub>fiber</sub></span><span class="math-denominator">D<sub>beam</sub></span></span></div>
+                  <div class="formula-line"><span class="formula-purpose">Estimate ripple</span><span class="math-var">ripple</span><span class="math-equals">&asymp;</span><span>&plusmn;&nbsp;2&nbsp;exp</span><span class="formula-paren">(</span><span>&minus;R<sup>2</sup></span><span class="formula-paren">)</span></div>
                 </div>
+                <dl class="variable-list">
+                  <dt>r, w</dt><dd>Use the same length unit for radius and Gaussian beam radius</dd>
+                  <dt>D<sub>fiber</sub>, D<sub>beam</sub></dt><dd>Use the same length unit for the aperture-to-beam ratio</dd>
+                  <dt>ripple</dt><dd>The calculator reports this fraction as percent</dd>
+                </dl>
                 <p>For a 400 um fiber/endcap diameter, a 250 um beam gives R = 1.6 and ripple about &plusmn;15-17%. A 175 um beam gives R = 2.29 and ripple about &plusmn;1%. This is an aperture-edge estimate, so it should be used as a practical design guideline rather than a full diffraction simulation.</p>
               </section>
             </div>

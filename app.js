@@ -469,7 +469,7 @@ function updateEndcap() {
     return;
   }
 
-  const outputDiameterUm = Math.max(fiberMfdUm, safeDiameterUm);
+  const outputDiameterUm = safeDiameterUm;
   const waistRadiusM = (fiberMfdUm * 1e-6) / 2;
   const rayleighM = (Math.PI * index * waistRadiusM * waistRadiusM) / wavelengthM;
   const requiredLengthM = endcapLengthForDiameter(rayleighM, fiberMfdUm, outputDiameterUm);
