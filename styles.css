@@ -1978,3 +1978,89 @@ h2 {
   color: #d22630;
   font-weight: 800;
 }
+
+.vn-content {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+}
+
+.vn-input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.vn-result-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.vn-note,
+.vn-result-grid small {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.vn-note {
+  margin: 0;
+}
+
+.vn-result-grid small {
+  display: block;
+  margin-top: 10px;
+}
+
+.vn-modes {
+  min-width: 0;
+}
+
+.vn-modes h3 {
+  margin: 0 0 8px;
+}
+
+.vn-table-scroll {
+  max-height: 390px;
+  overflow: auto;
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.vn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.vn-table th,
+.vn-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.vn-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface-soft);
+  color: var(--teal-dark);
+  font-size: 0.84rem;
+}
+
+.vn-table tr:last-child td {
+  border-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .vn-result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .vn-input-grid,
+  .vn-result-grid {
+    grid-template-columns: 1fr;
+  }
+}

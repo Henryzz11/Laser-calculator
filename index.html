@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Lab Calculators</title>
-    <link rel="stylesheet" href="styles.css?v=rayleigh-beam-diameter-1">
+    <link rel="stylesheet" href="styles.css?v=v-number-1">
   </head>
   <body>
     <main class="app-shell">
@@ -27,6 +27,10 @@
             <span>Collimation / Focus / Telescope</span>
             <small>Includes Rayleigh length and F-number</small>
           </button>
+          <button class="calc-tab" data-calculator="vnumber" type="button">
+            <span>V-number &amp; Supported Modes</span>
+            <small>Step-index fiber · LP modes and mode counts</small>
+          </button>
           <button class="calc-tab" data-calculator="per" type="button">Power Ratio to dB</button>
           <button class="calc-tab" data-calculator="endcap" type="button">Endcap Length</button>
           <button class="calc-tab" data-calculator="feedback" type="button">Cleave Angle</button>
@@ -42,6 +46,69 @@
 
         <div class="calculator-stack">
           <button id="backToHome" class="back-home-button" type="button">Back to calculators</button>
+          <article class="calc-panel" id="calc-vnumber">
+            <div class="calc-heading">
+              <div>
+                <p class="panel-kicker">Step-index fiber · Weak guidance</p>
+                <h2>V-number &amp; Supported Modes</h2>
+              </div>
+              <div class="math-pill">
+                <span class="math-formula math-formula-compact"><span class="math-var">V</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&pi;&nbsp;d&nbsp;NA</span><span class="math-denominator">&lambda;<sub>0</sub></span></span></span>
+              </div>
+            </div>
+            <div class="vn-content">
+              <div class="vn-input-grid">
+                <div class="field-group">
+                  <label class="field-label" for="vnDiameter">Core diameter d (&micro;m)</label>
+                  <input id="vnDiameter" class="text-input calc-input" type="number" min="0" step="any" value="25" aria-describedby="vnInputHelp">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="vnNa">Numerical aperture (NA)</label>
+                  <input id="vnNa" class="text-input calc-input" type="number" min="0" step="any" value="0.065">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="vnWavelength">Vacuum wavelength &lambda;<sub>0</sub> (nm)</label>
+                  <input id="vnWavelength" class="text-input calc-input" type="number" min="0" step="any" value="1064">
+                </div>
+              </div>
+              <p id="vnInputHelp" class="vn-note">Use the physical core diameter (2a), not the mode field diameter (MFD). All three inputs must be positive.</p>
+              <div class="result-grid vn-result-grid" aria-live="polite">
+                <div class="result-tile"><span>V-number (dimensionless)</span><strong id="vnValue">--</strong><small id="vnRegime">--</small></div>
+                <div class="result-tile"><span>LP mode families</span><strong id="vnFamilyCount">--</strong><small>Each LP<sub>l,m</sub> label counted once</small></div>
+                <div class="result-tile"><span>Spatial modes</span><strong id="vnSpatialCount">--</strong><small>Including angular degeneracy; no polarization</small></div>
+                <div class="result-tile"><span>Modes incl. polarization</span><strong id="vnPolarizedCount">--</strong><small>Two polarizations per spatial mode</small></div>
+              </div>
+              <section class="vn-modes" aria-label="Supported LP modes">
+                <h3>Supported LP modes</h3>
+                <p id="vnModeNote" class="vn-note" role="status"></p>
+                <div id="vnModesTable" class="vn-table-scroll" tabindex="0" role="region" aria-label="Supported modes table, scroll for more modes">
+                  <table class="vn-table">
+                    <thead><tr><th scope="col">Mode family</th><th scope="col">Cutoff V<sub>c</sub></th><th scope="col">Spatial modes</th><th scope="col">Incl. polarization</th></tr></thead>
+                    <tbody id="vnModeRows"></tbody>
+                  </table>
+                </div>
+              </section>
+              <section class="formula-panel" aria-label="V-number formulas and assumptions">
+                <p class="panel-kicker">Formula &amp; mode-count convention</p>
+                <div class="formula-lines math-display-lines">
+                  <div class="formula-line"><span class="math-var">V</span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">2&pi;&nbsp;a&nbsp;NA</span><span class="math-denominator">&lambda;<sub>0</sub></span></span><span class="math-equals">=</span><span class="math-fraction"><span class="math-numerator">&pi;&nbsp;d&nbsp;NA</span><span class="math-denominator">&lambda;<sub>0</sub></span></span></div>
+                </div>
+                <dl class="variable-list">
+                  <dt>d = 2a</dt><dd>Core diameter; d and &lambda;<sub>0</sub> must use the same length unit. Input wavelength in nm is converted to &micro;m.</dd>
+                  <dt>NA</dt><dd>&radic;(n<sub>core</sub><sup>2</sup> &minus; n<sub>clad</sub><sup>2</sup>), evaluated at the operating wavelength.</dd>
+                  <dt>LP<sub>0,1</sub></dt><dd>The fundamental mode has no cutoff for V &gt; 0.</dd>
+                  <dt>V<sub>c</sub></dt><dd>A higher-order mode is counted only for V &gt; V<sub>c</sub>. LP<sub>1,1</sub>: 2.404826; LP<sub>0,2</sub> and LP<sub>2,1</sub>: 3.831706. Values within 10<sup>&minus;9</sup> of a cutoff are reported as at cutoff.</dd>
+                  <dt>LP<sub>l,m</sub></dt><dd>l is the azimuthal index; m is the radial index. For l &ge; 1, V<sub>c</sub> = j<sub>l&minus;1,m</sub>; for l = 0 and m &ge; 2, V<sub>c</sub> = j<sub>1,m&minus;1</sub>. j<sub>n,k</sub> is the kth positive zero of J<sub>n</sub>.</dd>
+                  <dt>Counting</dt><dd>Each l = 0 family has one spatial mode; each l &gt; 0 family has two angular orientations. Multiply the spatial count by two to include both polarizations.</dd>
+                </dl>
+                <div class="derivation-note">
+                  <p>Applies to straight, circular, weakly guiding step-index fibers. The counts describe supported core modes, not the modes necessarily excited or amplified. Bend loss, gain and mode filtering are not included. CCC, PCF, graded-index and other structured fibers require a dedicated mode solver.</p>
+                  <p>The complete LP list is available for 0 &lt; V &le; 100. Above 100, only V and the large-V estimate M &asymp; V<sup>2</sup>/2 (including polarization) are shown. This estimate is not used for the low-V discrete counts.</p>
+                  <p>References: <a href="https://www.rp-photonics.com/v_number.html" target="_blank" rel="noopener noreferrer">RP Photonics — V-number</a>; <a href="https://www.rp-photonics.com/lp_modes.html" target="_blank" rel="noopener noreferrer">RP Photonics — LP modes</a>; <a href="https://www.fiberoptics4sale.com/blogs/wave-optics/linear-lightwave-propagation-in-an-optical-fiber" target="_blank" rel="noopener noreferrer">LP cutoff conditions, Eqs. 2.11–2.12</a>.</p>
+                </div>
+              </section>
+            </div>
+          </article>
           <article class="calc-panel" id="calc-collimation">
             <div class="beam-mode-tabs" aria-label="Beam setup mode">
               <button class="beam-mode-tab active" data-calculator-target="collimation" type="button" aria-pressed="true">Collimation</button>
@@ -1619,6 +1686,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=rayleigh-beam-diameter-1"></script>
+    <script src="lp-cutoffs.js?v=v-number-1"></script>
+    <script src="app.js?v=v-number-1"></script>
   </body>
 </html>

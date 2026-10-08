@@ -103,6 +103,65 @@ function updatePer() {
 const SPEED_OF_LIGHT = 299792458;
 const PLANCK_CONSTANT = 6.62607015e-34;
 
+// Circular, weakly guiding step-index fiber. LP_01 has no cutoff.
+const LP_MODES = [{ l: 0, m: 1, cutoff: 0 }];
+LP_BESSEL_ZEROS.forEach((zeros, order) => {
+  zeros.forEach((cutoff, index) => {
+    LP_MODES.push({ l: order + 1, m: index + 1, cutoff });
+    if (order === 1) LP_MODES.push({ l: 0, m: index + 2, cutoff });
+  });
+});
+LP_MODES.sort((a, b) => a.cutoff - b.cutoff || a.l - b.l);
+const LP_CUTOFF_TOLERANCE = 1e-9;
+
+function calculateVNumber(diameterUm, na, wavelengthNm) {
+  if (![diameterUm, na, wavelengthNm].every((value) => Number.isFinite(value) && value > 0)) return null;
+  const v = Math.PI * diameterUm * na / (wavelengthNm / 1000);
+  if (!Number.isFinite(v) || v <= 0) return null;
+  const complete = v <= LP_MAX_V;
+  // Within numerical tolerance, report a higher-order mode as at cutoff, not guided.
+  const modes = complete ? LP_MODES.filter((mode) => mode.cutoff === 0 || v - mode.cutoff > LP_CUTOFF_TOLERANCE) : [];
+  const atCutoff = complete ? LP_MODES.filter((mode) => mode.cutoff > 0 && Math.abs(v - mode.cutoff) <= LP_CUTOFF_TOLERANCE) : [];
+  const spatialCount = complete ? modes.reduce((count, mode) => count + (mode.l === 0 ? 1 : 2), 0) : null;
+  return { v, complete, modes, atCutoff, spatialCount };
+}
+
+function lpModeLabel(mode) {
+  return `LP<sub>${mode.l},${mode.m}</sub>`;
+}
+
+function updateVNumber() {
+  const result = calculateVNumber(numberValue("vnDiameter"), numberValue("vnNa"), numberValue("vnWavelength"));
+  const table = document.querySelector("#vnModesTable");
+  const rows = document.querySelector("#vnModeRows");
+  const note = document.querySelector("#vnModeNote");
+  rows.innerHTML = "";
+  table.hidden = true;
+  if (!result) {
+    ["vnValue", "vnFamilyCount", "vnSpatialCount", "vnPolarizedCount"].forEach((id) => setText(id, null));
+    setText("vnRegime", "Enter valid inputs");
+    note.textContent = "Enter finite, positive values for core diameter, NA and vacuum wavelength.";
+    return;
+  }
+
+  const { v, complete, modes, atCutoff, spatialCount } = result;
+  setText("vnValue", fmt(v, 8));
+  setText("vnRegime", v > LP_BESSEL_ZEROS[0][0] + LP_CUTOFF_TOLERANCE ? "Multimode" : "Single spatial mode");
+  setText("vnFamilyCount", complete ? modes.length : null);
+  setText("vnSpatialCount", spatialCount);
+  setText("vnPolarizedCount", complete ? 2 * spatialCount : `≈ ${fmt(v * v / 2, 5)}`);
+  if (!complete) {
+    note.textContent = `V exceeds ${LP_MAX_V}. The complete LP mode list and discrete counts are available only for V ≤ ${LP_MAX_V}. The total shown is the large-V estimate V²/2, including both polarizations.`;
+    return;
+  }
+
+  table.hidden = false;
+  rows.innerHTML = modes.map((mode) => `<tr><td>${lpModeLabel(mode)}</td><td>${mode.cutoff === 0 ? "0 (no cutoff)" : mode.cutoff.toFixed(6)}</td><td>${mode.l === 0 ? 1 : 2}</td><td>${mode.l === 0 ? 2 : 4}</td></tr>`).join("");
+  note.innerHTML = atCutoff.length
+    ? `${atCutoff.map(lpModeLabel).join(", ")} at cutoff (within numerical tolerance); excluded from the guided-mode counts.`
+    : `${modes.length} supported LP ${modes.length === 1 ? "family" : "families"}, ordered by cutoff. These are allowed modes; actual excitation depends on the launch conditions.`;
+}
+
 const GAIN_RECOVERY_MEDIA = {
   er_zblan: {
     lifetimeMs: 6.9,
@@ -1567,6 +1626,7 @@ function updateAmplength() {
 }
 
 function updateCalculators() {
+  updateVNumber();
   updatePer();
   updateCollimation();
   updateFeedback();
